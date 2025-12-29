@@ -39,7 +39,7 @@ Compounding engineering inverts this. Each feature you build:
 
 ```bash
 # Add the marketplace
-/plugin marketplace add https://github.com/gellasangameshgupta/sf-compound-engineering-plugin
+/plugin marketplace add https://github.com/YourOrg/sf-compound-engineering-plugin
 
 # Install the plugin
 /plugin install sf-compound-engineering
@@ -48,7 +48,7 @@ Compounding engineering inverts this. Each feature you build:
 ### One-Command Installation
 
 ```bash
-npx claude-plugins install @gellsangameshgupta/sf-compound-engineering-plugin/sf-compound-engineering
+npx claude-plugins install @YourOrg/sf-compound-engineering-plugin/sf-compound-engineering
 ```
 
 ## Core Commands
@@ -373,6 +373,34 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
 
 ## About
 
-Created by Gella Sangamesh Gupta | https://sangamusings.kit.com/profile?_gl=1*6wbz3e*_gcl_au*NjAwNzc3OTE0LjE3NjE5ODU0NjUuMTE0MDQ3NzQwOC4xNzY2OTk3Njg4LjE3NjY5OTc4NTE.
+Created by Sangamesh | [Sanga Musings Newsletter](https://sangamusings.substack.com)
 
 Built with the Compound Engineering philosophy for Salesforce developers who want each deployment to make the next one easier.
+
+---
+
+## 🔄 Updating the Plugin
+
+### Check Current Version
+The version is defined in `plugins/sf-compound-engineering/.claude-plugin/plugin.json`
+
+### Update Methods
+
+**If installed from GitHub:**
+```bash
+/plugin update sf-compound-engineering
+```
+
+**If installed from local path:**
+```bash
+# Pull latest changes
+cd /path/to/sf-compound-engineering-plugin
+git pull origin main
+
+# Reinstall (if needed)
+/plugin uninstall sf-compound-engineering
+/plugin install /path/to/sf-compound-engineering-plugin
+```
+
+### Changelog
+See [CHANGELOG.md](./CHANGELOG.md) for version history.

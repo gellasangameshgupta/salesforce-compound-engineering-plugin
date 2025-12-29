@@ -39,7 +39,7 @@ Compounding engineering inverts this. Each feature you build:
 
 ```bash
 # Add the marketplace
-/plugin marketplace add https://github.com/YourOrg/sf-compound-engineering-plugin
+/plugin marketplace add https://github.com/gellasangameshgupta/sf-compound-engineering-plugin
 
 # Install the plugin
 /plugin install sf-compound-engineering
@@ -48,7 +48,7 @@ Compounding engineering inverts this. Each feature you build:
 ### One-Command Installation
 
 ```bash
-npx claude-plugins install @YourOrg/sf-compound-engineering-plugin/sf-compound-engineering
+npx claude-plugins install @gellasangameshgupta/sf-compound-engineering-plugin/sf-compound-engineering
 ```
 
 ## Core Commands

@@ -1,6 +1,6 @@
 # SF Compound Engineering
 
-**Spec-Driven Development for Salesforce** — A CLI tool to initialize structured development workflows in any Salesforce project.
+**Spec-Driven Compound Engineering for Salesforce** — A CLI tool to initialise structured development workflows in any Salesforce project.
 
 Similar to GitHub's [`specify init`](https://github.com/github/spec-kit), but with Salesforce-specific commands and best practices.
 
@@ -273,5 +273,7 @@ MIT License - see [LICENSE](./LICENSE)
 
 ## Credits
 
-- Inspired by [GitHub Spec-Kit](https://github.com/github/spec-kit)
 - Built for the Salesforce developer community
+- Inspired by [GitHub Spec-Kit](https://github.com/github/spec-kit)
+- Inspired by [Every's Compound Engineering](https://every.to/chain-of-thought/compound-engineering-how-every-codes-with-agents)
+- Thanks to Claude and Claude Code

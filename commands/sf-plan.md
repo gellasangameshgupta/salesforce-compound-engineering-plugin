@@ -180,20 +180,57 @@ Brief description of what will be built and why.
 | **Total** | **SUM** |
 ```
 
-### Step 5: Save and Present
+### Step 5: Save to .specify/specs/
 
-Save the plan to the `plans/` directory:
+Create a feature folder inside `.specify/specs/` with all specification files:
 
 ```bash
-# Create filename from feature
-FILENAME="plans/$(echo "$FEATURE" | tr ' ' '-' | tr '[:upper:]' '[:lower:]').md"
+# Generate feature name (lowercase, hyphenated)
+FEATURE_SLUG=$(echo "$FEATURE" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g')
+
+# Get next spec number
+NEXT_NUM=$(ls -d .specify/specs/*/ 2>/dev/null | wc -l | xargs printf "%03d")
+
+# Create feature directory
+FEATURE_DIR=".specify/specs/${NEXT_NUM}-${FEATURE_SLUG}"
+mkdir -p "$FEATURE_DIR"
 ```
 
+Save the following files in the feature directory:
+
+1. **`spec.md`** - Business requirements and user stories
+2. **`plan.md`** - Technical implementation plan (the main output)
+3. **`tasks.md`** - Checklist of implementation tasks
+
+```
+.specify/specs/001-lead-scoring/
+├── spec.md      # What to build (requirements)
+├── plan.md      # How to build it (technical design)
+└── tasks.md     # Step-by-step implementation checklist
+```
+
+### Step 6: Present to User
+
 Present the plan to the user with:
-1. Summary of the approach
-2. Key decisions and trade-offs
-3. Questions needing input
-4. Next steps to execute with `/sf-work`
+1. **Location**: Where the files were saved
+2. **Summary**: Brief overview of the approach
+3. **Key decisions**: Trade-offs and architecture choices
+4. **Open questions**: Items needing stakeholder input
+5. **Next steps**: Run `/sf-work .specify/specs/<feature>/plan.md`
+
+Example output:
+```
+✅ Feature spec created: .specify/specs/001-lead-scoring/
+
+Files created:
+  • spec.md   - Business requirements (5 user stories)
+  • plan.md   - Technical plan (4 components)
+  • tasks.md  - Implementation checklist (12 tasks)
+
+Next steps:
+  1. Review the plan: cat .specify/specs/001-lead-scoring/plan.md
+  2. Start implementation: /sf-work .specify/specs/001-lead-scoring/plan.md
+```
 
 ## Example Usage
 

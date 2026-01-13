@@ -18,10 +18,15 @@ When the user runs `/sf-work [plan file]`, execute the following:
 ### Step 1: Load and Parse Plan
 
 ```bash
-# Read the plan file
-cat plans/feature-name.md
+# Read the plan file from .specify/specs/<feature>/
+# Example: .specify/specs/001-lead-scoring/plan.md
+cat .specify/specs/001-lead-scoring/plan.md
 
-# Extract key sections:
+# Also read the spec and tasks files
+cat .specify/specs/001-lead-scoring/spec.md   # Requirements
+cat .specify/specs/001-lead-scoring/tasks.md  # Checklist
+
+# Extract key sections from plan.md:
 # - Data Model Changes
 # - Automation Components
 # - Test Requirements
@@ -162,7 +167,7 @@ git push -u origin feature/$(basename $PLAN_FILE .md)
 # Create PR (GitHub CLI)
 gh pr create \
   --title "Feature: [Feature Name]" \
-  --body "$(cat plans/feature-name.md)" \
+  --body "$(cat .specify/specs/001-feature-name/plan.md)" \
   --base main
 ```
 
@@ -253,7 +258,7 @@ Todo: Create accountScoreCard LWC
 ### Starting a Work Session
 
 ```bash
-/sf-work plans/lead-scoring.md
+/sf-work .specify/specs/001-lead-scoring/plan.md
 
 Output:
 📋 Loaded plan: Lead Scoring Automation

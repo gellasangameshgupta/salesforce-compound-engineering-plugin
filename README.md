@@ -124,12 +124,18 @@ After initialization, use the commands in sequence:
 ### Start a New Feature
 
 ```bash
-# Create spec structure
-.specify/scripts/create-new-feature.sh lead-scoring
-
-# Generate the plan with Claude
+# Generate the plan with Claude (creates folder in .specify/specs/)
 /sf-plan "Build a lead scoring system that calculates scores based on
 email opens, web visits, and form submissions"
+
+# This creates:
+# .specify/specs/001-lead-scoring/
+#   ├── spec.md    (requirements)
+#   ├── plan.md    (technical design)
+#   └── tasks.md   (implementation checklist)
+
+# Start implementing
+/sf-work .specify/specs/001-lead-scoring/plan.md
 ```
 
 ### Review Existing Code

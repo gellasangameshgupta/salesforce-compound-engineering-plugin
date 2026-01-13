@@ -593,6 +593,111 @@ def create_directory_structure(project_path: Path, force: bool = False):
 
     return True
 
+def install_commands(project_path: Path):
+    """Install SF Compound Engineering commands to .claude/commands/"""
+    commands_dir = project_path / '.claude' / 'commands'
+    commands_dir.mkdir(parents=True, exist_ok=True)
+
+    # Get the directory where this script is located
+    cli_dir = Path(__file__).parent
+    source_commands_dir = cli_dir / 'commands'
+
+    if source_commands_dir.exists():
+        # Copy commands from package
+        for cmd_file in source_commands_dir.glob('*.md'):
+            dest_file = commands_dir / cmd_file.name
+            shutil.copy(cmd_file, dest_file)
+            print_success(f"Installed command: /sf:{cmd_file.stem}")
+    else:
+        # Fallback: create minimal command stubs
+        print_warning("Command files not found in package, creating stubs...")
+        create_command_stubs(commands_dir)
+
+    return True
+
+def install_agents(project_path: Path):
+    """Install SF Compound Engineering agents to .claude/agents/"""
+    cli_dir = Path(__file__).parent
+    source_agents_dir = cli_dir / 'agents'
+
+    if not source_agents_dir.exists():
+        print_warning("Agents not found in package")
+        return False
+
+    dest_agents_dir = project_path / '.claude' / 'agents'
+
+    # Copy all agent categories
+    agent_count = 0
+    for category in source_agents_dir.iterdir():
+        if category.is_dir():
+            dest_category = dest_agents_dir / category.name
+            dest_category.mkdir(parents=True, exist_ok=True)
+            for agent_file in category.glob('*.md'):
+                shutil.copy(agent_file, dest_category / agent_file.name)
+                agent_count += 1
+
+    print_success(f"Installed {agent_count} agents (apex, lwc, automation, integration, architecture)")
+    return True
+
+def install_skills(project_path: Path):
+    """Install SF Compound Engineering skills to .claude/skills/"""
+    cli_dir = Path(__file__).parent
+    source_skills_dir = cli_dir / 'skills'
+
+    if not source_skills_dir.exists():
+        print_warning("Skills not found in package")
+        return False
+
+    dest_skills_dir = project_path / '.claude' / 'skills'
+
+    # Copy all skills
+    skill_count = 0
+    for skill in source_skills_dir.iterdir():
+        if skill.is_dir():
+            dest_skill = dest_skills_dir / skill.name
+            dest_skill.mkdir(parents=True, exist_ok=True)
+            for skill_file in skill.glob('*.md'):
+                shutil.copy(skill_file, dest_skill / skill_file.name)
+            skill_count += 1
+
+    print_success(f"Installed {skill_count} skills (governor-limits, apex-patterns, security-guide, lwc-patterns, integration-patterns, test-factory)")
+    return True
+
+def create_command_stubs(commands_dir: Path):
+    """Create minimal command stubs if full commands aren't available."""
+    commands = {
+        'plan': 'Create implementation plans from feature descriptions',
+        'work': 'Implement features following Salesforce best practices',
+        'review': 'Multi-agent code review (23 specialized agents)',
+        'triage': 'Prioritize and categorize review findings',
+        'resolve': 'Fix prioritized issues from review',
+        'test': 'Generate comprehensive test suites',
+        'document': 'Auto-generate documentation',
+        'health': 'Assess codebase health and deployment readiness',
+        'deploy': 'Create deployment checklists and validate deployments',
+    }
+
+    for name, desc in commands.items():
+        stub = f'''---
+name: sf:{name}
+description: {desc}
+---
+
+# /sf:{name}
+
+{desc}
+
+See `.specify/memory/constitution.md` for project principles.
+
+## Usage
+
+```
+/sf:{name} [description]
+```
+'''
+        (commands_dir / f'{name}.md').write_text(stub)
+        print_success(f"Created stub: /sf:{name}")
+
 def setup_ai_agent(project_path: Path, agent: str):
     """Set up prompts for the specified AI agent."""
     if agent not in AI_AGENTS:
@@ -601,6 +706,12 @@ def setup_ai_agent(project_path: Path, agent: str):
 
     config = AI_AGENTS[agent]
     print_info(f"Setting up for {config['name']}...")
+
+    # For Claude, install commands, agents, and skills
+    if agent == 'claude':
+        install_commands(project_path)
+        install_agents(project_path)
+        install_skills(project_path)
 
     prompt_dir = project_path / config['prompt_dir']
     prompt_dir.mkdir(parents=True, exist_ok=True)

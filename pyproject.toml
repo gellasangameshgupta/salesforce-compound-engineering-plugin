@@ -18,7 +18,8 @@ keywords = [
     "claude",
     "ai",
     "apex",
-    "lwc"
+    "lwc",
+    "cli"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -38,8 +39,17 @@ classifiers = [
 sfce = "sfce:main"
 
 [project.urls]
-Homepage = "https://github.com/gellasangameshgupta/sf-compound-engineering-plugin"
-Repository = "https://github.com/gellasangameshgupta/sf-compound-engineering-plugin"
+Homepage = "https://github.com/gellasangameshgupta/sf-compound-engineering"
+Repository = "https://github.com/gellasangameshgupta/sf-compound-engineering"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
+
+[tool.hatch.build]
+include = [
+    "sfce.py",
+    "__init__.py",
+    "commands/*.md",
+    "agents/**/*.md",
+    "skills/**/*.md",
+]

@@ -11,6 +11,43 @@ arguments:
 
 Executes implementation plans created by `/sf-plan` systematically, with continuous validation and Salesforce-specific checks.
 
+## Required: Load Skills for Implementation
+
+**IMPORTANT**: Before implementing any code, load the relevant skill files based on what you're building:
+
+### For Apex Development
+```
+.claude/skills/apex-patterns/       # Service layer, selector, trigger handler patterns
+.claude/skills/governor-limits/     # Limit values and thresholds
+.claude/skills/security-guide/      # CRUD/FLS enforcement patterns
+```
+
+### For LWC Development
+```
+.claude/skills/lwc-patterns/        # Wire adapters, events, lifecycle hooks
+.claude/skills/security-guide/      # XSS prevention, CSP compliance
+```
+
+### For Integration Work
+```
+.claude/skills/integration-patterns/ # Named credentials, retry logic, callouts
+.claude/skills/governor-limits/      # Callout limits
+```
+
+### For Test Creation
+```
+.claude/skills/test-factory/        # Test data factory, mocking patterns
+```
+
+### How to Apply
+
+1. **Read the relevant skill files** based on components being built
+2. **Follow the patterns exactly** as documented in skills
+3. **Use code examples** from skills as templates
+4. **Reference pattern names** in comments (e.g., "// Using TriggerHandler pattern")
+
+---
+
 ## Workflow
 
 When the user runs `/sf-work [plan file]`, execute the following:

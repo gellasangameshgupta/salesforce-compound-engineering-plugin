@@ -11,6 +11,39 @@ arguments:
 
 Resolves todos created from triage in parallel, applying fixes with validation.
 
+## Required: Load Agents and Skills for Fixes
+
+**IMPORTANT**: Before resolving issues, load the relevant agents (to understand what to fix) and skills (to know how to fix correctly).
+
+### Agents to Reference
+Load the agent that found each issue to understand the correct fix:
+```
+.claude/agents/apex/           # For Apex-related fixes
+.claude/agents/lwc/            # For LWC-related fixes
+.claude/agents/automation/     # For Flow-related fixes
+.claude/agents/integration/    # For integration fixes
+.claude/agents/architecture/   # For architecture fixes
+```
+
+### Skills to Apply
+Load skills to implement fixes using correct patterns:
+```
+.claude/skills/apex-patterns/       # Correct Apex patterns for fixes
+.claude/skills/security-guide/      # Security fix patterns
+.claude/skills/governor-limits/     # Limit-aware fix patterns
+.claude/skills/lwc-patterns/        # Correct LWC patterns
+.claude/skills/integration-patterns/ # Correct integration patterns
+```
+
+### How to Apply
+
+1. **Read the agent** that found the issue (listed in finding)
+2. **Read the relevant skill** for the correct fix pattern
+3. **Apply the fix** following the pattern from the skill
+4. **Verify the fix** using the agent's checklist
+
+---
+
 ## Workflow
 
 ### Step 1: Load Todos

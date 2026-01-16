@@ -11,6 +11,38 @@ arguments:
 
 Creates deployment checklists, validates changes, and guides deployments to Salesforce orgs.
 
+## Required: Load Deployment-Critical Agents
+
+**IMPORTANT**: Before deployment, verify using these agents:
+
+### Integration Agents (for external dependencies)
+```
+.claude/agents/integration/
+├── rest-api-architect.md          # API versioning, breaking changes
+├── callout-pattern-reviewer.md    # External system readiness
+├── platform-event-strategist.md   # Event subscriptions
+└── integration-security-sentinel.md # Credentials, auth setup
+```
+
+### Architecture Agents (for org impact)
+```
+.claude/agents/architecture/
+├── data-model-architect.md        # Schema changes impact
+├── sharing-security-analyst.md    # Security model changes
+├── metadata-consistency-checker.md # Profile/permission changes
+└── pattern-recognition-specialist.md # Breaking patterns
+```
+
+### How to Apply
+
+1. **Read integration agents** to verify external dependencies
+2. **Read architecture agents** to assess org impact
+3. **Check for breaking changes** using agent checklists
+4. **Verify security setup** is complete in target org
+5. **Confirm data model** changes are backward compatible
+
+---
+
 ## Workflow
 
 ### Step 1: Analyze Changes

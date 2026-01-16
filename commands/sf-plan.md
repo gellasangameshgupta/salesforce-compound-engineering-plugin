@@ -11,6 +11,43 @@ arguments:
 
 Create detailed, actionable implementation plans for Salesforce features. This command researches your org's patterns, considers governor limits, and produces deployment-ready specifications.
 
+## Required: Load Agents and Skills
+
+**IMPORTANT**: Before creating any plan, you MUST read and apply knowledge from these files:
+
+### Agents to Load (for design validation)
+Read these agent files and use their checklists to validate your design decisions:
+
+```
+.claude/agents/architecture/
+├── data-model-architect.md        # Schema design best practices
+├── sharing-security-analyst.md    # OWD, sharing rules, security
+├── metadata-consistency-checker.md # Naming conventions, metadata
+└── pattern-recognition-specialist.md # Anti-patterns to avoid
+```
+
+### Skills to Load (for implementation patterns)
+Read ALL skill files to understand best practices for the plan:
+
+```
+.claude/skills/
+├── governor-limits/      # Limit values, thresholds, budgeting
+├── apex-patterns/        # Service layer, selector, trigger handler patterns
+├── security-guide/       # CRUD/FLS, sharing, injection prevention
+├── lwc-patterns/         # Wire adapters, events, lifecycle hooks
+├── integration-patterns/ # Named credentials, retry logic, callouts
+└── test-factory/         # Test data factory, mocking patterns
+```
+
+### How to Apply
+
+1. **Read each file** before generating the plan
+2. **Extract patterns** from skills to recommend in your design
+3. **Apply checklists** from agents to validate design decisions
+4. **Reference specific patterns** by name in the plan (e.g., "Use TriggerHandler pattern from apex-patterns")
+
+---
+
 ## Workflow
 
 When the user runs `/sf-plan [feature description]`, execute the following steps:

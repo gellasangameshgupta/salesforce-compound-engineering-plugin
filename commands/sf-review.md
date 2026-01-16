@@ -9,7 +9,75 @@ arguments:
 
 # Salesforce Code Review Command
 
-Performs comprehensive, multi-agent code review specifically designed for Salesforce development. Runs 15+ specialized agents in parallel to catch issues across Apex, LWC, Flows, and integrations.
+Performs comprehensive, multi-agent code review specifically designed for Salesforce development. Runs 23 specialized agents to catch issues across Apex, LWC, Flows, and integrations.
+
+## Required: Load ALL Review Agents
+
+**CRITICAL**: Before reviewing any code, you MUST read and apply ALL 23 agent files. Each agent contains specific checklists and anti-patterns to check.
+
+### Apex Agents (6)
+Read and apply ALL checklists from:
+```
+.claude/agents/apex/
+├── apex-governor-guardian.md      # Governor limits, SOQL/DML optimization
+├── apex-security-sentinel.md      # CRUD/FLS, injection, security
+├── apex-bulkification-reviewer.md # Bulk patterns, collection handling
+├── apex-trigger-architect.md      # Trigger patterns, recursion control
+├── apex-test-coverage-analyst.md  # Test quality, coverage, assertions
+└── apex-exception-handler.md      # Error handling, logging patterns
+```
+
+### LWC Agents (5)
+Read and apply ALL checklists from:
+```
+.claude/agents/lwc/
+├── lwc-performance-oracle.md      # Wire vs imperative, rendering
+├── lwc-security-reviewer.md       # XSS, CSP, secure coding
+├── lwc-accessibility-guardian.md  # WCAG, ARIA, keyboard navigation
+├── lwc-architecture-strategist.md # Component design, communication
+└── aura-migration-advisor.md      # Aura to LWC migration patterns
+```
+
+### Automation Agents (4)
+Read and apply ALL checklists from:
+```
+.claude/agents/automation/
+├── flow-complexity-analyzer.md    # Flow design, loops, branches
+├── flow-governor-monitor.md       # DML/SOQL in flows, limits
+├── process-automation-strategist.md # Flow vs Apex decisions
+└── validation-rule-reviewer.md    # Validation rule design
+```
+
+### Integration Agents (4)
+Read and apply ALL checklists from:
+```
+.claude/agents/integration/
+├── rest-api-architect.md          # API design, versioning
+├── callout-pattern-reviewer.md    # Callout patterns, error handling
+├── platform-event-strategist.md   # Event-driven architecture
+└── integration-security-sentinel.md # Auth, credentials, data security
+```
+
+### Architecture Agents (4)
+Read and apply ALL checklists from:
+```
+.claude/agents/architecture/
+├── data-model-architect.md        # Schema design, relationships
+├── sharing-security-analyst.md    # OWD, sharing rules, visibility
+├── metadata-consistency-checker.md # Naming, organization, profiles
+└── pattern-recognition-specialist.md # Anti-patterns, code smells
+```
+
+### How to Apply Each Agent
+
+For EACH agent file:
+1. **Read the file** to get the checklist and anti-patterns
+2. **Apply each checklist item** to the code being reviewed
+3. **Check for anti-patterns** listed in the agent
+4. **Use the Response Format** from the agent for findings
+5. **Assign severity** as defined in the agent (CRITICAL/HIGH/MEDIUM/LOW)
+
+---
 
 ## Workflow
 

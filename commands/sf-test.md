@@ -9,7 +9,31 @@ arguments:
 
 # Salesforce Test Command
 
-Runs Apex tests with comprehensive reporting, coverage analysis, and recommendations.
+Runs Apex tests with comprehensive reporting, coverage analysis, and recommendations. Can also generate new tests following best practices.
+
+## Required: Load Test Agents and Skills
+
+**IMPORTANT**: Before running or generating tests, load these files:
+
+### Agent to Load
+```
+.claude/agents/apex/apex-test-coverage-analyst.md  # Test quality standards, coverage analysis
+```
+
+### Skill to Load
+```
+.claude/skills/test-factory/  # Test data factory patterns, mocking, assertions
+```
+
+### How to Apply
+
+1. **Read the agent** to understand test quality standards
+2. **Read the skill** for test data factory and mocking patterns
+3. **When generating tests**: Use patterns from test-factory skill
+4. **When analyzing tests**: Apply checklist from test-coverage-analyst agent
+5. **Ensure bulk testing**: All tests should handle 200+ records
+
+---
 
 ## Workflow
 

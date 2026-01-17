@@ -96,13 +96,19 @@ prompt: |
 
      Issues assigned: [SECURITY_ISSUES]
 
-     Read agent: .claude/agents/apex/apex-security-sentinel.md
-     Read skill: .claude/skills/security-guide/
+     STEP 1 - Read local guidance:
+     - Read file: .claude/agents/apex/apex-security-sentinel.md
+     - Read file: .claude/skills/security-guide/index.md
 
-     For each issue:
+     STEP 2 - Use WebSearch for fix patterns:
+     - Search: "Salesforce SOQL injection fix site:salesforce.stackexchange.com"
+     - Search: "Salesforce CRUD FLS enforcement pattern site:developer.salesforce.com"
+     - Search: "Salesforce security review checklist"
+
+     STEP 3 - For each issue:
      1. Read the file
      2. Identify the vulnerability
-     3. Apply the correct fix pattern from security-guide
+     3. Apply the correct fix pattern (from local + web search)
      4. Verify fix using agent checklist
 
      Security Fix Patterns:
@@ -138,9 +144,17 @@ prompt: |
 
      Issues assigned: [GOVERNOR_ISSUES]
 
-     Read agent: .claude/agents/apex/apex-governor-guardian.md
-     Read agent: .claude/agents/apex/apex-bulkification-reviewer.md
-     Read skill: .claude/skills/governor-limits/
+     STEP 1 - Read local guidance:
+     - Read file: .claude/agents/apex/apex-governor-guardian.md
+     - Read file: .claude/agents/apex/apex-bulkification-reviewer.md
+     - Read file: .claude/skills/governor-limits/index.md
+
+     STEP 2 - Use WebSearch for optimization patterns:
+     - Search: "Salesforce bulkification pattern site:salesforce.stackexchange.com"
+     - Search: "Salesforce SOQL query optimization site:developer.salesforce.com"
+     - Search: "Salesforce reduce DML statements"
+
+     STEP 3 - Apply fix patterns:
 
      Governor Fix Patterns:
 

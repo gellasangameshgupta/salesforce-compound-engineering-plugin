@@ -1,461 +1,288 @@
 ---
 name: sf-work
-description: Execute Salesforce implementation plans using parallel implementation subagents
+description: Execute Salesforce implementation plans using parallel subagents
 arguments:
-  - name: plan_file
-    description: Path to the plan markdown file
+  - name: plan
+    description: Path to the plan.md file
     required: true
 ---
 
-# Salesforce Work Execution Command
+# /sf-work
 
-Executes implementation plans created by `/sf-plan` using **parallel subagents** for different types of work - Apex, LWC, Tests, and Configuration.
+Execute implementation plans using parallel subagents for Apex, LWC, Config, and Tests.
 
-## Subagent Architecture
+## Instructions
 
-```
-/sf-work .specify/specs/001-lead-scoring/plan.md
-         │
-         ├── [SETUP PHASE]
-         │   └── Main Agent: Parse plan, create branch, setup environment
-         │
-         ├── [PARALLEL IMPLEMENTATION PHASE]
-         │   ├── Apex Subagent: Triggers, Handlers, Services, Selectors
-         │   ├── LWC Subagent: Components, Controllers, Tests
-         │   ├── Config Subagent: Objects, Fields, Flows, Permissions
-         │   └── Test Subagent: Test Classes, Test Data Factory
-         │
-         ├── [VALIDATION PHASE]
-         │   ├── Deploy Validation Subagent
-         │   └── Test Execution Subagent
-         │
-         └── [COMPLETION PHASE]
-             └── Main Agent: Create PR, update tasks
-```
+When this command is invoked, you MUST follow these steps exactly:
 
----
+### Step 1: Load the Plan
 
-## Workflow
-
-When the user runs `/sf-work [plan file]`, execute the following:
-
-### Step 1: Load and Parse Plan
+Read the plan file from `$ARGUMENTS.plan`:
 
 ```bash
-# Read the plan and related files
-cat .specify/specs/<feature>/plan.md   # Technical design
-cat .specify/specs/<feature>/spec.md   # Requirements
-cat .specify/specs/<feature>/tasks.md  # Task checklist
+# Read the plan
+cat $ARGUMENTS.plan
+
+# Also read related files
+cat $(dirname $ARGUMENTS.plan)/spec.md
+cat $(dirname $ARGUMENTS.plan)/tasks.md
 ```
 
 Extract:
-- Components to build (Apex classes, LWC, Flows)
+- Components to build (Apex, LWC, Flows, Objects)
 - Dependencies between components
 - Test requirements
-- Deployment sequence
+
+Announce: "Starting /sf-work for: [feature name from plan]"
 
 ### Step 2: Setup Environment
 
 ```bash
 # Create feature branch
-git checkout -b feature/$(basename $PLAN_DIR)
+git checkout -b feature/[feature-slug]
 
 # Verify org connection
-sf org display --target-org $DEFAULT_ORG
+sf org display
+```
 
-# Pull latest metadata
-sf project retrieve start
+Display:
+```
+Environment Setup:
+  • Branch: feature/[name]
+  • Org: [org alias]
+  • Plan: [X] components to build
 ```
 
 ### Step 3: Deploy Implementation Subagents (PARALLEL)
 
-**CRITICAL**: Based on the plan, spawn the appropriate subagents IN PARALLEL:
+**IMMEDIATELY spawn these subagents in parallel using the Task tool:**
 
-```
-Use the Task tool to spawn these subagents concurrently:
+<subagent_deployment>
+You MUST call Task tool multiple times in a SINGLE message:
 
-1. APEX IMPLEMENTATION SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Implement Apex components for: [FEATURE]
+1. Task tool call:
+   - description: "Implement Apex classes"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Implement the Apex components for this feature.
 
-     Plan file: [PLAN_PATH]
+     Plan: [PASTE RELEVANT APEX SECTION FROM PLAN]
 
-     Read and follow patterns from:
-     - .claude/skills/apex-patterns/
-     - .claude/skills/governor-limits/
-     - .claude/skills/security-guide/
+     Read these skills first:
+     - .claude/skills/apex-patterns/index.md (for patterns)
+     - .claude/skills/security-guide/index.md (for CRUD/FLS)
+     - .claude/skills/governor-limits/index.md (for limits)
 
-     Components to create:
-     [LIST FROM PLAN]
+     Create these files:
+     [LIST APEX CLASSES FROM PLAN]
 
-     For each class:
-     1. Follow existing trigger handler pattern
-     2. Implement CRUD/FLS checks
-     3. Bulkify all operations
-     4. Add proper error handling
-     5. Include ApexDoc comments
-
-     Return: List of files created with paths
-
-2. LWC IMPLEMENTATION SUBAGENT (if UI in plan)
-   subagent_type: "general-purpose"
-   prompt: |
-     Implement LWC components for: [FEATURE]
-
-     Plan file: [PLAN_PATH]
-
-     Read and follow patterns from:
-     - .claude/skills/lwc-patterns/
-     - .claude/skills/security-guide/
-
-     Components to create:
-     [LIST FROM PLAN]
-
-     For each component:
-     1. Use wire adapters for cacheable data
-     2. Implement proper error handling
-     3. Add loading states
-     4. Follow accessibility guidelines
-     5. Create Apex controller if needed
+     Requirements:
+     - Follow trigger handler pattern
+     - Implement CRUD/FLS checks
+     - Bulkify all operations
+     - Add ApexDoc comments
+     - Create in force-app/main/default/classes/
 
      Return: List of files created with paths
 
-3. CONFIG IMPLEMENTATION SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Implement configuration/metadata for: [FEATURE]
+2. Task tool call:
+   - description: "Implement LWC components"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Implement the LWC components for this feature.
 
-     Plan file: [PLAN_PATH]
+     Plan: [PASTE RELEVANT LWC SECTION FROM PLAN]
 
-     Components to create:
-     [LIST FROM PLAN - objects, fields, flows, permissions]
+     Read these skills first:
+     - .claude/skills/lwc-patterns/index.md
+     - .claude/skills/security-guide/index.md
 
-     For each:
-     1. Create custom objects/fields via SFDX
-     2. Setup validation rules
-     3. Configure Flows
-     4. Create permission sets
+     Create these components:
+     [LIST LWC COMPONENTS FROM PLAN]
 
-     Commands to use:
-     - sf sobject create field
-     - sf flow create
+     Requirements:
+     - Use wire adapters for cacheable data
+     - Implement error handling with toast
+     - Add loading states
+     - Follow accessibility guidelines
+     - Create in force-app/main/default/lwc/
+
+     Return: List of files created with paths
+
+3. Task tool call:
+   - description: "Create configuration"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Create the configuration/metadata for this feature.
+
+     Plan: [PASTE RELEVANT CONFIG SECTION FROM PLAN]
+
+     Create:
+     [LIST OBJECTS, FIELDS, FLOWS FROM PLAN]
+
+     Use SFDX commands:
+     - sf sobject create for objects
+     - Manual XML for fields
+     - Flow XML or sf flow create
+
+     Create in force-app/main/default/objects/ and flows/
 
      Return: List of metadata created
 
-4. TEST IMPLEMENTATION SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Create test classes for: [FEATURE]
+4. Task tool call:
+   - description: "Implement test classes"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Create comprehensive test classes for this feature.
 
-     Plan file: [PLAN_PATH]
+     Plan: [PASTE RELEVANT TEST SECTION FROM PLAN]
 
-     Read patterns from:
-     - .claude/skills/test-factory/
+     Read this skill first:
+     - .claude/skills/test-factory/index.md
 
-     Classes needing tests:
-     [LIST FROM PLAN]
+     Create test classes for:
+     [LIST CLASSES NEEDING TESTS]
 
-     For each test class:
-     1. Create test data factory methods
-     2. Test positive scenarios
-     3. Test negative scenarios
-     4. Test bulk (200+ records)
-     5. Test as different users/profiles
-     6. Target 90%+ coverage
+     Requirements:
+     - @TestSetup with TestDataFactory
+     - Positive tests for each method
+     - Negative tests (invalid inputs)
+     - Bulk tests (200+ records)
+     - System.runAs() for user context
+     - Target 90%+ coverage
 
-     Return: List of test files created with coverage estimates
+     Create in force-app/main/default/classes/
+
+     Return: List of test files created
+</subagent_deployment>
+
+**Wait for all implementation subagents to complete.**
+
+Display progress:
+```
+Implementation Phase (4 subagents):
+  ├── Apex classes: [status]
+  ├── LWC components: [status]
+  ├── Configuration: [status]
+  └── Test classes: [status]
 ```
 
-### Step 4: Coordinate Dependencies
+### Step 4: Deploy Validation Subagents (PARALLEL)
 
-Some components have dependencies. Handle sequentially:
+**After implementation completes, spawn validation subagents:**
 
-```
-IF Trigger depends on Handler:
-  1. Wait for Apex Subagent to create Handler
-  2. Then create Trigger
+<subagent_deployment>
+Call Task tool 2 times in a SINGLE message:
 
-IF LWC depends on Apex Controller:
-  1. Wait for Apex Subagent to create Controller
-  2. Then allow LWC Subagent to complete component
-```
+1. Task tool call:
+   - description: "Validate deployment"
+   - subagent_type: "Bash"
+   - prompt: |
+     Validate the deployment of all created files.
 
-### Step 5: Deploy Validation Subagents (PARALLEL)
-
-After implementation, validate:
-
-```
-Use the Task tool to spawn these subagents concurrently:
-
-1. DEPLOYMENT VALIDATION SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Validate deployment for: [FEATURE]
-
-     Run commands:
-     - sf project deploy validate --target-org scratch-org
-     - sf scanner run --target force-app/
+     Run these commands:
+     1. sf project deploy validate --source-dir force-app/main/default/
+     2. sf scanner run --target force-app/main/default/ --format table
 
      Check:
      - All metadata deploys successfully
      - No PMD critical/high violations
      - No dependency errors
 
-     Return: Deployment validation report
+     Return: Validation results
 
-2. TEST EXECUTION SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Execute all tests for: [FEATURE]
+2. Task tool call:
+   - description: "Run tests"
+   - subagent_type: "Bash"
+   - prompt: |
+     Run all tests for the new code.
 
-     Run commands:
-     - sf apex run test --class-names [TEST_CLASSES] --code-coverage
+     Commands:
+     sf apex run test --class-names [TEST_CLASSES] --code-coverage --result-format human
 
      Verify:
      - All tests pass
-     - Coverage >= 90% for new classes
-     - No governor limit issues in tests
+     - Coverage >= 90%
 
-     Return: Test execution report with coverage
+     Return: Test results with coverage
+</subagent_deployment>
+
+**Wait for validation to complete.**
+
+Display progress:
+```
+Validation Phase (2 subagents):
+  ├── Deployment validation: [status]
+  └── Test execution: [status]
 ```
 
-### Step 6: Present Progress
+### Step 5: Handle Errors
 
-During work, display real-time progress:
-
-```
-🚀 Executing: Lead Scoring Automation
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📋 Plan loaded: 16 tasks across 5 phases
-
-🔧 Subagents Deployed:
-  [████████░░] Apex Subagent: 4/6 classes
-  [██████████] LWC Subagent: Complete (2 components)
-  [████░░░░░░] Config Subagent: 2/5 fields
-  [░░░░░░░░░░] Test Subagent: Waiting for Apex
-
-✅ Completed:
-  • LeadScoringHandler.cls
-  • LeadScoringService.cls
-  • leadScoreCard.js
-  • leadScoreCard.html
-
-⏳ In Progress:
-  • LeadScoringSelector.cls (Apex Subagent)
-  • Lead.Score__c (Config Subagent)
-
-📊 Status:
-  Files created: 8
-  Deployed: 6
-  Tests passing: 4/4
-  Coverage: 87%
-```
-
-### Step 7: Complete and Create PR
-
-When all subagents complete:
-
-```bash
-# Final validation
-sf project deploy validate --target-org $SANDBOX_ORG --test-level RunLocalTests
-
-# Commit all changes
-git add .
-git commit -m "feat: [FEATURE] - Implementation complete
-
-Components:
-- [LIST OF CREATED COMPONENTS]
-
-Coverage: XX%"
-
-# Push and create PR
-git push -u origin feature/$(basename $PLAN_DIR)
-
-gh pr create \
-  --title "Feature: [FEATURE NAME]" \
-  --body "$(cat .specify/specs/<feature>/plan.md)" \
-  --base main
-```
-
----
-
-## Subagent Coordination Patterns
-
-### Pattern 1: Independent Work (Parallel)
-```
-Config Subagent ─┬─> Creates fields
-Apex Subagent   ─┼─> Creates service classes (no field dependency)
-LWC Subagent    ─┴─> Creates components (no Apex dependency)
-```
-
-### Pattern 2: Sequential Dependency
-```
-Apex Subagent creates Handler
-         │
-         ▼
-Apex Subagent creates Trigger (depends on Handler)
-         │
-         ▼
-Test Subagent creates tests (depends on all Apex)
-```
-
-### Pattern 3: Cross-Subagent Dependency
-```
-Apex Subagent creates Controller
-         │
-         ├──────────────────────────┐
-         ▼                          ▼
-LWC Subagent imports Controller    Test Subagent tests Controller
-```
-
----
-
-## Error Handling
-
-### Subagent Failure
+If any subagent fails:
 
 ```
-❌ Apex Subagent Failed
+❌ [Subagent] Failed
 
-Error: LeadScoringHandler.cls
-  Line 45: Variable 'score' does not exist
+Error: [error message]
 
 Options:
-  1. [Auto-fix] Let subagent retry with error context
-  2. [Manual] Review and fix manually
-  3. [Skip] Continue with other subagents
+1. [Resume] Retry with error context
+2. [Skip] Continue with other subagents
+3. [Abort] Stop /sf-work
 
-Choice [1/2/3]: 1
-
-🔄 Retrying Apex Subagent with error context...
+Choice:
 ```
 
-### Dependency Blocked
+For resume, spawn a new Task with error context included in prompt.
 
-```
-⚠️ Test Subagent Blocked
+### Step 6: Complete and Report
 
-Waiting for:
-  - LeadScoringHandler.cls (Apex Subagent: In Progress)
-  - LeadScoringService.cls (Apex Subagent: In Progress)
+When all subagents complete successfully:
 
-Auto-resuming when dependencies complete...
-```
-
-### Deployment Failure
-
-```
-❌ Deployment Validation Failed
-
-Errors:
-  1. LeadTrigger.trigger: Dependent class 'LeadScoringHandler' not found
-
-Resolution:
-  Apex Subagent will deploy Handler first, then retry Trigger
-
-🔄 Reordering deployment sequence...
-```
-
----
-
-## Session Management
-
-### Pause Work
 ```bash
-/sf-work --pause
+# Commit all changes
+git add .
+git commit -m "feat: [Feature Name]
 
-💾 Session saved: .sf-compound/work-session.json
-   Completed: 8/16 tasks
-   Subagent states preserved
-   Resume with: /sf-work --resume
+Components:
+- [List of components created]
+
+Coverage: XX%"
 ```
 
-### Resume Work
-```bash
-/sf-work --resume
+Present results:
 
-📋 Resuming: Lead Scoring Automation
-   Restoring 4 subagent states...
-
-   ✓ Apex Subagent: Resuming from LeadScoringSelector
-   ✓ Config Subagent: Resuming from validation rules
-   ✓ LWC Subagent: Complete
-   ✓ Test Subagent: Ready to start
 ```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  /sf-work COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
----
+📊 6 subagents deployed
 
-## Example Execution
+Implementation Phase:
+  ✓ Apex classes: X files created
+  ✓ LWC components: Y components created
+  ✓ Configuration: Z metadata items
+  ✓ Test classes: W test files
 
-### Input
-```bash
-/sf-work .specify/specs/001-lead-scoring/plan.md
-```
+Validation Phase:
+  ✓ Deployment: Valid
+  ✓ Tests: XX/XX passing
+  ✓ Coverage: XX%
 
-### Output (Progressive)
-```
-🚀 Starting: Lead Scoring Automation
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📋 Plan Analysis:
-   Apex Classes: 4 (Handler, Service, Selector, Trigger)
-   LWC Components: 2 (scoreCard, scoreHistory)
-   Custom Fields: 3 (Score__c, Last_Score_Date__c, Score_History__c)
-   Test Classes: 3
-
-🌿 Branch created: feature/001-lead-scoring
-🔗 Org connected: MyDevOrg
-
-🤖 Deploying 4 subagents...
-
-[00:00] Apex Subagent: Starting...
-[00:00] LWC Subagent: Starting...
-[00:00] Config Subagent: Starting...
-[00:02] Config Subagent: ✓ Created Lead.Score__c
-[00:03] Apex Subagent: ✓ Created LeadScoringHandler.cls
-[00:05] Config Subagent: ✓ Created Lead.Last_Score_Date__c
-[00:06] Apex Subagent: ✓ Created LeadScoringService.cls
-[00:08] LWC Subagent: ✓ Created leadScoreCard component
-[00:10] Apex Subagent: ✓ Created LeadScoringSelector.cls
-[00:12] Apex Subagent: ✓ Created LeadTrigger.trigger
-[00:14] LWC Subagent: ✓ Created leadScoreHistory component
-[00:15] Config Subagent: Complete ✅
-
-[00:16] Test Subagent: Starting (dependencies met)...
-[00:20] Test Subagent: ✓ Created LeadScoringHandlerTest.cls
-[00:24] Test Subagent: ✓ Created LeadScoringServiceTest.cls
-[00:28] Test Subagent: Complete ✅
-
-[00:30] Validation Subagent: Running deployment check...
-[00:45] Validation Subagent: ✓ Deployment valid
-
-[00:46] Test Execution Subagent: Running tests...
-[01:15] Test Execution Subagent: ✓ All tests pass (12/12)
-[01:15] Test Execution Subagent: ✓ Coverage: 94%
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Implementation Complete!
-
-Files Created: 12
-Tests Passing: 12/12
-Coverage: 94%
+📁 Files created: [total count]
+📝 Commit: [commit hash]
 
 Next Steps:
-  1. Review changes: git diff main
-  2. Run review: /sf-review
-  3. Create PR: /sf-deploy pr
+  • Review code: /sf-review
+  • Push changes: git push -u origin feature/[name]
+  • Create PR: /sf-deploy pr
 ```
 
----
+## Important
 
-## Integration with Other Commands
-
-```bash
-# After work completes
-/sf-review                    # Multi-agent code review
-/sf-test --coverage           # Run full test suite
-/sf-deploy sandbox            # Deploy to sandbox
-/sf-compound                  # Document learnings
-```
+- You MUST call Task tool to spawn subagents
+- Implementation subagents run in PARALLEL (one message)
+- Validation subagents run in PARALLEL after implementation
+- Each subagent MUST read skill files for patterns
+- Handle errors gracefully with retry options

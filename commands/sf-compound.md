@@ -3,469 +3,327 @@ name: sf-compound
 description: Capture learnings to make future Salesforce development easier
 arguments:
   - name: scope
-    description: What to compound (feature, review, bug, pattern)
+    description: What to compound (defaults to recent work)
     required: false
 ---
 
-# Salesforce Compound Command
+# /sf-compound
 
-The **final 20% of compound engineering** - captures learnings from completed work to make future development easier. This is what makes each unit of work compound into future productivity.
+The final 20% of compound engineering - capture learnings from completed work to make future development easier.
 
 ## The Compound Loop
 
 ```
 Plan (40%) → Work (20%) → Review (20%) → Compound (20%) → Repeat
                                               │
-                                              ▼
-                                    ┌─────────────────────┐
-                                    │  CAPTURED LEARNINGS │
-                                    ├─────────────────────┤
-                                    │ • New patterns      │
-                                    │ • Updated skills    │
-                                    │ • Enhanced agents   │
-                                    │ • CLAUDE.md updates │
-                                    │ • Test fixtures     │
-                                    └─────────────────────┘
-                                              │
-                                              ▼
-                              Next iteration starts smarter
+                                              └── YOU ARE HERE
 ```
 
----
+## Instructions
 
-## Subagent Architecture
-
-```
-/sf-compound [scope]
-    │
-    ├── [ANALYSIS PHASE - PARALLEL]
-    │   ├── Change Analysis Subagent: What was built
-    │   ├── Pattern Discovery Subagent: Reusable patterns found
-    │   ├── Issue Analysis Subagent: Problems encountered
-    │   └── Learning Extraction Subagent: Key insights
-    │
-    ├── [SYNTHESIS PHASE]
-    │   └── Knowledge Synthesis Subagent: Organize findings
-    │
-    └── [INTEGRATION PHASE - PARALLEL]
-        ├── Skill Update Subagent: Update skills with patterns
-        ├── Agent Enhancement Subagent: Add new checks to agents
-        ├── CLAUDE.md Update Subagent: Update project context
-        └── Test Fixture Subagent: Save test patterns
-```
-
----
-
-## Workflow
-
-When the user runs `/sf-compound [scope]`, execute the following:
+When this command is invoked, you MUST follow these steps exactly:
 
 ### Step 1: Determine Scope
 
 ```
-IF scope is empty:
-    Analyze latest completed feature
-ELSE IF scope is "feature":
-    Analyze specific feature work
-ELSE IF scope is "review":
-    Analyze code review findings
-ELSE IF scope is "bug":
-    Analyze bug fix for prevention
-ELSE IF scope is "pattern":
-    Extract and document a pattern
+IF $ARGUMENTS.scope is empty:
+    Analyze recent git commits and changes
+ELSE:
+    Analyze specified scope (feature folder, PR, etc.)
 ```
+
+Announce: "Starting /sf-compound - capturing learnings from: [scope]"
 
 ### Step 2: Deploy Analysis Subagents (PARALLEL)
 
-**Deploy these 4 subagents IN PARALLEL:**
+**IMMEDIATELY spawn these 4 subagents in parallel using the Task tool:**
 
-```
-1. CHANGE ANALYSIS SUBAGENT
-   subagent_type: "Explore"
-   prompt: |
+<subagent_deployment>
+You MUST call Task tool 4 times in a SINGLE message:
+
+1. Task tool call:
+   - description: "Analyze changes made"
+   - subagent_type: "Explore"
+   - prompt: |
      Analyze recent changes in the codebase.
 
-     Find:
-     - New files created (git diff --name-status main)
-     - Modified files
-     - New patterns introduced
+     Commands to run:
+     - git log --oneline -20
+     - git diff --name-status HEAD~5
+     - Find new files created
+
+     Identify:
+     - What was built (components, classes, LWCs)
      - Architecture decisions made
+     - Patterns introduced
 
-     Return: Summary of what was built
+     Return: Summary of what was built and key decisions
 
-2. PATTERN DISCOVERY SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Identify reusable patterns in recent work.
+2. Task tool call:
+   - description: "Discover reusable patterns"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Identify reusable patterns from recent work.
 
-     Look for:
-     - New Apex patterns (services, handlers, selectors)
-     - LWC component patterns
-     - Integration patterns
-     - Test patterns
-     - Error handling approaches
+     Read existing skills:
+     - .claude/skills/apex-patterns/index.md
+     - .claude/skills/lwc-patterns/index.md
+     - .claude/skills/integration-patterns/index.md
 
-     Compare with existing skills:
-     - .claude/skills/apex-patterns/
-     - .claude/skills/lwc-patterns/
-     - .claude/skills/integration-patterns/
-     - .claude/skills/test-factory/
+     Then analyze recent code for NEW patterns not in skills:
+     - Apex patterns (trigger handlers, services, utilities)
+     - LWC patterns (component communication, state)
+     - Integration patterns (callouts, events)
+     - Test patterns (factories, mocks)
 
-     Return: New patterns to document
+     Return: List of new patterns with code examples
 
-3. ISSUE ANALYSIS SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
+3. Task tool call:
+   - description: "Analyze issues encountered"
+   - subagent_type: "general-purpose"
+   - prompt: |
      Analyze issues encountered during development.
 
-     Review:
-     - Git commit messages for fixes
-     - Review comments and resolutions
-     - Test failures and fixes
+     Look at:
+     - Git commits with "fix:" prefix
+     - Review findings that were resolved
+     - Test failures and their fixes
      - Deployment issues
 
-     Categorize:
+     Categorize by:
      - Governor limit issues
      - Security issues
      - Bulkification problems
      - Integration failures
 
-     Return: Issues that could be prevented in future
+     Return: Issues that could be prevented in future (add to agents)
 
-4. LEARNING EXTRACTION SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
+4. Task tool call:
+   - description: "Extract key learnings"
+   - subagent_type: "general-purpose"
+   - prompt: |
      Extract key learnings from the development cycle.
 
      Identify:
-     - What worked well
-     - What was harder than expected
-     - Surprises or gotchas
-     - Time-saving discoveries
-     - Tools or techniques that helped
+     - What worked well (keep doing)
+     - What was harder than expected (document)
+     - Surprises or gotchas (add to agents)
+     - Time-saving discoveries (add to skills)
+     - Org-specific patterns (add to CLAUDE.md)
 
-     Return: Key insights and recommendations
+     Return: Key insights and where to document them
+</subagent_deployment>
+
+**Wait for all analysis subagents to complete.**
+
+Display progress:
+```
+Analysis Phase (4 subagents):
+  ├── Change analysis: [status]
+  ├── Pattern discovery: [status]
+  ├── Issue analysis: [status]
+  └── Learning extraction: [status]
 ```
 
-### Step 3: Synthesize Knowledge
+### Step 3: Deploy Integration Subagents (PARALLEL)
 
-```
-KNOWLEDGE SYNTHESIS SUBAGENT
-subagent_type: "general-purpose"
-prompt: |
-  Synthesize findings from analysis subagents.
+**After analysis completes, spawn integration subagents:**
 
-  Organize into:
-  1. Patterns to add to skills
-  2. Checks to add to agents
-  3. Context to add to CLAUDE.md
-  4. Test fixtures to save
-  5. Documentation to create
+<subagent_deployment>
+Call Task tool 4 times in a SINGLE message:
 
-  Return: Organized knowledge structure
-```
+1. Task tool call:
+   - description: "Update skills"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Update skill files with new patterns discovered.
 
-### Step 4: Deploy Integration Subagents (PARALLEL)
+     Patterns to add: [FROM PATTERN DISCOVERY]
 
-**Update the system with learnings:**
-
-```
-1. SKILL UPDATE SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Update skill files with new patterns.
-
-     Files to potentially update:
+     Files to update:
      - .claude/skills/apex-patterns/index.md
      - .claude/skills/lwc-patterns/index.md
      - .claude/skills/integration-patterns/index.md
      - .claude/skills/test-factory/index.md
-     - .claude/skills/governor-limits/index.md
 
-     Add:
-     - New code patterns with examples
-     - Best practices discovered
-     - Common pitfalls to avoid
+     For each pattern:
+     - Add descriptive heading
+     - Include code example
+     - Note when to use it
 
      Return: List of skill files updated
 
-2. AGENT ENHANCEMENT SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Enhance agent checklists with new checks.
+2. Task tool call:
+   - description: "Enhance agents"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Update agent checklists with new checks.
 
-     Files to potentially update:
+     Issues to prevent: [FROM ISSUE ANALYSIS]
+
+     Files to update:
      - .claude/agents/apex/*.md
      - .claude/agents/lwc/*.md
      - .claude/agents/automation/*.md
      - .claude/agents/integration/*.md
-     - .claude/agents/architecture/*.md
 
-     Add:
-     - New checklist items based on issues found
-     - New anti-patterns to detect
-     - Updated severity ratings
+     For each issue type:
+     - Add new checklist item
+     - Include example of what to catch
+     - Set appropriate severity
 
      Return: List of agents updated
 
-3. CLAUDE.MD UPDATE SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
+3. Task tool call:
+   - description: "Update CLAUDE.md"
+   - subagent_type: "general-purpose"
+   - prompt: |
      Update CLAUDE.md with project-specific context.
 
-     Add:
-     - New naming conventions discovered
-     - Architecture decisions documented
+     Learnings to add: [FROM LEARNING EXTRACTION]
+
+     Add to CLAUDE.md:
+     - Naming conventions discovered
+     - Architecture decisions
      - Integration endpoints
+     - Org-specific patterns
      - Common workflows
 
-     Return: CLAUDE.md changes
+     Return: CLAUDE.md additions
 
-4. TEST FIXTURE SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Save reusable test patterns.
+4. Task tool call:
+   - description: "Save test fixtures"
+   - subagent_type: "general-purpose"
+   - prompt: |
+     Save reusable test patterns to test-factory skill.
 
-     Update .claude/skills/test-factory/:
+     Patterns found: [FROM PATTERN DISCOVERY - test section]
+
+     Update .claude/skills/test-factory/index.md:
      - New TestDataFactory methods
      - Mock implementations
      - Test helper utilities
-     - Common assertion patterns
+     - Assertion patterns
 
      Return: Test fixtures saved
+</subagent_deployment>
+
+**Wait for integration to complete.**
+
+Display progress:
+```
+Integration Phase (4 subagents):
+  ├── Skills updated: [status]
+  ├── Agents enhanced: [status]
+  ├── CLAUDE.md updated: [status]
+  └── Test fixtures saved: [status]
 ```
 
-### Step 5: Generate Compound Report
+### Step 4: Generate Compound Report
+
+Create a compound report in `.specify/compounds/`:
 
 ```markdown
-# Compound Engineering Report
+# Compound Report: [Feature/Date]
 
-## Summary
-Feature: [Feature Name]
-Duration: [Development Time]
-Files Changed: [Count]
-Learnings Captured: [Count]
+## What Was Built
+[From change analysis subagent]
 
----
+## Patterns Captured
 
-## Patterns Discovered
-
-### New Apex Pattern: Batch Processor with Retry
+### New Apex Pattern: [Name]
 **Added to**: .claude/skills/apex-patterns/
 
 ```apex
-public class RetryableBatchProcessor implements Database.Batchable<SObject> {
-    private Integer maxRetries = 3;
-    // Pattern implementation...
-}
+// Code example
 ```
 
-**When to use**: Processing large data sets with external dependencies
-
----
-
-### New LWC Pattern: Debounced Search
+### New LWC Pattern: [Name]
 **Added to**: .claude/skills/lwc-patterns/
 
 ```javascript
-// Debounce search input
-handleSearchChange(event) {
-    window.clearTimeout(this.delayTimeout);
-    this.delayTimeout = setTimeout(() => {
-        this.searchTerm = event.target.value;
-        this.handleSearch();
-    }, 300);
-}
+// Code example
 ```
 
-**When to use**: Search inputs with API calls
+## Agents Enhanced
 
----
-
-## Agent Enhancements
-
-### apex-governor-guardian.md
-Added new checklist item:
-- [ ] Check for SOQL in scheduled job execute()
-
-### apex-security-sentinel.md
-Added new anti-pattern:
-- Storing API keys in Custom Settings (use Named Credentials)
-
----
+| Agent | New Check Added |
+|-------|-----------------|
+| [agent] | [new checklist item] |
 
 ## Issues Prevented (Future)
 
-| Issue Type | Prevention Added | Location |
-|------------|-----------------|----------|
-| Governor limit in batch | New checklist item | apex-governor-guardian.md |
-| CRUD bypass | Updated pattern | security-guide skill |
-| Test data isolation | New factory method | test-factory skill |
-
----
+| Issue | Prevention | Added To |
+|-------|------------|----------|
+| [issue] | [check] | [agent] |
 
 ## CLAUDE.md Updates
 
-Added:
-- Naming convention: Batch jobs use `*BatchProcessor` suffix
-- Architecture: External APIs use retry pattern with exponential backoff
-- Integration: Marketing Cloud uses Named Credential `Marketing_Cloud_API`
-
----
-
-## Test Fixtures Created
-
-| Fixture | Purpose | Location |
-|---------|---------|----------|
-| createMarketingCloudMock() | Mock MC API responses | test-factory |
-| createBulkLeads(count) | Generate bulk test leads | test-factory |
-
----
-
-## Metrics
-
-| Metric | Value |
-|--------|-------|
-| Skills Updated | 3 |
-| Agents Enhanced | 2 |
-| Patterns Documented | 4 |
-| Test Fixtures Added | 2 |
-
----
+- [New context added]
 
 ## Compound Impact
 
-This work will make future development easier by:
-
-1. **Faster Planning**: New patterns documented for similar features
-2. **Better Reviews**: Agents now check for issues encountered
-3. **Easier Testing**: New test fixtures available
-4. **Reduced Bugs**: Anti-patterns documented and auto-detected
-
-Next feature benefiting from this: Similar integrations, batch processing
+This work makes future development easier by:
+1. [Impact 1]
+2. [Impact 2]
+3. [Impact 3]
 ```
 
-### Step 6: Present Results
+Save to: `.specify/compounds/[date]-[feature].md`
+
+### Step 5: Present Results
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  COMPOUND ENGINEERING COMPLETE
+  /sf-compound COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 Learnings captured from: Lead Scoring Feature
+🎯 Learnings captured from: [scope]
 
 📚 Knowledge Updates:
   ┌────────────────────────┬───────┐
-  │ Skills Updated         │     3 │
-  │ Agents Enhanced        │     2 │
-  │ Patterns Documented    │     4 │
-  │ Test Fixtures Added    │     2 │
-  │ CLAUDE.md Entries      │     3 │
+  │ Skills Updated         │     X │
+  │ Agents Enhanced        │     Y │
+  │ Patterns Documented    │     Z │
+  │ Test Fixtures Added    │     W │
+  │ CLAUDE.md Entries      │     V │
   └────────────────────────┴───────┘
 
 ✅ New Patterns Added:
-  • Batch Processor with Retry → apex-patterns
-  • Debounced Search → lwc-patterns
-  • Platform Event Error Handler → integration-patterns
-  • Bulk Test with Assertions → test-factory
+  • [Pattern 1] → apex-patterns
+  • [Pattern 2] → lwc-patterns
 
 🛡️ Future Issues Prevented:
-  • Governor limit in batch jobs (new agent check)
-  • CRUD bypass in services (updated pattern)
-  • Test data pollution (new factory method)
+  • [Issue 1] (new agent check)
+  • [Issue 2] (new agent check)
 
-📄 Report saved: .specify/compounds/2024-01-15-lead-scoring.md
+📄 Report: .specify/compounds/[date]-[feature].md
 
 💡 Compound Impact:
-   Future similar features will be 40% faster to implement
-   due to documented patterns and enhanced agents.
+   Future similar features will be faster because:
+   - Patterns are documented
+   - Agents catch known issues
+   - Context is preserved
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 The next iteration of work starts smarter.
 ```
 
----
+## Important
 
-## Compound Categories
+- You MUST call Task tool to spawn subagents
+- Analysis subagents run in PARALLEL (one message)
+- Integration subagents run in PARALLEL after analysis
+- Actually UPDATE the skill and agent files
+- Save compound report to .specify/compounds/
+- This is what makes compound engineering work - don't skip it!
 
-### /sf-compound feature
-Captures learnings from completed feature work.
-
-### /sf-compound review
-Captures learnings from code review (what issues were found and how to prevent them).
-
-### /sf-compound bug
-Analyzes a bug fix to prevent similar bugs:
-```
-/sf-compound bug "Fixed SOQL injection in AccountSearch"
-```
-
-### /sf-compound pattern
-Documents a specific pattern discovered:
-```
-/sf-compound pattern "Retry pattern for external callouts"
-```
-
----
-
-## Where Learnings Are Stored
-
-```
-.claude/
-├── skills/
-│   ├── apex-patterns/index.md      ← New Apex patterns
-│   ├── lwc-patterns/index.md       ← New LWC patterns
-│   ├── integration-patterns/       ← Integration learnings
-│   ├── test-factory/               ← Test fixtures
-│   └── governor-limits/            ← Limit optimizations
-├── agents/
-│   └── */*.md                      ← Enhanced checklists
-├── CLAUDE.md                       ← Project context
-
-.specify/
-└── compounds/                      ← Compound reports
-    ├── 2024-01-15-lead-scoring.md
-    ├── 2024-01-20-integration-fix.md
-    └── ...
-```
-
----
-
-## Compound Loop Integration
+## Integration with Workflow
 
 ```bash
-# Full compound engineering workflow
-
-# 1. Plan (40%)
-/sf-plan "Lead scoring automation"
-
-# 2. Work (20%)
-/sf-work .specify/specs/001-lead-scoring/plan.md
-
-# 3. Review (20%)
-/sf-review
-
-# 4. Compound (20%) ← THIS COMMAND
-/sf-compound
-
-# Next iteration benefits from captured learnings
-/sf-plan "Contact scoring automation"  # Uses patterns from lead scoring
-```
-
----
-
-## Configuration
-
-```json
-// .sf-compound/config.json
-{
-  "compound": {
-    "autoCompound": true,           // Auto-run after PR merge
-    "updateSkills": true,           // Update skill files
-    "updateAgents": true,           // Update agent checklists
-    "updateClaudeMd": true,         // Update CLAUDE.md
-    "saveTestFixtures": true,       // Save test patterns
-    "reportDirectory": ".specify/compounds/"
-  }
-}
+/sf-plan "Feature"      # 40% - Plan with research
+/sf-work plan.md        # 20% - Implement
+/sf-review              # 20% - Review
+/sf-compound            # 20% - Capture learnings ← THIS
+# Next feature is now faster!
 ```

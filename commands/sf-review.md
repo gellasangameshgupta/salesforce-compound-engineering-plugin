@@ -1,729 +1,249 @@
 ---
 name: sf-review
-description: Multi-agent code review with 23 parallel Salesforce specialist subagents
+description: Multi-agent Salesforce code review with 23 parallel specialist subagents
 arguments:
   - name: target
-    description: PR number, file path, or directory to review
+    description: File path, directory, or PR number to review (defaults to uncommitted changes)
     required: false
 ---
 
-# Salesforce Code Review Command
+# /sf-review
 
-Performs comprehensive, multi-agent code review using **23 parallel subagents** - each checking from a different Salesforce specialist perspective. This is the "20% review phase" of compound engineering.
+Perform comprehensive code review using 23 parallel subagents - each checking from a different Salesforce specialist perspective.
 
-## Subagent Architecture
+## Instructions
 
-```
-/sf-review
-    │
-    ├── [FILE CLASSIFICATION]
-    │   └── Main Agent: Classify files, determine which agents to deploy
-    │
-    ├── [PARALLEL REVIEW - 23 SUBAGENTS]
-    │   │
-    │   ├── APEX REVIEW SUBAGENTS (6)
-    │   │   ├── Governor Guardian
-    │   │   ├── Security Sentinel
-    │   │   ├── Bulkification Reviewer
-    │   │   ├── Trigger Architect
-    │   │   ├── Test Coverage Analyst
-    │   │   └── Exception Handler
-    │   │
-    │   ├── LWC REVIEW SUBAGENTS (5)
-    │   │   ├── Performance Oracle
-    │   │   ├── Security Reviewer
-    │   │   ├── Accessibility Guardian
-    │   │   ├── Architecture Strategist
-    │   │   └── Aura Migration Advisor
-    │   │
-    │   ├── AUTOMATION REVIEW SUBAGENTS (4)
-    │   │   ├── Flow Complexity Analyzer
-    │   │   ├── Flow Governor Monitor
-    │   │   ├── Process Automation Strategist
-    │   │   └── Validation Rule Reviewer
-    │   │
-    │   ├── INTEGRATION REVIEW SUBAGENTS (4)
-    │   │   ├── REST API Architect
-    │   │   ├── Callout Pattern Reviewer
-    │   │   ├── Platform Event Strategist
-    │   │   └── Integration Security Sentinel
-    │   │
-    │   └── ARCHITECTURE REVIEW SUBAGENTS (4)
-    │       ├── Data Model Architect
-    │       ├── Sharing Security Analyst
-    │       ├── Metadata Consistency Checker
-    │       └── Pattern Recognition Specialist
-    │
-    └── [SYNTHESIS]
-        └── Main Agent: Aggregate findings, prioritize, generate report
-```
-
----
-
-## Workflow
-
-When the user runs `/sf-review [target]`, execute the following:
+When this command is invoked, you MUST follow these steps exactly:
 
 ### Step 1: Determine Review Target
 
 ```
-IF target is empty:
-    Review latest uncommitted changes (git diff)
-ELSE IF target is a number:
-    Fetch PR #{target} and review
-ELSE IF target is a URL:
-    Parse GitHub/GitLab PR URL
-ELSE IF target is a path:
-    Review files at that path
+IF $ARGUMENTS.target is empty:
+    Run: git diff --name-only (review uncommitted changes)
+ELSE IF $ARGUMENTS.target is a number:
+    Fetch PR #[number] files
+ELSE:
+    Review files at $ARGUMENTS.target path
 ```
+
+Announce: "Starting /sf-review for: [target description]"
 
 ### Step 2: Classify Files
 
-Group files by type for targeted agent deployment:
+Read the files and classify them:
+- **Apex files**: *.cls, *.trigger
+- **LWC files**: *.js, *.html in lwc/ folders
+- **Flow files**: *.flow-meta.xml
+- **Object files**: *.object-meta.xml, *.field-meta.xml
+- **Test files**: *Test.cls
 
-```javascript
-const classification = {
-    apex: [],        // .cls, .trigger
-    lwc: [],         // .js, .html, .css in lwc/
-    aura: [],        // .cmp, .evt, .app in aura/
-    flows: [],       // .flow-meta.xml
-    objects: [],     // .object-meta.xml, .field-meta.xml
-    profiles: [],    // .profile-meta.xml, .permissionset-meta.xml
-    tests: []        // *Test.cls
-};
+Display:
+```
+Files to Review:
+  • Apex: X files
+  • LWC: Y files
+  • Flows: Z files
+  • Tests: W files
 ```
 
 ### Step 3: Deploy Review Subagents (PARALLEL)
 
-**CRITICAL**: Deploy ALL 23 subagents IN PARALLEL using the Task tool. Each reads its agent file and reviews the code:
+**IMMEDIATELY spawn ALL relevant subagents in parallel using the Task tool.**
 
+Based on files found, call Task tool multiple times in a SINGLE message:
+
+<subagent_deployment>
+FOR APEX FILES - Deploy these 6 subagents:
+
+1. Task tool call:
+   - description: "Review governor limits"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the Governor Guardian agent. Read .claude/agents/apex/apex-governor-guardian.md for your checklist. Review these Apex files for governor limit issues: [FILE_LIST]. Check for: SOQL in loops, DML in loops, CPU-intensive operations, heap issues. Return JSON: {agent: 'governor-guardian', findings: [{file, line, severity, issue, fix}]}"
+
+2. Task tool call:
+   - description: "Review security"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the Security Sentinel agent. Read .claude/agents/apex/apex-security-sentinel.md for your checklist. Review these Apex files: [FILE_LIST]. Check for: CRUD/FLS enforcement, SOQL injection, hardcoded credentials, sharing keywords. Return JSON: {agent: 'security-sentinel', findings: [{file, line, severity, issue, fix}]}"
+
+3. Task tool call:
+   - description: "Review bulkification"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the Bulkification Reviewer agent. Read .claude/agents/apex/apex-bulkification-reviewer.md. Review these Apex files: [FILE_LIST]. Check for: Single record operations, collections usage, Trigger.new handling. Return JSON: {agent: 'bulkification-reviewer', findings: [{file, line, severity, issue, fix}]}"
+
+4. Task tool call:
+   - description: "Review triggers"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the Trigger Architect agent. Read .claude/agents/apex/apex-trigger-architect.md. Review these trigger files: [TRIGGER_FILES]. Check for: One trigger per object, handler pattern, recursion prevention. Return JSON: {agent: 'trigger-architect', findings: [{file, line, severity, issue, fix}]}"
+
+5. Task tool call:
+   - description: "Review test quality"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the Test Coverage Analyst agent. Read .claude/agents/apex/apex-test-coverage-analyst.md. Review these test files: [TEST_FILES]. Check for: Bulk testing, assertions quality, System.runAs usage, test data isolation. Return JSON: {agent: 'test-coverage-analyst', findings: [{file, line, severity, issue, fix}]}"
+
+6. Task tool call:
+   - description: "Review error handling"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the Exception Handler agent. Read .claude/agents/apex/apex-exception-handler.md. Review these Apex files: [FILE_LIST]. Check for: Try-catch blocks, custom exceptions, error logging. Return JSON: {agent: 'exception-handler', findings: [{file, line, severity, issue, fix}]}"
+
+FOR LWC FILES - Deploy these 5 subagents:
+
+7. Task tool call:
+   - description: "Review LWC performance"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the LWC Performance Oracle agent. Read .claude/agents/lwc/lwc-performance-oracle.md. Review these LWC files: [LWC_FILES]. Check for: Wire vs imperative, unnecessary re-renders, large DOM operations. Return JSON: {agent: 'lwc-performance-oracle', findings: [{file, line, severity, issue, fix}]}"
+
+8. Task tool call:
+   - description: "Review LWC security"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the LWC Security Reviewer agent. Read .claude/agents/lwc/lwc-security-reviewer.md. Review these LWC files: [LWC_FILES]. Check for: innerHTML/XSS, CSP compliance, secure data handling. Return JSON: {agent: 'lwc-security-reviewer', findings: [{file, line, severity, issue, fix}]}"
+
+9. Task tool call:
+   - description: "Review LWC accessibility"
+   - subagent_type: "general-purpose"
+   - prompt: "You are the LWC Accessibility Guardian agent. Read .claude/agents/lwc/lwc-accessibility-guardian.md. Review these LWC files: [LWC_FILES]. Check for: ARIA attributes, keyboard navigation, focus management. Return JSON: {agent: 'lwc-accessibility-guardian', findings: [{file, line, severity, issue, fix}]}"
+
+10. Task tool call:
+    - description: "Review LWC architecture"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the LWC Architecture Strategist agent. Read .claude/agents/lwc/lwc-architecture-strategist.md. Review these LWC files: [LWC_FILES]. Check for: Component hierarchy, event communication, state management. Return JSON: {agent: 'lwc-architecture-strategist', findings: [{file, line, severity, issue, fix}]}"
+
+11. Task tool call:
+    - description: "Check Aura migration"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Aura Migration Advisor agent. Read .claude/agents/lwc/aura-migration-advisor.md. Review any Aura files: [AURA_FILES]. Identify LWC migration candidates. Return JSON: {agent: 'aura-migration-advisor', findings: [{file, line, severity, issue, fix}]}"
+
+FOR FLOW FILES - Deploy these 4 subagents:
+
+12. Task tool call:
+    - description: "Review flow complexity"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Flow Complexity Analyzer agent. Read .claude/agents/automation/flow-complexity-analyzer.md. Review these Flow files: [FLOW_FILES]. Check for: Loop complexity, decision depth, subflow usage. Return JSON: {agent: 'flow-complexity-analyzer', findings: [{file, line, severity, issue, fix}]}"
+
+13. Task tool call:
+    - description: "Review flow governor limits"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Flow Governor Monitor agent. Read .claude/agents/automation/flow-governor-monitor.md. Review these Flow files: [FLOW_FILES]. Check for: DML in loops, SOQL in loops, bulkification. Return JSON: {agent: 'flow-governor-monitor', findings: [{file, line, severity, issue, fix}]}"
+
+14. Task tool call:
+    - description: "Review automation strategy"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Process Automation Strategist agent. Read .claude/agents/automation/process-automation-strategist.md. Review automation: [FLOW_FILES]. Check for: Flow vs Apex decisions, automation conflicts. Return JSON: {agent: 'process-automation-strategist', findings: [{file, line, severity, issue, fix}]}"
+
+15. Task tool call:
+    - description: "Review validation rules"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Validation Rule Reviewer agent. Read .claude/agents/automation/validation-rule-reviewer.md. Review objects: [OBJECT_FILES]. Check for: Rule complexity, error messages, bypass patterns. Return JSON: {agent: 'validation-rule-reviewer', findings: [{file, line, severity, issue, fix}]}"
+
+FOR INTEGRATION FILES - Deploy these 4 subagents:
+
+16. Task tool call:
+    - description: "Review REST API design"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the REST API Architect agent. Read .claude/agents/integration/rest-api-architect.md. Review REST resources: [REST_FILES]. Check for: Endpoint design, versioning, error responses. Return JSON: {agent: 'rest-api-architect', findings: [{file, line, severity, issue, fix}]}"
+
+17. Task tool call:
+    - description: "Review callout patterns"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Callout Pattern Reviewer agent. Read .claude/agents/integration/callout-pattern-reviewer.md. Review callouts: [CALLOUT_FILES]. Check for: Named Credentials, timeout handling, retry logic. Return JSON: {agent: 'callout-pattern-reviewer', findings: [{file, line, severity, issue, fix}]}"
+
+18. Task tool call:
+    - description: "Review platform events"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Platform Event Strategist agent. Read .claude/agents/integration/platform-event-strategist.md. Review events: [EVENT_FILES]. Check for: Event design, subscriber patterns, replay handling. Return JSON: {agent: 'platform-event-strategist', findings: [{file, line, severity, issue, fix}]}"
+
+19. Task tool call:
+    - description: "Review integration security"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Integration Security Sentinel agent. Read .claude/agents/integration/integration-security-sentinel.md. Review integrations: [INTEGRATION_FILES]. Check for: Credential storage, data in transit. Return JSON: {agent: 'integration-security-sentinel', findings: [{file, line, severity, issue, fix}]}"
+
+FOR ALL FILES - Deploy these 4 architecture subagents:
+
+20. Task tool call:
+    - description: "Review data model"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Data Model Architect agent. Read .claude/agents/architecture/data-model-architect.md. Review objects: [OBJECT_FILES]. Check for: Relationship design, field naming, indexes. Return JSON: {agent: 'data-model-architect', findings: [{file, line, severity, issue, fix}]}"
+
+21. Task tool call:
+    - description: "Review sharing model"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Sharing Security Analyst agent. Read .claude/agents/architecture/sharing-security-analyst.md. Review sharing: [ALL_FILES]. Check for: OWD implications, sharing rules, Apex sharing. Return JSON: {agent: 'sharing-security-analyst', findings: [{file, line, severity, issue, fix}]}"
+
+22. Task tool call:
+    - description: "Review metadata consistency"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Metadata Consistency Checker agent. Read .claude/agents/architecture/metadata-consistency-checker.md. Review metadata: [ALL_FILES]. Check for: Naming conventions, API versions, package organization. Return JSON: {agent: 'metadata-consistency-checker', findings: [{file, line, severity, issue, fix}]}"
+
+23. Task tool call:
+    - description: "Detect anti-patterns"
+    - subagent_type: "general-purpose"
+    - prompt: "You are the Pattern Recognition Specialist agent. Read .claude/agents/architecture/pattern-recognition-specialist.md. Review all code: [ALL_FILES]. Check for: God classes, duplicate code, hardcoded values, dead code. Return JSON: {agent: 'pattern-recognition-specialist', findings: [{file, line, severity, issue, fix}]}"
+</subagent_deployment>
+
+**Deploy ALL relevant subagents in ONE message for maximum parallelization.**
+
+Display progress:
 ```
-Use the Task tool to spawn ALL these subagents concurrently:
-
-═══════════════════════════════════════════════════════════════════
-APEX REVIEW SUBAGENTS (6)
-═══════════════════════════════════════════════════════════════════
-
-1. GOVERNOR GUARDIAN SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review code for governor limit compliance.
-
-     Read agent: .claude/agents/apex/apex-governor-guardian.md
-     Files to review: [APEX_FILES]
-
-     Check:
-     - SOQL queries inside loops
-     - DML statements per transaction
-     - CPU time complexity
-     - Heap size usage
-     - Bulk operation handling
-
-     Return findings as JSON:
-     {
-       "agent": "governor-guardian",
-       "severity": "critical|high|medium|low",
-       "findings": [{ "file", "line", "issue", "fix" }]
-     }
-
-2. SECURITY SENTINEL SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review code for security vulnerabilities.
-
-     Read agent: .claude/agents/apex/apex-security-sentinel.md
-     Files to review: [APEX_FILES]
-
-     Check:
-     - CRUD/FLS enforcement
-     - SOQL/SOSL injection
-     - XSS vulnerabilities
-     - Hardcoded credentials
-     - Sharing keyword usage
-
-     Return findings as JSON...
-
-3. BULKIFICATION REVIEWER SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review code for bulk data handling.
-
-     Read agent: .claude/agents/apex/apex-bulkification-reviewer.md
-     Files to review: [APEX_FILES]
-
-     Check:
-     - Queries return collections (not single records)
-     - DML on collections (not in loops)
-     - Map/Set usage for lookups
-     - Trigger.new/old handling
-
-     Return findings as JSON...
-
-4. TRIGGER ARCHITECT SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review trigger implementation patterns.
-
-     Read agent: .claude/agents/apex/apex-trigger-architect.md
-     Files to review: [TRIGGER_FILES]
-
-     Check:
-     - One trigger per object
-     - Handler pattern usage
-     - Recursion prevention
-     - Context variable usage
-     - Order of execution
-
-     Return findings as JSON...
-
-5. TEST COVERAGE ANALYST SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review test class quality.
-
-     Read agent: .claude/agents/apex/apex-test-coverage-analyst.md
-     Files to review: [TEST_FILES]
-
-     Check:
-     - Positive/negative scenarios
-     - Bulk testing (200+ records)
-     - User context testing
-     - Assertion quality
-     - Test data creation
-
-     Return findings as JSON...
-
-6. EXCEPTION HANDLER SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review error handling patterns.
-
-     Read agent: .claude/agents/apex/apex-exception-handler.md
-     Files to review: [APEX_FILES]
-
-     Check:
-     - Try-catch blocks
-     - Custom exception classes
-     - Error logging
-     - User-friendly messages
-     - DML error handling
-
-     Return findings as JSON...
-
-═══════════════════════════════════════════════════════════════════
-LWC REVIEW SUBAGENTS (5)
-═══════════════════════════════════════════════════════════════════
-
-7. LWC PERFORMANCE ORACLE SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review LWC performance patterns.
-
-     Read agent: .claude/agents/lwc/lwc-performance-oracle.md
-     Files to review: [LWC_FILES]
-
-     Check:
-     - Wire vs imperative calls
-     - Unnecessary re-renders
-     - Large DOM operations
-     - Event handling efficiency
-     - Caching strategies
-
-     Return findings as JSON...
-
-8. LWC SECURITY REVIEWER SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review LWC security.
-
-     Read agent: .claude/agents/lwc/lwc-security-reviewer.md
-     Files to review: [LWC_FILES]
-
-     Check:
-     - innerHTML usage (XSS)
-     - CSP compliance
-     - Secure data handling
-     - Third-party library risks
-
-     Return findings as JSON...
-
-9. LWC ACCESSIBILITY GUARDIAN SUBAGENT
-   subagent_type: "general-purpose"
-   prompt: |
-     Review LWC accessibility.
-
-     Read agent: .claude/agents/lwc/lwc-accessibility-guardian.md
-     Files to review: [LWC_FILES]
-
-     Check:
-     - ARIA attributes
-     - Keyboard navigation
-     - Screen reader support
-     - Color contrast
-     - Focus management
-
-     Return findings as JSON...
-
-10. LWC ARCHITECTURE STRATEGIST SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review LWC architecture.
-
-      Read agent: .claude/agents/lwc/lwc-architecture-strategist.md
-      Files to review: [LWC_FILES]
-
-      Check:
-      - Component hierarchy
-      - Event communication
-      - State management
-      - Reusability patterns
-
-      Return findings as JSON...
-
-11. AURA MIGRATION ADVISOR SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review Aura components for migration.
-
-      Read agent: .claude/agents/lwc/aura-migration-advisor.md
-      Files to review: [AURA_FILES]
-
-      Check:
-      - LWC migration candidates
-      - Deprecated patterns
-      - Performance issues
-      - Modern alternatives
-
-      Return findings as JSON...
-
-═══════════════════════════════════════════════════════════════════
-AUTOMATION REVIEW SUBAGENTS (4)
-═══════════════════════════════════════════════════════════════════
-
-12. FLOW COMPLEXITY ANALYZER SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review Flow complexity.
-
-      Read agent: .claude/agents/automation/flow-complexity-analyzer.md
-      Files to review: [FLOW_FILES]
-
-      Check:
-      - Loop complexity
-      - Decision branch depth
-      - Subflow usage
-      - Variable naming
-      - Documentation
-
-      Return findings as JSON...
-
-13. FLOW GOVERNOR MONITOR SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review Flow governor limits.
-
-      Read agent: .claude/agents/automation/flow-governor-monitor.md
-      Files to review: [FLOW_FILES]
-
-      Check:
-      - DML in loops
-      - SOQL in loops
-      - Batch size handling
-      - Bulkification
-
-      Return findings as JSON...
-
-14. PROCESS AUTOMATION STRATEGIST SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review automation strategy.
-
-      Read agent: .claude/agents/automation/process-automation-strategist.md
-      Files to review: [FLOW_FILES, TRIGGER_FILES]
-
-      Check:
-      - Flow vs Apex decisions
-      - Automation conflicts
-      - Order of execution
-      - Maintainability
-
-      Return findings as JSON...
-
-15. VALIDATION RULE REVIEWER SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review validation rules.
-
-      Read agent: .claude/agents/automation/validation-rule-reviewer.md
-      Files to review: [OBJECT_FILES]
-
-      Check:
-      - Rule complexity
-      - Error messages
-      - Bypass patterns
-      - Performance impact
-
-      Return findings as JSON...
-
-═══════════════════════════════════════════════════════════════════
-INTEGRATION REVIEW SUBAGENTS (4)
-═══════════════════════════════════════════════════════════════════
-
-16. REST API ARCHITECT SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review REST API implementations.
-
-      Read agent: .claude/agents/integration/rest-api-architect.md
-      Files to review: [APEX_FILES with @RestResource]
-
-      Check:
-      - Endpoint design
-      - Versioning strategy
-      - Error responses
-      - Rate limiting
-
-      Return findings as JSON...
-
-17. CALLOUT PATTERN REVIEWER SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review HTTP callout patterns.
-
-      Read agent: .claude/agents/integration/callout-pattern-reviewer.md
-      Files to review: [APEX_FILES with HttpRequest]
-
-      Check:
-      - Named Credentials usage
-      - Timeout handling
-      - Retry logic
-      - Error handling
-
-      Return findings as JSON...
-
-18. PLATFORM EVENT STRATEGIST SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review Platform Event usage.
-
-      Read agent: .claude/agents/integration/platform-event-strategist.md
-      Files to review: [FILES with Platform Events]
-
-      Check:
-      - Event design
-      - Subscriber patterns
-      - Error handling
-      - Replay ID handling
-
-      Return findings as JSON...
-
-19. INTEGRATION SECURITY SENTINEL SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review integration security.
-
-      Read agent: .claude/agents/integration/integration-security-sentinel.md
-      Files to review: [INTEGRATION_FILES]
-
-      Check:
-      - Credential storage
-      - Data in transit
-      - Authentication methods
-      - Sensitive data handling
-
-      Return findings as JSON...
-
-═══════════════════════════════════════════════════════════════════
-ARCHITECTURE REVIEW SUBAGENTS (4)
-═══════════════════════════════════════════════════════════════════
-
-20. DATA MODEL ARCHITECT SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review data model design.
-
-      Read agent: .claude/agents/architecture/data-model-architect.md
-      Files to review: [OBJECT_FILES]
-
-      Check:
-      - Relationship design
-      - Field naming
-      - Index candidates
-      - Data volume considerations
-
-      Return findings as JSON...
-
-21. SHARING SECURITY ANALYST SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review sharing model.
-
-      Read agent: .claude/agents/architecture/sharing-security-analyst.md
-      Files to review: [OBJECT_FILES, SHARING_FILES]
-
-      Check:
-      - OWD settings
-      - Sharing rules
-      - Apex sharing
-      - Visibility patterns
-
-      Return findings as JSON...
-
-22. METADATA CONSISTENCY CHECKER SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Review metadata consistency.
-
-      Read agent: .claude/agents/architecture/metadata-consistency-checker.md
-      Files to review: [ALL_METADATA]
-
-      Check:
-      - Naming conventions
-      - API version consistency
-      - Profile/permission alignment
-      - Package organization
-
-      Return findings as JSON...
-
-23. PATTERN RECOGNITION SPECIALIST SUBAGENT
-    subagent_type: "general-purpose"
-    prompt: |
-      Identify anti-patterns and code smells.
-
-      Read agent: .claude/agents/architecture/pattern-recognition-specialist.md
-      Files to review: [ALL_FILES]
-
-      Check:
-      - God classes
-      - Duplicate code
-      - Hardcoded values
-      - Dead code
-      - Complexity metrics
-
-      Return findings as JSON...
+Deploying review subagents...
+  • Apex agents (6): [deploying/complete]
+  • LWC agents (5): [deploying/complete]
+  • Automation agents (4): [deploying/complete]
+  • Integration agents (4): [deploying/complete]
+  • Architecture agents (4): [deploying/complete]
 ```
 
-### Step 4: Collect and Synthesize Findings
+### Step 4: Collect and Synthesize Results
 
-After all 23 subagents return, aggregate:
+**Wait for ALL subagents to complete.**
 
-```javascript
-const allFindings = {
-    critical: [],  // 🔴 Must fix before merge
-    high: [],      // 🟠 Should fix before merge
-    medium: [],    // 🟡 Consider fixing
-    low: [],       // 🔵 Nice to have
-    info: []       // ℹ️ Informational
-};
-
-// Merge findings from all subagents
-subagentResults.forEach(result => {
-    result.findings.forEach(finding => {
-        allFindings[finding.severity].push({
-            ...finding,
-            agent: result.agent
-        });
-    });
-});
-```
+Aggregate findings by severity:
+- 🔴 **Critical**: Must fix before merge
+- 🟠 **High**: Should fix before merge
+- 🟡 **Medium**: Consider fixing
+- 🔵 **Low**: Nice to have
 
 ### Step 5: Generate Review Report
 
-```markdown
-# Salesforce Code Review Report
-
-## Review Summary
-
-| Metric | Value |
-|--------|-------|
-| Files Reviewed | X |
-| Subagents Deployed | 23 |
-| Review Duration | Y seconds |
-
-### Findings by Severity
-
-| Severity | Count | Status |
-|----------|-------|--------|
-| 🔴 Critical | X | Must fix before merge |
-| 🟠 High | Y | Should fix before merge |
-| 🟡 Medium | Z | Consider fixing |
-| 🔵 Low | W | Nice to have |
-| ℹ️ Info | V | Informational |
-
-### Findings by Agent Category
-
-| Category | Agents | Findings |
-|----------|--------|----------|
-| Apex | 6 | X |
-| LWC | 5 | Y |
-| Automation | 4 | Z |
-| Integration | 4 | W |
-| Architecture | 4 | V |
-
----
-
-## 🔴 Critical Issues (Must Fix)
-
-### CR-001: SOQL Injection Vulnerability
-**Agent**: Security Sentinel
-**File**: `AccountController.cls:45`
-**Category**: Security
-
-**Issue**:
-User input directly concatenated into SOQL query without sanitization.
-
-**Current Code**:
-```apex
-String query = 'SELECT Id FROM Account WHERE Name = \'' + userInput + '\'';
-```
-
-**Recommended Fix**:
-```apex
-String query = 'SELECT Id FROM Account WHERE Name = :userInput';
-```
-
-**Why This Matters**:
-Allows attackers to extract or modify data through malicious input.
-
----
-
-### CR-002: [Next Critical Issue]
-...
-
----
-
-## 🟠 High Priority Issues
-
-### HI-001: [Issue Title]
-...
-
----
-
-## 🟡 Medium Priority Issues
-
-### MI-001: [Issue Title]
-...
-
----
-
-## 🔵 Low Priority / Suggestions
-
-### LO-001: [Issue Title]
-...
-
----
-
-## ✅ Positive Observations
-
-- Good use of trigger handler pattern (Trigger Architect)
-- CRUD checks present in service layer (Security Sentinel)
-- Test coverage at 92% (Test Coverage Analyst)
-- LWC uses wire adapters efficiently (Performance Oracle)
-
----
-
-## Agent-Specific Reports
-
-### Apex Agents (6)
-- Governor Guardian: 2 findings
-- Security Sentinel: 3 findings
-- Bulkification Reviewer: 1 finding
-- Trigger Architect: 0 findings ✅
-- Test Coverage Analyst: 2 findings
-- Exception Handler: 1 finding
-
-### LWC Agents (5)
-...
-
-### Automation Agents (4)
-...
-
-### Integration Agents (4)
-...
-
-### Architecture Agents (4)
-...
-
----
-
-## Recommended Actions
-
-1. **Before Merge**: Fix all 🔴 Critical and 🟠 High issues
-2. **In This PR**: Address 🟡 Medium issues if time permits
-3. **Follow-up**: Track 🔵 Low issues as tech debt
-
----
-
-## Next Steps
-
-```bash
-# Auto-fix applicable issues
-/sf-resolve
-
-# Run tests after fixes
-/sf-test
-
-# Re-review after fixes
-/sf-review
-```
-```
-
-### Step 6: Present Results
+Present findings:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   SALESFORCE CODE REVIEW COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 23 Subagents deployed in parallel
-⏱️  Review completed in 45 seconds
+📊 [X] subagents deployed in parallel
+⏱️  Review completed in [Y] seconds
 
 ┌─────────────┬───────┬────────────────────────┐
 │ Severity    │ Count │ Action Required        │
 ├─────────────┼───────┼────────────────────────┤
-│ 🔴 Critical │   2   │ Must fix before merge  │
-│ 🟠 High     │   3   │ Should fix             │
-│ 🟡 Medium   │   5   │ Consider fixing        │
-│ 🔵 Low      │   4   │ Nice to have           │
+│ 🔴 Critical │   X   │ Must fix before merge  │
+│ 🟠 High     │   Y   │ Should fix             │
+│ 🟡 Medium   │   Z   │ Consider fixing        │
+│ 🔵 Low      │   W   │ Nice to have           │
 └─────────────┴───────┴────────────────────────┘
 
-📁 Full report: review-report-2024-01-15.md
+🔴 CRITICAL ISSUES:
+
+1. [Agent Name] - [File:Line]
+   Issue: [Description]
+   Fix: [Recommended fix]
+
+🟠 HIGH ISSUES:
+...
+
+✅ POSITIVE OBSERVATIONS:
+- [Good patterns found]
 
 Next Steps:
-  • Fix critical: /sf-resolve --critical
-  • View details: cat review-report-2024-01-15.md
+  • Fix critical: /sf-resolve critical
+  • Fix all: /sf-resolve
   • Re-review: /sf-review
 ```
 
----
+## Important
 
-## Agent Deployment Matrix
-
-| File Type | Agents Deployed |
-|-----------|-----------------|
-| *.cls | Governor, Security, Bulk, Exception (4) |
-| *Trigger.trigger | + Trigger Architect (5) |
-| *Test.cls | + Test Coverage Analyst (5) |
-| *.js (lwc) | LWC Performance, Security, A11y, Arch (4) |
-| *.html (lwc) | LWC A11y, Arch (2) |
-| *.cmp (aura) | Aura Migration Advisor (1) |
-| *.flow-meta.xml | Flow Complexity, Governor, Strategy (3) |
-| *.object-meta.xml | Data Model, Sharing, Metadata (3) |
-| All files | Pattern Recognition (always) |
-
----
-
-## Configuration
-
-```json
-// .sf-compound/config.json
-{
-  "review": {
-    "parallelAgents": true,
-    "agentTimeout": 60000,
-    "excludeAgents": ["aura-migration-advisor"],
-    "severityThreshold": "low",
-    "excludePaths": ["force-app/main/default/staticresources/"]
-  }
-}
-```
+- You MUST call Task tool to spawn subagents - don't just describe them
+- Deploy ALL relevant subagents in ONE message for parallelization
+- Each subagent MUST read its agent file before reviewing
+- Subagents return JSON findings for easy aggregation
+- Only deploy agents relevant to the file types being reviewed

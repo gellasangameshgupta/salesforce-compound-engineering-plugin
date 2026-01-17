@@ -1,6 +1,6 @@
 ---
 name: sf-test
-description: Comprehensive Apex test analysis, execution, and coverage reporting
+description: Parallel test execution and analysis with specialized subagents
 arguments:
   - name: scope
     description: Test scope (all, local, class:ClassName, changed)
@@ -9,195 +9,394 @@ arguments:
 
 # Salesforce Test Command
 
-Runs Apex tests with comprehensive reporting, coverage analysis, and recommendations. Can also generate new tests following best practices.
+Runs Apex tests using **parallel subagents** for execution, coverage analysis, and quality recommendations.
 
-## Required: Load Test Agents and Skills
+## Subagent Architecture
 
-**IMPORTANT**: Before running or generating tests, load these files:
-
-### Agent to Load
 ```
-.claude/agents/apex/apex-test-coverage-analyst.md  # Test quality standards, coverage analysis
+/sf-test [scope]
+    │
+    ├── [PARALLEL ANALYSIS PHASE]
+    │   ├── Test Discovery Subagent: Find tests to run
+    │   ├── Coverage Analysis Subagent: Identify coverage gaps
+    │   └── Test Quality Subagent: Assess test patterns
+    │
+    ├── [EXECUTION PHASE]
+    │   └── Test Runner Subagent: Execute tests
+    │
+    └── [REPORTING PHASE]
+        ├── Results Subagent: Parse and format results
+        └── Recommendations Subagent: Generate improvements
 ```
-
-### Skill to Load
-```
-.claude/skills/test-factory/  # Test data factory patterns, mocking, assertions
-```
-
-### How to Apply
-
-1. **Read the agent** to understand test quality standards
-2. **Read the skill** for test data factory and mocking patterns
-3. **When generating tests**: Use patterns from test-factory skill
-4. **When analyzing tests**: Apply checklist from test-coverage-analyst agent
-5. **Ensure bulk testing**: All tests should handle 200+ records
 
 ---
 
 ## Workflow
 
+When the user runs `/sf-test [scope]`, execute the following:
+
 ### Step 1: Determine Test Scope
 
+```
+IF scope is empty or "local":
+    Run all local tests
+ELSE IF scope is "all":
+    Run all tests including managed packages
+ELSE IF scope starts with "class:":
+    Run specific test class
+ELSE IF scope is "changed":
+    Detect changed classes, run their tests
+```
+
+### Step 2: Deploy Analysis Subagents (PARALLEL)
+
+**Deploy these 3 subagents IN PARALLEL using the Task tool:**
+
+```
+1. TEST DISCOVERY SUBAGENT
+   subagent_type: "Explore"
+   prompt: |
+     Find all relevant test classes for scope: [SCOPE]
+
+     Search for:
+     - Files matching *Test.cls
+     - @isTest annotated classes
+     - Test methods (@isTest or testMethod)
+
+     If scope is "changed":
+     - Get changed files: git diff --name-only main
+     - Find corresponding test classes
+
+     Return: List of test classes to run
+
+2. COVERAGE ANALYSIS SUBAGENT
+   subagent_type: "general-purpose"
+   prompt: |
+     Analyze existing test coverage for: [SCOPE]
+
+     Read agent: .claude/agents/apex/apex-test-coverage-analyst.md
+
+     Identify:
+     - Classes with < 75% coverage
+     - Classes with no tests
+     - Uncovered code paths
+
+     Return: Coverage gap report
+
+3. TEST QUALITY SUBAGENT
+   subagent_type: "general-purpose"
+   prompt: |
+     Analyze test quality patterns.
+
+     Read skill: .claude/skills/test-factory/
+
+     Check tests for:
+     - Bulk testing (200+ records)
+     - Positive/negative scenarios
+     - System.runAs() usage
+     - Proper assertions
+     - TestSetup methods
+     - Test data isolation
+
+     Return: Test quality assessment
+```
+
+### Step 3: Execute Tests
+
+```
+TEST RUNNER SUBAGENT
+subagent_type: "Bash"
+prompt: |
+  Execute Apex tests:
+
+  sf apex run test \
+    --test-level [LEVEL] \
+    --class-names [CLASSES] \
+    --code-coverage \
+    --result-format json \
+    --output-dir test-results \
+    --wait 30
+
+  Return: Raw test results JSON
+```
+
+### Step 4: Deploy Reporting Subagents (PARALLEL)
+
+**After execution, deploy these IN PARALLEL:**
+
+```
+1. RESULTS SUBAGENT
+   subagent_type: "general-purpose"
+   prompt: |
+     Parse test results from: test-results/
+
+     Generate report:
+     - Total tests: X
+     - Passed: Y
+     - Failed: Z
+     - Duration: T seconds
+     - Overall coverage: X%
+
+     For each failed test:
+     - Class and method name
+     - Error message
+     - Stack trace location
+
+     For coverage:
+     - Per-class coverage percentages
+     - Uncovered line numbers
+
+     Return: Formatted test report
+
+2. RECOMMENDATIONS SUBAGENT
+   subagent_type: "general-purpose"
+   prompt: |
+     Based on test results, generate recommendations.
+
+     Read:
+     - .claude/agents/apex/apex-test-coverage-analyst.md
+     - .claude/skills/test-factory/
+
+     Provide recommendations for:
+     - Failed tests: How to fix
+     - Low coverage classes: What to test
+     - Missing test patterns: What to add
+
+     Return: Actionable improvement list
+```
+
+### Step 5: Present Results
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SALESFORCE TEST EXECUTION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 Test Results
+
+┌─────────────────┬───────┐
+│ Total Tests     │   150 │
+│ Passed          │   148 │
+│ Failed          │     2 │
+│ Skipped         │     0 │
+│ Duration        │ 45.2s │
+└─────────────────┴───────┘
+
+📈 Code Coverage: 82% overall
+
+┌─────────────────────────┬──────────┬────────┐
+│ Class                   │ Coverage │ Status │
+├─────────────────────────┼──────────┼────────┤
+│ AccountService          │      95% │ ✅     │
+│ AccountTriggerHandler   │      88% │ ✅     │
+│ OpportunityHelper       │      72% │ ⚠️     │
+│ LeadProcessor           │      45% │ ❌     │
+└─────────────────────────┴──────────┴────────┘
+
+❌ Failed Tests:
+
+  1. AccountServiceTest.testBulkInsert
+     Error: System.AssertException: Expected 100, Actual 99
+     File: AccountServiceTest.cls:45
+
+  2. OpportunityTriggerTest.testValidation
+     Error: System.DmlException: Required field missing
+     File: OpportunityTriggerTest.cls:78
+
+💡 Recommendations:
+
+  Coverage:
+  • LeadProcessor.cls (45%) - Add tests for processLead(), validateLead()
+  • OpportunityHelper.cls (72%) - Add negative test cases
+
+  Quality:
+  • AccountServiceTest - Add bulk test with 200+ records
+  • ContactTriggerTest - Add System.runAs() for sharing tests
+
+Next Steps:
+  • Fix failures: /sf-resolve AccountServiceTest.testBulkInsert
+  • Generate tests: /sf-test generate LeadProcessor
+  • Re-run: /sf-test local
+```
+
+---
+
+## Test Generation Mode
+
+When used with `generate` argument:
+
 ```bash
-# Based on argument:
-# all       → Run all tests in org
-# local     → Run local tests only (excludes managed packages)
-# class:X   → Run specific test class
-# changed   → Run tests for changed classes (smart detection)
+/sf-test generate AccountService
 ```
 
-### Step 2: Execute Tests
+### Deploy Generation Subagents (PARALLEL)
 
-```bash
-# Run local tests with coverage
-sf apex run test \
-  --test-level RunLocalTests \
-  --code-coverage \
-  --result-format human \
-  --output-dir test-results \
-  --wait 30
+```
+1. CLASS ANALYSIS SUBAGENT
+   subagent_type: "general-purpose"
+   prompt: |
+     Analyze AccountService.cls for test generation.
+
+     Identify:
+     - Public methods to test
+     - Code branches (if/else, switch)
+     - Exception paths
+     - DML operations
+     - SOQL queries
+
+     Return: Test requirements matrix
+
+2. TEST GENERATION SUBAGENT
+   subagent_type: "general-purpose"
+   prompt: |
+     Generate comprehensive test class for AccountService.
+
+     Read skill: .claude/skills/test-factory/
+
+     Include:
+     - @TestSetup with TestDataFactory
+     - Positive tests for each method
+     - Negative tests (invalid inputs)
+     - Bulk tests (200+ records)
+     - Exception handling tests
+     - System.runAs() for sharing tests
+
+     Follow patterns from test-factory skill.
+
+     Return: Complete test class code
+
+3. MOCK GENERATION SUBAGENT (if needed)
+   subagent_type: "general-purpose"
+   prompt: |
+     Generate mocks for AccountService dependencies.
+
+     Read skill: .claude/skills/test-factory/
+
+     Create:
+     - HttpCalloutMock implementations
+     - StubProvider implementations
+     - Test utility methods
+
+     Return: Mock classes code
 ```
 
-### Step 3: Analyze Results
+### Generated Test Output
 
-```markdown
-## Test Execution Report
+```apex
+/**
+ * @description Test class for AccountService
+ * @author SF Compound Engineering CLI
+ * Generated: 2024-01-15
+ */
+@isTest
+private class AccountServiceTest {
 
-### Summary
-| Metric | Value |
-|--------|-------|
-| Total Tests | 150 |
-| Passed | 148 |
-| Failed | 2 |
-| Skipped | 0 |
-| Duration | 45.2s |
+    @TestSetup
+    static void setup() {
+        // Create 200+ records for bulk testing
+        List<Account> accounts = TestDataFactory.createAccounts(200);
+        insert accounts;
+    }
 
-### Code Coverage
-| Class | Coverage | Status |
-|-------|----------|--------|
-| AccountService | 95% | ✅ |
-| AccountTriggerHandler | 88% | ✅ |
-| OpportunityHelper | 72% | ⚠️ |
-| LeadProcessor | 45% | ❌ |
+    /**
+     * @description Test processAccounts with valid bulk data
+     */
+    @isTest
+    static void testProcessAccounts_BulkPositive() {
+        List<Account> accounts = [SELECT Id, Name FROM Account];
 
-**Overall Coverage: 82%**
+        Test.startTest();
+        List<Account> result = AccountService.processAccounts(accounts);
+        Test.stopTest();
 
-### Failed Tests
-1. **AccountServiceTest.testBulkInsert**
-   - Error: System.AssertException: Expected 100, Actual 99
-   - Line: 45
+        System.assertEquals(200, result.size(), 'Should process all accounts');
+        // Additional assertions...
+    }
 
-2. **OpportunityTriggerTest.testValidation**
-   - Error: System.DmlException: Required field missing
-   - Line: 78
+    /**
+     * @description Test processAccounts with null input
+     */
+    @isTest
+    static void testProcessAccounts_NullInput() {
+        Test.startTest();
+        try {
+            AccountService.processAccounts(null);
+            System.assert(false, 'Should have thrown exception');
+        } catch (AccountService.AccountServiceException e) {
+            System.assertEquals('Input cannot be null', e.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    /**
+     * @description Test with different user profiles
+     */
+    @isTest
+    static void testProcessAccounts_AsStandardUser() {
+        User standardUser = TestDataFactory.createUser('Standard User');
+
+        System.runAs(standardUser) {
+            Test.startTest();
+            // Test behavior for standard user
+            Test.stopTest();
+        }
+    }
+}
 ```
 
-### Step 4: Recommendations
-
-```markdown
-## Recommendations
-
-### Coverage Improvements Needed
-1. **LeadProcessor.cls** (45%)
-   - Missing tests for: processLead(), validateLead()
-   - Add bulk test scenario
-
-2. **OpportunityHelper.cls** (72%)
-   - Missing negative test cases
-   - Add exception handling tests
-
-### Test Quality Issues
-1. **AccountServiceTest**
-   - Uses hardcoded IDs (line 23)
-   - No bulk test (recommend 200+ records)
-
-2. **ContactTriggerTest**
-   - Missing System.runAs() for sharing tests
-```
+---
 
 ## Test Execution Options
 
 ### Run All Tests
 ```bash
-sf apex run test --test-level RunAllTestsInOrg --code-coverage
+/sf-test all
+# sf apex run test --test-level RunAllTestsInOrg --code-coverage
 ```
 
 ### Run Local Tests Only
 ```bash
-sf apex run test --test-level RunLocalTests --code-coverage
+/sf-test local
+# sf apex run test --test-level RunLocalTests --code-coverage
 ```
 
 ### Run Specific Class
 ```bash
-sf apex run test --class-names MyTestClass --code-coverage
-```
-
-### Run Specific Methods
-```bash
-sf apex run test --tests MyTestClass.testMethod1,MyTestClass.testMethod2
+/sf-test class:AccountServiceTest
+# sf apex run test --class-names AccountServiceTest --code-coverage
 ```
 
 ### Run Tests for Changed Files
 ```bash
-# Detect changed Apex classes
-CHANGED=$(git diff --name-only main | grep "\.cls$" | xargs -I {} basename {} .cls)
-
-# Find corresponding test classes
-for CLASS in $CHANGED; do
-  TEST_CLASS="${CLASS}Test"
-  if [ -f "force-app/main/default/classes/${TEST_CLASS}.cls" ]; then
-    echo $TEST_CLASS
-  fi
-done
+/sf-test changed
+# Detects changed .cls files, finds corresponding tests
 ```
 
-## Coverage Analysis
-
-### Per-Class Coverage
+### Generate Tests
 ```bash
-sf apex run test \
-  --test-level RunLocalTests \
-  --code-coverage \
-  --result-format json > coverage.json
-
-# Parse coverage
-jq '.result.coverage.coverage[] | {name: .name, coverage: .coveredPercent}' coverage.json
+/sf-test generate AccountService
+# Generates comprehensive test class
 ```
 
-### Lines Not Covered
+---
+
+## Coverage Thresholds
+
+| Coverage | Status | Action |
+|----------|--------|--------|
+| ≥ 90% | ✅ Excellent | Deploy ready |
+| 75-89% | ⚠️ Acceptable | Consider improvements |
+| < 75% | ❌ Insufficient | Must improve before deploy |
+
+---
+
+## Integration with Other Commands
+
 ```bash
-# Get uncovered lines for specific class
-sf apex run test \
-  --class-names AccountServiceTest \
-  --code-coverage \
-  --result-format json | \
-  jq '.result.coverage.coverage[] | select(.name=="AccountService") | .uncoveredLines'
-```
-
-## Test Data Factory Integration
-
-```apex
-// Recommended test pattern
-@isTest
-private class AccountServiceTest {
-    
-    @TestSetup
-    static void setup() {
-        // Create shared test data
-        List<Account> accounts = TestDataFactory.createAccounts(200);
-        insert accounts;
-    }
-    
-    @isTest
-    static void testBulkOperation() {
-        List<Account> accounts = [SELECT Id FROM Account];
-        
-        Test.startTest();
-        AccountService.processAccounts(accounts);
-        Test.stopTest();
-        
-        // Assertions
-    }
-}
+# Full workflow
+/sf-work plan.md           # Implement feature
+/sf-test                   # Run tests
+/sf-review                 # Review code
+/sf-test generate NewClass # Generate missing tests
+/sf-deploy sandbox         # Deploy to sandbox
 ```

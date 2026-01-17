@@ -1,8 +1,23 @@
 # SF Compound Engineering
 
-**Spec-Driven Compound Engineering for Salesforce** — A CLI tool to initialise structured development workflows in any Salesforce project.
+**Spec-Driven Compound Engineering for Salesforce** — A CLI tool that uses **parallel subagents** to make each unit of Salesforce development easier than the last.
 
-Similar to GitHub's [`specify init`](https://github.com/github/spec-kit), but with Salesforce-specific commands and best practices.
+Inspired by [Every's Compound Engineering](https://every.to/chain-of-thought/compound-engineering-how-every-codes-with-agents) and [GitHub Spec-Kit](https://github.com/github/spec-kit).
+
+---
+
+## The Compound Engineering Loop
+
+```
+Plan (40%) → Work (20%) → Review (20%) → Compound (20%) → Repeat
+     │            │             │              │
+     │            │             │              └── Capture learnings
+     │            │             └── 23 parallel review subagents
+     │            └── 4 parallel implementation subagents
+     └── 8 parallel research/design subagents
+```
+
+**Each iteration starts smarter** because learnings compound into agents, skills, and patterns.
 
 ---
 
@@ -14,44 +29,87 @@ uvx --from git+https://github.com/gellasangameshgupta/sf-compound-engineering-pl
 ```
 
 That's it! You now have:
-- **9 slash commands** (`/sf-plan`, `/sf-work`, `/sf-review`, etc.)
+- **10 slash commands** with parallel subagent architecture
 - **23 specialized agents** (apex, lwc, automation, integration, architecture)
 - **6 skills** (governor-limits, apex-patterns, security-guide, etc.)
-- Spec-driven workflow structure
-- Salesforce best practices baked in
+- The compound engineering workflow
 
 ---
 
-## Installation Options
+## How It Works: Parallel Subagents
 
-### Option 1: Using uvx (Recommended)
+Unlike simple linear tools, SF Compound Engineering **deploys multiple subagents in parallel** for each phase:
 
-```bash
-# One-time run, no install needed
-uvx --from git+https://github.com/gellasangameshgupta/sf-compound-engineering-plugin.git sfce init .
-
-# With Claude Code setup (installs commands)
-uvx --from git+https://github.com/gellasangameshgupta/sf-compound-engineering-plugin.git sfce init . --ai claude
+### `/sf-plan` - 8 Parallel Subagents
+```
+/sf-plan "Lead Scoring Automation"
+         │
+         ├── [RESEARCH PHASE - 4 parallel]
+         │   ├── Codebase Patterns Subagent
+         │   ├── SF Best Practices Subagent
+         │   ├── Governor Limit Analysis Subagent
+         │   └── Security Requirements Subagent
+         │
+         └── [DESIGN PHASE - 4 parallel]
+             ├── Data Model Architect Subagent
+             ├── Apex Architecture Subagent
+             ├── LWC Architecture Subagent
+             └── Integration Architecture Subagent
 ```
 
-### Option 2: Permanent Install
-
-```bash
-# Install globally
-uv tool install git+https://github.com/gellasangameshgupta/sf-compound-engineering-plugin.git
-
-# Then use anywhere
-sfce init .
-sfce init my-project --ai claude
+### `/sf-work` - 6 Parallel Subagents
+```
+/sf-work plan.md
+         │
+         ├── [IMPLEMENTATION - 4 parallel]
+         │   ├── Apex Subagent (triggers, services)
+         │   ├── LWC Subagent (components)
+         │   ├── Config Subagent (fields, flows)
+         │   └── Test Subagent (test classes)
+         │
+         └── [VALIDATION - 2 parallel]
+             ├── Deploy Validation Subagent
+             └── Test Execution Subagent
 ```
 
-### Option 3: pip install
-
-```bash
-pip install git+https://github.com/gellasangameshgupta/sf-compound-engineering-plugin.git
-
-sfce init . --ai claude
+### `/sf-review` - 23 Parallel Subagents
 ```
+/sf-review
+    │
+    ├── APEX AGENTS (6 parallel)
+    │   Governor Guardian, Security Sentinel, Bulkification Reviewer,
+    │   Trigger Architect, Test Coverage Analyst, Exception Handler
+    │
+    ├── LWC AGENTS (5 parallel)
+    │   Performance Oracle, Security Reviewer, Accessibility Guardian,
+    │   Architecture Strategist, Aura Migration Advisor
+    │
+    ├── AUTOMATION AGENTS (4 parallel)
+    │   Flow Complexity Analyzer, Flow Governor Monitor,
+    │   Process Automation Strategist, Validation Rule Reviewer
+    │
+    ├── INTEGRATION AGENTS (4 parallel)
+    │   REST API Architect, Callout Pattern Reviewer,
+    │   Platform Event Strategist, Integration Security Sentinel
+    │
+    └── ARCHITECTURE AGENTS (4 parallel)
+        Data Model Architect, Sharing Security Analyst,
+        Metadata Consistency Checker, Pattern Recognition Specialist
+```
+
+---
+
+## The Workflow
+
+| Phase | Command | Subagents | What It Does |
+|-------|---------|-----------|--------------|
+| **Plan** (40%) | `/sf-plan` | 8 | Research codebase, design architecture |
+| **Work** (20%) | `/sf-work` | 6 | Implement Apex, LWC, config in parallel |
+| **Review** (20%) | `/sf-review` | 23 | Multi-perspective code review |
+| **Fix** | `/sf-resolve` | 5 | Auto-fix security, governor, patterns |
+| **Test** | `/sf-test` | 6 | Run tests, generate missing tests |
+| **Compound** (20%) | `/sf-compound` | 5 | Capture learnings, update skills |
+| **Deploy** | `/sf-deploy` | 3 | Validate and deploy |
 
 ---
 
@@ -60,100 +118,89 @@ sfce init . --ai claude
 ```
 your-salesforce-project/
 ├── .claude/
-│   ├── commands/                # 9 slash commands
-│   │   ├── sf-plan.md           # /sf-plan - Create implementation plans
-│   │   ├── sf-work.md           # /sf-work - Implement with best practices
-│   │   ├── sf-review.md         # /sf-review - Multi-agent code review
-│   │   ├── sf-triage.md         # /sf-triage - Prioritize findings
-│   │   ├── sf-resolve.md        # /sf-resolve - Fix issues
-│   │   ├── sf-test.md           # /sf-test - Generate tests
-│   │   ├── sf-document.md       # /sf-document - Auto-generate docs
-│   │   ├── sf-health.md         # /sf-health - Deployment readiness
-│   │   └── sf-deploy.md         # /sf-deploy - Deployment checklist
+│   ├── commands/                # 10 slash commands (subagent-powered)
+│   │   ├── sf-plan.md           # 8 subagents for planning
+│   │   ├── sf-work.md           # 6 subagents for implementation
+│   │   ├── sf-review.md         # 23 subagents for review
+│   │   ├── sf-resolve.md        # 5 subagents for fixing
+│   │   ├── sf-test.md           # 6 subagents for testing
+│   │   ├── sf-compound.md       # 5 subagents for learning capture
+│   │   ├── sf-deploy.md         # 3 subagents for deployment
+│   │   ├── sf-triage.md
+│   │   ├── sf-document.md
+│   │   └── sf-health.md
 │   ├── agents/                  # 23 specialized review agents
-│   │   ├── apex/                # Governor limits, security, bulkification
-│   │   ├── lwc/                 # Performance, accessibility, architecture
-│   │   ├── automation/          # Flow complexity, governor monitoring
-│   │   ├── integration/         # REST API, callouts, platform events
+│   │   ├── apex/                # Governor, security, bulk, triggers, tests
+│   │   ├── lwc/                 # Performance, a11y, architecture
+│   │   ├── automation/          # Flow complexity, governors
+│   │   ├── integration/         # REST, callouts, events
 │   │   └── architecture/        # Data model, sharing, patterns
 │   └── skills/                  # 6 reference skills
-│       ├── governor-limits/     # All Salesforce limits with thresholds
-│       ├── apex-patterns/       # Trigger handler, service, selector patterns
-│       ├── security-guide/      # CRUD/FLS, injection prevention
-│       ├── lwc-patterns/        # Component communication, state management
-│       ├── integration-patterns/# REST, callouts, platform events
-│       └── test-factory/        # TestDataFactory patterns
+│       ├── governor-limits/
+│       ├── apex-patterns/
+│       ├── security-guide/
+│       ├── lwc-patterns/
+│       ├── integration-patterns/
+│       └── test-factory/
 ├── .specify/
-│   ├── memory/
-│   │   └── constitution.md      # Project principles
-│   ├── scripts/
-│   │   ├── create-new-feature.sh
-│   │   ├── list-specs.sh
-│   │   └── check-prerequisites.sh
-│   ├── specs/                   # Your feature specifications
-│   └── templates/               # Templates for new specs
+│   ├── memory/constitution.md   # Project principles
+│   ├── specs/                   # Feature specifications
+│   ├── compounds/               # Captured learnings
+│   └── templates/
 └── ... your existing code
 ```
 
 ---
 
-## The Workflow
-
-After initialization, use the commands in sequence:
-
-```
-/sf-plan → /sf-work → /sf-review → /sf-triage → /sf-resolve → /sf-test → /sf-document → /sf-health → /sf-deploy
-```
-
-| Phase | Command | What It Does |
-|-------|---------|--------------|
-| **Specify** | `/sf-plan` | Generate spec & implementation plan from requirements |
-| **Implement** | `/sf-work` | Build following Salesforce best practices |
-| **Validate** | `/sf-review` | Multi-agent code review (governor limits, security, patterns) |
-| **Prioritize** | `/sf-triage` | Categorize and prioritize review findings |
-| **Fix** | `/sf-resolve` | Fix prioritized issues |
-| **Test** | `/sf-test` | Generate comprehensive tests (bulk, negative, mocks) |
-| **Document** | `/sf-document` | Auto-generate ApexDoc and documentation |
-| **Assess** | `/sf-health` | Codebase health check, Go/No-Go decision |
-| **Ship** | `/sf-deploy` | Deployment checklist and validation |
-
----
-
 ## Usage Examples
 
-### Start a New Feature
+### Full Compound Engineering Cycle
 
 ```bash
-# Generate the plan with Claude (creates folder in .specify/specs/)
-/sf-plan "Build a lead scoring system that calculates scores based on
-email opens, web visits, and form submissions"
+# 1. Plan (40% of work) - 8 subagents research and design
+/sf-plan "Lead scoring automation with real-time updates"
 
-# This creates:
-# .specify/specs/001-lead-scoring/
-#   ├── spec.md    (requirements)
-#   ├── plan.md    (technical design)
-#   └── tasks.md   (implementation checklist)
-
-# Start implementing
+# 2. Work (20% of work) - 6 subagents implement in parallel
 /sf-work .specify/specs/001-lead-scoring/plan.md
-```
 
-### Review Existing Code
-
-```
+# 3. Review (20% of work) - 23 subagents check from different perspectives
 /sf-review
 
-Review the AccountTriggerHandler and AccountService classes
-for governor limits and security issues.
+# 4. Fix issues found
+/sf-resolve critical
+/sf-resolve high
+
+# 5. Test
+/sf-test
+
+# 6. Compound (20% of work) - Capture learnings
+/sf-compound
+
+# 7. Deploy
+/sf-deploy sandbox
+```
+
+### Review Any Code
+
+```bash
+# Review uncommitted changes
+/sf-review
+
+# Review specific PR
+/sf-review 123
+
+# Review specific file
+/sf-review force-app/main/default/classes/AccountService.cls
 ```
 
 ### Generate Tests
 
-```
-/sf-test
+```bash
+# Run existing tests
+/sf-test local
 
-Generate bulk tests for LeadScoringService with 200+ records.
-Include negative tests and mock callouts.
+# Generate tests for a class
+/sf-test generate AccountService
 ```
 
 ---
@@ -163,92 +210,47 @@ Include negative tests and mock callouts.
 ```bash
 # Initialize
 sfce init .                    # Initialize in current directory
-sfce init my-project           # Create new project and initialize
-sfce init . --ai claude        # Set up for Claude Code (installs commands)
+sfce init . --ai claude        # Set up for Claude Code (recommended)
 sfce init . --ai copilot       # Set up for GitHub Copilot
-sfce init . --ai cursor        # Set up for Cursor
-sfce init . --force            # Overwrite existing .specify folder
 
-# Update (pull latest commands, agents, skills)
-sfce update                    # Update all components
-sfce update --commands-only    # Only update slash commands
+# Update
+sfce update                    # Update all components to latest
+sfce update --commands-only    # Only update commands
 sfce update --agents-only      # Only update agents
-sfce update --skills-only      # Only update skills
-sfce update --no-backup        # Skip creating backups
 
 # Info
-sfce --version                 # Show version
-sfce --help                    # Show help
+sfce --version
+sfce --help
 ```
 
 ---
 
 ## Supported AI Agents (17)
 
-Based on [GitHub Spec-Kit](https://github.com/github/spec-kit) compatibility.
-
-| Agent | Flag | What Gets Installed |
-|-------|------|---------------------|
-| **Claude Code** | `--ai claude` | ✅ Full: 9 commands + 23 agents + 6 skills |
-| GitHub Copilot | `--ai copilot` | Workflow prompts in `.github/prompts/` |
-| Cursor | `--ai cursor` | Rules in `.cursor/` |
-| Gemini CLI | `--ai gemini` | Prompts in `.gemini/` |
-| Windsurf | `--ai windsurf` | Rules in `.windsurf/` |
-| Amp | `--ai amp` | Prompts in `.amp/` |
-| Auggie CLI | `--ai auggie` | Prompts in `.auggie/` |
-| CodeBuddy CLI | `--ai codebuddy` | Prompts in `.codebuddy/` |
-| Codex CLI | `--ai codex` | Prompts in `.codex/` |
-| IBM Bob | `--ai bob` | Prompts in `.bob/` |
-| Jules | `--ai jules` | Prompts in `.jules/` |
-| Kilo Code | `--ai kilo` | Prompts in `.kilo/` |
-| opencode | `--ai opencode` | Prompts in `.opencode/` |
-| Qwen Code | `--ai qwen` | Prompts in `.qwen/` |
-| Roo Code | `--ai roo` | Prompts in `.roo/` |
-| SHAI (OVHcloud) | `--ai shai` | Prompts in `.shai/` |
-| Qoder CLI | `--ai qoder` | Prompts in `.qoder/` |
-
-> **Note:** Claude Code has full support with slash commands, agents, and skills. Other agents get workflow prompts that reference the SF Compound Engineering methodology.
+| Agent | Flag | Support Level |
+|-------|------|---------------|
+| **Claude Code** | `--ai claude` | ✅ Full: subagent-powered commands |
+| GitHub Copilot | `--ai copilot` | Workflow prompts |
+| Cursor | `--ai cursor` | Rules |
+| Windsurf | `--ai windsurf` | Rules |
+| Gemini CLI | `--ai gemini` | Prompts |
+| Amp | `--ai amp` | Prompts |
+| + 11 more... | | |
 
 ---
 
-## Agents (23)
+## Why Compound Engineering?
 
-Specialized AI reviewers that provide deep Salesforce expertise:
+Traditional development accumulates **technical debt**. Each feature adds complexity. The codebase becomes harder to work with over time.
 
-| Category | Count | What They Check |
-|----------|-------|-----------------|
-| **Apex** | 6 | Governor limits, CRUD/FLS, injection, bulk patterns, test quality |
-| **LWC** | 5 | Wire adapters, XSS, ARIA, component patterns, Aura migration |
-| **Automation** | 4 | Flow design, DML in loops, Flow vs Apex decisions |
-| **Integration** | 4 | API design, Named Credentials, retry patterns |
-| **Architecture** | 4 | Schema design, OWD, anti-patterns |
+**Compound engineering inverts this:**
 
----
+1. **Plan thoroughly** (40%) - Research with 8 parallel subagents
+2. **Implement efficiently** (20%) - Build with parallel subagents
+3. **Review comprehensively** (20%) - 23 perspectives catch issues early
+4. **Capture learnings** (20%) - Update agents, skills, patterns
 
-## Skills (6)
-
-Reference documentation that Claude consults automatically:
-
-| Skill | What It Contains |
-|-------|------------------|
-| `governor-limits` | All Salesforce limits with thresholds |
-| `apex-patterns` | Trigger handler, selector, service patterns |
-| `security-guide` | CRUD/FLS patterns, injection prevention |
-| `lwc-patterns` | Component communication, state management |
-| `integration-patterns` | REST, callouts, platform events |
-| `test-factory` | TestDataFactory patterns |
-
----
-
-## Project Principles
-
-The generated `constitution.md` includes Salesforce best practices:
-
-- **Governor Limit Awareness** — All code considers limits, bulk-safe by default
-- **Security by Default** — CRUD/FLS enforcement mandatory
-- **Separation of Concerns** — Triggers → Handlers → Services → Selectors
-- **Testability First** — 80% coverage is baseline, behavior verification required
-- **Declarative First** — Flows before Apex when equivalent
+**Result:** Each iteration starts smarter. Future features are faster.
 
 ---
 
@@ -256,6 +258,7 @@ The generated `constitution.md` includes Salesforce best practices:
 
 - Python 3.8+
 - Git (recommended)
+- Claude Code (for full subagent support)
 
 ---
 
@@ -267,13 +270,13 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE)
+MIT License
 
 ---
 
 ## Credits
 
 - Built for the Salesforce developer community
+- Inspired by [EveryInc's Compound Engineering Plugin](https://github.com/EveryInc/compound-engineering-plugin)
 - Inspired by [GitHub Spec-Kit](https://github.com/github/spec-kit)
-- Inspired by [Every's Compound Engineering](https://every.to/chain-of-thought/compound-engineering-how-every-codes-with-agents)
-- Thanks to Claude and Claude Code
+- Powered by Claude Code's subagent architecture

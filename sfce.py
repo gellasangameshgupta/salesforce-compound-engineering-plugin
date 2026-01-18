@@ -49,9 +49,10 @@ def print_error(msg):
 def print_banner():
     banner = f"""
 {Colors.BOLD}╔═══════════════════════════════════════════════════════════╗
-║       SF Compound Engineering - Spec-Driven Development     ║
+║       SF Compound Engineering - Parallel Subagents          ║
 ║                                                             ║
-║  23 agents • 9 commands • 6 skills                          ║
+║  23 agents • 10 commands • 6 skills • WebSearch enabled     ║
+║  Plan(40%) → Work(20%) → Review(20%) → Compound(20%)        ║
 ╚═══════════════════════════════════════════════════════════╝{Colors.RESET}
 """
     print(banner)
@@ -66,22 +67,21 @@ CONSTITUTION_TEMPLATE = '''# Project Constitution
 This project uses **Spec-Driven Development** powered by SF Compound Engineering commands:
 
 ```
-/sf-plan → /sf-work → /sf-review → /sf-triage → /sf-resolve → /sf-test → /sf-document → /sf-health → /sf-deploy
+/sf-plan (40%) → /sf-work (20%) → /sf-review (20%) → /sf-resolve → /sf-test → /sf-compound (20%)
 ```
 
-### Workflow Phases
+### Workflow Phases (Compound Engineering Loop)
 
-| Phase | Command | Purpose |
-|-------|---------|---------|
-| Specify | `/sf-plan` | Define requirements & technical plan |
-| Implement | `/sf-work` | Build following the plan |
-| Validate | `/sf-review` | 23-agent code review |
-| Prioritize | `/sf-triage` | Triage findings |
-| Fix | `/sf-resolve` | Fix prioritized issues |
-| Test | `/sf-test` | Generate comprehensive tests |
-| Document | `/sf-document` | Auto-generate docs |
-| Assess | `/sf-health` | Go/No-Go decision |
-| Ship | `/sf-deploy` | Deployment checklist |
+| Phase | Command | Effort | Purpose |
+|-------|---------|--------|---------|
+| Plan | `/sf-plan` | 40% | Research & design with 7 parallel subagents |
+| Work | `/sf-work` | 20% | Implement with 6 parallel subagents |
+| Review | `/sf-review` | 20% | 23-agent parallel code review |
+| Fix | `/sf-resolve` | - | Auto-fix issues with specialized subagents |
+| Test | `/sf-test` | - | Run tests, generate missing tests |
+| Compound | `/sf-compound` | 20% | Capture learnings, update skills & agents |
+
+**Each iteration starts smarter** - learnings compound into agents, skills, and patterns.
 
 ---
 
@@ -813,7 +813,7 @@ def setup_ai_agent(project_path: Path, agent: str):
 This project uses Spec-Driven Development with the following commands:
 
 ```
-/sf-plan → /sf-work → /sf-review → /sf-triage → /sf-resolve → /sf-test → /sf-document → /sf-health → /sf-deploy
+/sf-plan (40%) → /sf-work (20%) → /sf-review (20%) → /sf-resolve → /sf-test → /sf-compound (20%)
 ```
 
 ## Commands
@@ -991,7 +991,7 @@ def init_command(args):
     print('     /sf-plan "Describe your feature"')
     print()
     print("  Full workflow:")
-    print("  /sf-plan → /sf-work → /sf-review → /sf-triage → /sf-resolve → /sf-test → /sf-document → /sf-health → /sf-deploy")
+    print("  /sf-plan (40%) → /sf-work (20%) → /sf-review (20%) → /sf-resolve → /sf-test → /sf-compound (20%)")
     print()
 
     return 0
@@ -1012,7 +1012,7 @@ Examples:
   sfce update --skills-only      Only update skills
 
 Workflow:
-  /sf-plan → /sf-work → /sf-review → /sf-triage → /sf-resolve → /sf-test → /sf-document → /sf-health → /sf-deploy
+  /sf-plan (40%) → /sf-work (20%) → /sf-review (20%) → /sf-resolve → /sf-test → /sf-compound (20%)
         '''
     )
 

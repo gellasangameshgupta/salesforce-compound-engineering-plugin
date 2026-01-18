@@ -51,7 +51,7 @@ def print_banner():
 {Colors.BOLD}╔═══════════════════════════════════════════════════════════╗
 ║       SF Compound Engineering - Parallel Subagents          ║
 ║                                                             ║
-║  23 agents • 4 commands • 6 skills • WebSearch enabled      ║
+║  23 agents • 4 commands • 7 skills • WebSearch enabled      ║
 ║  /sf-plan (40%) → /sf-work (20%) → /sf-review (20%) →       ║
 ║                    /sf-compound (20%)                       ║
 ╚═══════════════════════════════════════════════════════════╝{Colors.RESET}
@@ -697,6 +697,12 @@ def install_agents(project_path: Path):
         return False
 
     dest_agents_dir = project_path / '.claude' / 'agents'
+    dest_agents_dir.mkdir(parents=True, exist_ok=True)
+
+    # Copy root-level files (like index.md)
+    for root_file in source_agents_dir.glob('*.md'):
+        shutil.copy(root_file, dest_agents_dir / root_file.name)
+        print_success(f"Installed agents/{root_file.name}")
 
     # Copy all agent categories
     agent_count = 0
@@ -721,6 +727,12 @@ def install_skills(project_path: Path):
         return False
 
     dest_skills_dir = project_path / '.claude' / 'skills'
+    dest_skills_dir.mkdir(parents=True, exist_ok=True)
+
+    # Copy root-level files (like index.md)
+    for root_file in source_skills_dir.glob('*.md'):
+        shutil.copy(root_file, dest_skills_dir / root_file.name)
+        print_success(f"Installed skills/{root_file.name}")
 
     # Copy all skills
     skill_count = 0
@@ -732,7 +744,7 @@ def install_skills(project_path: Path):
                 shutil.copy(skill_file, dest_skill / skill_file.name)
             skill_count += 1
 
-    print_success(f"Installed {skill_count} skills (governor-limits, apex-patterns, security-guide, lwc-patterns, integration-patterns, test-factory)")
+    print_success(f"Installed {skill_count} skills (governor-limits, apex-patterns, security-guide, lwc-patterns, flow-patterns, integration-patterns, test-factory)")
     return True
 
 def create_command_stubs(commands_dir: Path):
@@ -910,7 +922,7 @@ def update_command(args):
         if update_all or args.agents_only:
             print("  • 23 specialized agents (apex, lwc, automation, integration, architecture)")
         if update_all or args.skills_only:
-            print("  • 6 skills (governor-limits, apex-patterns, security-guide, etc.)")
+            print("  • 7 skills (governor-limits, apex-patterns, flow-patterns, security-guide, etc.)")
         print()
         if not args.no_backup:
             print_info("Backups saved in .claude/ directory. Delete them after verifying the update.")

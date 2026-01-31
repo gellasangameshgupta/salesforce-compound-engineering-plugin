@@ -54,6 +54,27 @@ Analyze the recent changes and determine the PRIMARY Salesforce component type:
 
 ---
 
+## Web Research (Parallel Guidance)
+
+If the work involved newer features or unusual patterns, consider running web research in parallel to validate learnings.
+
+### What to Research
+
+Cross-check learnings against multiple sources:
+- Official docs: `site:developer.salesforce.com`
+- Community Q&A: `site:salesforce.stackexchange.com`
+- External Salesforce authors (blogs)
+- Salesforce consulting companies (implementation writeups)
+
+### Suggested Output
+
+Include research-validated insights in the compound report:
+- **Confirmed best practices**
+- **Documented pitfalls**
+- **Version-specific notes**
+
+---
+
 ## The Compound Loop
 
 ```

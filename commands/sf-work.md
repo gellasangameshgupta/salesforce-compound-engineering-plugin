@@ -55,6 +55,56 @@ Analyze the implementation request and determine the PRIMARY Salesforce componen
 
 ---
 
+## Internal-First Implementation (Guidance)
+
+Before using any external service or third-party tool, prefer Salesforce-native capabilities first.
+
+### Step 1: Prefer Native Salesforce Features
+
+Use built-in platform features wherever possible:
+- Flows, Validation Rules, Approval Processes
+- Apex, Platform Events, and standard metadata
+- LWC, Aura, Visualforce for UI
+- Standard security model (CRUD/FLS, sharing)
+
+### Step 2: Only Use External Dependencies if Required
+
+If external services are needed, justify them explicitly by documenting:
+- The exact platform gap
+- Why a native approach cannot satisfy requirements
+- The minimal external dependency needed
+
+---
+
+## Web Research (Parallel Guidance)
+
+If implementation details are uncertain or platform behavior is version-sensitive, consider running web research in parallel.
+
+### What to Research
+
+Use multiple sources to validate the chosen approach:
+- Official docs: `site:developer.salesforce.com`
+- Community Q&A: `site:salesforce.stackexchange.com`
+- External Salesforce authors (blogs)
+- Salesforce consulting companies (implementation writeups)
+
+### How to Search
+
+Run parallel searches with consistent intent and different sources. Example:
+- "platform event publish limits site:developer.salesforce.com"
+- "platform event publish limits site:salesforce.stackexchange.com"
+- "platform event publish limits blog salesforce"
+- "platform event publish limits consulting implementation"
+
+### Suggested Output
+
+Summarize findings into:
+- **Native-first confirmation** (what the platform supports)
+- **Edge cases** (from community and blogs)
+- **Implementation guardrails** (limits, pitfalls, best practices)
+
+---
+
 ## Available Resources
 
 ### Agents (Expertise)
@@ -120,6 +170,7 @@ Use WebSearch when:
 - Implementing a feature not covered in skills
 - Need latest best practices
 - Troubleshooting errors
+ - Native-first evaluation is complete and still insufficient
 
 ---
 

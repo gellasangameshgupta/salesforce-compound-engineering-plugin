@@ -53,6 +53,62 @@ Analyze the feature request and determine the PRIMARY Salesforce component:
 
 ---
 
+## Internal-First Solution Discovery (Guidance)
+
+Before considering any external service or third-party tool, identify native Salesforce solutions first.
+
+### Step 1: Enumerate Native Options
+
+Consider and prefer Salesforce-native capabilities first:
+- Declarative automation (Flows, Validation Rules, Approval Processes)
+- Apex and platform events
+- LWC, Aura, Visualforce, and standard UI patterns
+- Standard objects, fields, and metadata
+- Reports, dashboards, and standard security model
+
+### Step 2: Choose the Simplest Native Approach
+
+Select the lowest-complexity internal approach that meets requirements.
+Only consider external services if native options cannot meet the requirements.
+
+### Step 3: Justify External Dependencies (If Any)
+
+If you recommend any external tool or service, explicitly state:
+- Why native Salesforce options are insufficient
+- What capability is missing internally
+- Why the external option is necessary
+
+---
+
+## Web Research (Parallel Guidance)
+
+If the requirement is new, unclear, or could have multiple approaches, consider running web research in parallel.
+
+### What to Research
+
+Run WebSearch across multiple sources to validate the internal-first approach:
+- Official docs: `site:developer.salesforce.com`
+- Community Q&A: `site:salesforce.stackexchange.com`
+- External Salesforce authors (blogs)
+- Salesforce consulting companies (implementation writeups)
+
+### How to Search
+
+Run parallel searches with the same core intent but different sources. Example:
+- "record-triggered flow bulkification site:developer.salesforce.com"
+- "record-triggered flow bulkification site:salesforce.stackexchange.com"
+- "record-triggered flow bulkification blog salesforce"
+- "record-triggered flow bulkification consulting implementation"
+
+### Suggested Output
+
+Summarize findings into:
+- **Native-first confirmation** (what Salesforce supports natively)
+- **Common pitfalls** (from Stack Exchange)
+- **Recommended patterns** (from docs and blogs)
+
+---
+
 ## Critical Constraint
 
 **DO NOT WRITE CODE.** This command produces:
@@ -164,6 +220,7 @@ Use WebSearch when:
 - Need latest Salesforce documentation
 - Working with newer features
 - Need community solutions
+ - Native-first evaluation is complete and still insufficient
 
 Search sites:
 - `site:developer.salesforce.com` - Official docs

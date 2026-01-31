@@ -56,6 +56,24 @@ For mixed file types, state: `Files Classification: [TYPE1], [TYPE2]`
 
 ---
 
+## Web Research (Parallel Guidance)
+
+If review criteria are unclear or the feature uses newer platform capabilities, consider running web research in parallel.
+
+### What to Research
+
+Validate review criteria against multiple sources:
+- Official docs: `site:developer.salesforce.com`
+- Community Q&A: `site:salesforce.stackexchange.com`
+- External Salesforce authors (blogs)
+- Salesforce consulting companies (implementation writeups)
+
+### Suggested Output
+
+Summarize any research-backed review criteria and cite common pitfalls.
+
+---
+
 ## Available Resources
 
 ### Agents (Review Expertise)

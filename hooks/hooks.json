@@ -1,0 +1,16 @@
+{
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "command": "echo 'Salesforce CLI command detected'",
+      "description": "Log when Bash tool is used (potential SF CLI operations)"
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "command": "echo 'File written - consider running /sf-review'",
+      "description": "Remind to review after writing files"
+    }
+  ]
+}

@@ -1,141 +1,162 @@
 ---
 name: sf-work
-description: Implement Salesforce features following a plan
+description: Implement Salesforce features with parallel agents and system-wide test checks
 arguments:
   - name: plan
     description: Path to plan file or feature description
     required: true
 ---
 
-# /sf-work
+# <span data-proof="authored" data-by="ai:claude">/sf-work</span>
 
-You are implementing a Salesforce feature. Your job is to write production-quality code.
+<span data-proof="authored" data-by="ai:claude">You are implementing a Salesforce feature with parallel agent support and built-in quality checks.</span>
 
-## Goal
+## <span data-proof="authored" data-by="ai:claude">Goal</span>
 
-Implement the feature described in: `$ARGUMENTS.plan`
+<span data-proof="authored" data-by="ai:claude">Implement the feature described in:</span> <span data-proof="authored" data-by="ai:claude">`$ARGUMENTS.plan`</span>
 
-If a plan file path is provided, read it first. If a description is provided, implement directly.
+<span data-proof="authored" data-by="ai:claude">If a plan file path is provided, read it first. If a description is provided, implement directly.</span>
 
----
+***
 
-## Routing Guidance (Index-First)
+## <span data-proof="authored" data-by="ai:claude">Step 0: Pre-Implementation Research (parallel)</span>
 
-Classify the implementation first, then route via index files:
-- Use `agents/index.md` to decide applicable agent category
-- Use `skills/index.md` to decide applicable skills
-- Read only the selected category files (not all agents/skills)
-- Include `skills/governor-limits/SKILL.md` for limit-sensitive backend work
+<span data-proof="authored" data-by="ai:claude">Before writing code, dispatch these agents</span> **<span data-proof="authored" data-by="ai:claude">in parallel</span>**<span data-proof="authored" data-by="ai:claude">:</span>
 
----
+* <span data-proof="authored" data-by="ai:claude">Task sf-learnings-researcher(feature_description) — Check for relevant past solutions</span>
 
-## Internal-First Implementation (Guidance)
+* <span data-proof="authored" data-by="ai:claude">Task sf-repo-research-analyst(feature_description) — Understand existing patterns</span>
 
-Use built-in platform features wherever possible:
-- Flows, Validation Rules, Approval Processes
-- Apex, Platform Events, and standard metadata
-- LWC, Aura, Visualforce for UI
-- Standard security model (CRUD/FLS, sharing)
+<span data-proof="authored" data-by="ai:claude">Apply findings to inform implementation approach.</span>
 
-If external services are needed, justify them explicitly by documenting:
-- The exact platform gap
-- Why a native approach cannot satisfy requirements
-- The minimal external dependency needed
+***
 
----
+## <span data-proof="authored" data-by="ai:claude">Step 1: Route via Indexes</span>
 
-## Parallel Research (Optional Guidance)
+<span data-proof="authored" data-by="ai:claude">Classify the implementation, then route:</span>
 
-If behavior is uncertain, version-sensitive, or new, consider parallel research across:
-- Official docs: `site:developer.salesforce.com`
-- Community Q&A: `site:salesforce.stackexchange.com`
-- External Salesforce authors and consulting writeups
+* <span data-proof="authored" data-by="ai:claude">Read</span> <span data-proof="authored" data-by="ai:claude">`agents/index.md`</span> <span data-proof="authored" data-by="ai:claude">to decide applicable agent categories</span>
 
-When research is used, include short evidence notes: native option considered, key edge case/pitfall, implementation guardrail.
+* <span data-proof="authored" data-by="ai:claude">Read</span> <span data-proof="authored" data-by="ai:claude">`skills/index.md`</span> <span data-proof="authored" data-by="ai:claude">to decide applicable skills</span>
 
----
+* <span data-proof="authored" data-by="ai:claude">Include</span> <span data-proof="authored" data-by="ai:claude">`skills/governor-limits/SKILL.md`</span> <span data-proof="authored" data-by="ai:claude">for limit-sensitive backend work</span>
 
-## Available Resources
+***
 
-### Agents (Expertise)
-Read `agents/index.md` to route to relevant agents.  
-If running from CLI bootstrap, the equivalent path is `.claude/agents/index.md`.
+## <span data-proof="authored" data-by="ai:claude">Step 2: Internal-First Implementation</span>
 
-### Skills (Domain Knowledge)
-Read `skills/index.md` to route to relevant skills.  
-If running from CLI bootstrap, the equivalent path is `.claude/skills/index.md`.
+<span data-proof="authored" data-by="ai:claude">Use built-in platform features wherever possible:</span>
 
-### Existing Codebase
-Follow existing patterns, naming conventions, and architecture in the project.
+* <span data-proof="authored" data-by="ai:claude">Flows, Validation Rules, Approval Processes</span>
 
----
+* <span data-proof="authored" data-by="ai:claude">Apex, Platform Events, and standard metadata</span>
 
-## Implementation Standards
+* <span data-proof="authored" data-by="ai:claude">LWC, Aura, Visualforce for UI</span>
 
-### Apex Code
-- Follow existing trigger handler pattern in codebase
-- Bulkify all operations (handle 200+ records)
-- CRUD/FLS enforcement on all database operations
-- Proper exception handling
-- Meaningful method and variable names
+* <span data-proof="authored" data-by="ai:claude">Standard security model (CRUD/FLS, sharing)</span>
 
-### Flows
-- Clear element naming (e.g., `Get_Account_Details`, `Decision_Check_Status`)
-- Entry conditions to prevent unnecessary execution
-- Bulkified operations (no DML/SOQL in loops)
-- Fault handling for error scenarios
+<span data-proof="authored" data-by="ai:claude">If external services are needed, justify explicitly.</span>
 
-### LWC
-- Component naming follows existing conventions
-- Proper error handling and loading states
-- Accessible markup (ARIA, keyboard navigation)
-- Efficient wire/imperative Apex calls
+***
 
-### Test Classes
-- Minimum 90% code coverage target
-- Bulk tests (200+ records)
-- Positive and negative scenarios
-- Test as different user contexts when relevant
+## <span data-proof="authored" data-by="ai:claude">Step 3: Implementation Standards</span>
 
----
+### <span data-proof="authored" data-by="ai:claude">Apex Code</span>
 
-## Your Process
+* <span data-proof="authored" data-by="ai:claude">Follow existing trigger handler pattern in codebase</span>
 
-1. Read plan/requirements.
-2. Route via indexes and read only relevant skills/agents.
-3. Follow existing codebase patterns.
-4. Implement with native-first approach.
-5. Add tests as needed.
-6. Validate compile/tests.
+* <span data-proof="authored" data-by="ai:claude">Bulkify all operations (handle 200+ records)</span>
 
----
+* <span data-proof="authored" data-by="ai:claude">CRUD/FLS enforcement on all database operations</span>
 
-## WebSearch Guidance
+* <span data-proof="authored" data-by="ai:claude">Proper exception handling</span>
 
-Use WebSearch when:
-- Need syntax for a specific Salesforce API
-- Implementing a feature not covered in skills
-- Need latest best practices
-- Troubleshooting errors
-- Native-first evaluation is complete and still insufficient
+* <span data-proof="authored" data-by="ai:claude">Meaningful method and variable names</span>
 
----
+### <span data-proof="authored" data-by="ai:claude">Flows</span>
 
-## Output
+* <span data-proof="authored" data-by="ai:claude">Clear element naming (e.g.,</span> <span data-proof="authored" data-by="ai:claude">`Get_Account_Details`,</span> <span data-proof="authored" data-by="ai:claude">`Decision_Check_Status`)</span>
 
-Create/modify only the required Salesforce files (Apex, Flows, LWC, metadata) and list changed files in your response.
+* <span data-proof="authored" data-by="ai:claude">Entry conditions to prevent unnecessary execution</span>
 
----
+* <span data-proof="authored" data-by="ai:claude">Bulkified operations (no DML/SOQL in loops)</span>
 
-## After Implementation
+* <span data-proof="authored" data-by="ai:claude">Fault handling for error scenarios</span>
 
-When implementation is complete:
+### <span data-proof="authored" data-by="ai:claude">LWC</span>
+
+* <span data-proof="authored" data-by="ai:claude">Component naming follows existing conventions</span>
+
+* <span data-proof="authored" data-by="ai:claude">Proper error handling and loading states</span>
+
+* <span data-proof="authored" data-by="ai:claude">Accessible markup (ARIA, keyboard navigation)</span>
+
+* <span data-proof="authored" data-by="ai:claude">Efficient wire/imperative Apex calls</span>
+
+### <span data-proof="authored" data-by="ai:claude">Test Classes</span>
+
+* <span data-proof="authored" data-by="ai:claude">Minimum 90% code coverage target</span>
+
+* <span data-proof="authored" data-by="ai:claude">Bulk tests (200+ records)</span>
+
+* <span data-proof="authored" data-by="ai:claude">Positive and negative scenarios</span>
+
+* <span data-proof="authored" data-by="ai:claude">Test as different user contexts when relevant</span>
+
+***
+
+## <span data-proof="authored" data-by="ai:claude">Step 4: System-Wide Test Check</span>
+
+**<span data-proof="authored" data-by="ai:claude">Before marking implementation complete, answer these 5 questions:</span>**
+
+1. **<span data-proof="authored" data-by="ai:claude">Trigger Fire Check</span>**<span data-proof="authored" data-by="ai:claude">: What triggers fire on the affected objects? Are all contexts (insert/update/delete/undelete) handled correctly?</span>
+
+2. **<span data-proof="authored" data-by="ai:claude">Bulk Test Check</span>**<span data-proof="authored" data-by="ai:claude">: Are bulk tests included that process 200+ records? Do they verify behavior at scale?</span>
+
+3. **<span data-proof="authored" data-by="ai:claude">Governor Limit Test</span>**<span data-proof="authored" data-by="ai:claude">: Are governor limits tested? Specifically SOQL 101, DML 150, CPU timeout scenarios?</span>
+
+4. **<span data-proof="authored" data-by="ai:claude">Sharing Scenario Check</span>**<span data-proof="authored" data-by="ai:claude">: Are sharing scenarios covered? Does the code work correctly under</span> <span data-proof="authored" data-by="ai:claude">`with sharing`</span> <span data-proof="authored" data-by="ai:claude">and</span> <span data-proof="authored" data-by="ai:claude">`without sharing`</span> <span data-proof="authored" data-by="ai:claude">contexts?</span>
+
+5. **<span data-proof="authored" data-by="ai:claude">Integration Mock Check</span>**<span data-proof="authored" data-by="ai:claude">: Are all integration points (callouts, platform events) properly mocked in tests?</span>
+
+<span data-proof="authored" data-by="ai:claude">If any answer is "no", add the missing test before proceeding.</span>
+
+***
+
+## <span data-proof="authored" data-by="ai:claude">Step 5: Incremental Commits</span>
+
+<span data-proof="authored" data-by="ai:claude">Make small, focused commits as you go:</span>
+
+* <span data-proof="authored" data-by="ai:claude">One commit per logical unit of work</span>
+
+* <span data-proof="authored" data-by="ai:claude">Clear commit messages describing the change</span>
+
+* <span data-proof="authored" data-by="ai:claude">Don't batch all changes into one commit</span>
+
+***
+
+## <span data-proof="authored" data-by="ai:claude">Output</span>
+
+<span data-proof="authored" data-by="ai:claude">Create/modify only the required Salesforce files and list changed files in your response.</span>
+
+***
+
+## <span data-proof="authored" data-by="ai:claude">After Implementation</span>
+
+<span data-proof="authored" data-by="ai:claude">When implementation is complete:</span>
 
 ```
 Implementation complete.
 
-Files created:
+Files created/modified:
 - [list of files]
+
+System-Wide Test Check:
+✅ Trigger contexts: [handled/not applicable]
+✅ Bulk tests: [included/not applicable]
+✅ Governor limits: [tested/not applicable]
+✅ Sharing scenarios: [covered/not applicable]
+✅ Integration mocks: [mocked/not applicable]
 
 Next: /sf-review
 ```

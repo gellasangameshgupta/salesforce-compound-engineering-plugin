@@ -15,6 +15,8 @@ Use this file as the canonical agent router.
 | LWC | Lightning Web Components | Flow & Automation (unless Apex controller needed) |
 | INTEGRATION | Integration | Flow & Automation |
 | ARCHITECTURE | Architecture & Data Model | N/A (applies broadly) |
+| RESEARCH | Research | N/A (dispatch for any task) |
+| WORKFLOW | Workflow | N/A (dispatch as needed) |
 
 ---
 
@@ -24,6 +26,7 @@ Use this file as the canonical agent router.
 2. Jump to matching section.
 3. Read only applicable agent files.
 4. For mixed work, apply each agent only to matching files.
+5. **For parallel dispatch:** Use the Agent tool to launch agents simultaneously.
 
 ---
 
@@ -57,7 +60,7 @@ Use this file as the canonical agent router.
 
 ## Lightning Web Components (LWC)
 
-**SCOPE: LWC_ONLY** - LWC components and Aura migrations.  
+**SCOPE: LWC_ONLY** - LWC components and Aura migrations.
 Use Apex agents only if reviewing Apex controllers.
 
 | Agent | File | Use When |
@@ -96,6 +99,35 @@ Use Apex agents only if reviewing Apex controllers.
 
 ---
 
+## Research
+
+**SCOPE: UNIVERSAL** - Dispatch during planning and pre-implementation research.
+**MODEL: haiku/sonnet** - Optimized for speed or depth as noted.
+
+| Agent | File | Model | Use When |
+|-------|------|-------|----------|
+| Learnings Researcher | `research/sf-learnings-researcher.md` | haiku | Searching `docs/solutions/` for past solutions |
+| Best Practices Researcher | `research/sf-best-practices-researcher.md` | sonnet | 3-phase research: skills → Context7 → web |
+| Git History Analyzer | `research/sf-git-history-analyzer.md` | haiku | Understanding code evolution via git archaeology |
+| Repo Research Analyst | `research/sf-repo-research-analyst.md` | haiku | Analyzing project structure and conventions |
+| Framework Docs Researcher | `research/sf-framework-docs-researcher.md` | sonnet | Salesforce platform docs via Context7 + web |
+
+---
+
+## Workflow
+
+**SCOPE: UNIVERSAL** - Dispatch for workflow automation and quality assurance.
+
+| Agent | File | Model | Use When |
+|-------|------|-------|----------|
+| Spec Flow Analyzer | `workflow/sf-spec-flow-analyzer.md` | sonnet | Validating specs for completeness, trigger context permutations |
+| Bug Reproduction Validator | `workflow/sf-bug-reproduction-validator.md` | sonnet | Systematic 6-step bug reproduction |
+| PR Comment Resolver | `workflow/sf-pr-comment-resolver.md` | haiku | Parallel resolution of PR review comments |
+| Code Simplicity Reviewer | `workflow/sf-code-simplicity-reviewer.md` | haiku | YAGNI enforcement, simplification opportunities |
+| Deployment Verification | `workflow/sf-deployment-verification-agent.md` | sonnet | Go/No-Go checklists, rollback procedures |
+
+---
+
 ## Quick Reference: Which Agents for Which Task?
 
 | Task | Classification | Primary Agents |
@@ -110,3 +142,6 @@ Use Apex agents only if reviewing Apex controllers.
 | External Callout | INTEGRATION | `callout-pattern-reviewer`, `integration-security-sentinel` |
 | Platform Event | INTEGRATION | `platform-event-strategist` |
 | Custom Object | ARCHITECTURE | `data-model-architect`, `sharing-security-analyst` |
+| Planning Phase | RESEARCH | `sf-learnings-researcher`, `sf-repo-research-analyst`, `sf-best-practices-researcher` |
+| Pre-Deploy | WORKFLOW | `sf-deployment-verification-agent`, `sf-code-simplicity-reviewer` |
+| Bug Investigation | WORKFLOW | `sf-bug-reproduction-validator`, `sf-git-history-analyzer` |

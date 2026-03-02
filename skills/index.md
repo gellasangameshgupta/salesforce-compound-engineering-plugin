@@ -15,6 +15,8 @@ Use this file as the canonical skill router.
 | LWC | `governor-limits`, `lwc-patterns`, `security-guide` | `flow-patterns`, `apex-patterns` (unless Apex controller) |
 | INTEGRATION | `governor-limits`, `integration-patterns`, `security-guide` | `flow-patterns`, `lwc-patterns` |
 | ARCHITECTURE | `governor-limits`, `security-guide` | Context-dependent |
+| WORKFLOW | `sf-cli`, `compound-docs` | Context-dependent |
+| TOOLING | `git-worktree`, `create-agent-skills` | Context-dependent |
 
 ---
 
@@ -27,7 +29,7 @@ Use this file as the canonical skill router.
 
 ---
 
-## Available Skills
+## Domain Skills
 
 | Skill | File | Scope | Use When |
 |-------|------|-------|----------|
@@ -38,6 +40,25 @@ Use this file as the canonical skill router.
 | Security Guide | `security-guide/SKILL.md` | **UNIVERSAL** | CRUD/FLS, sharing, permissions, AppExchange |
 | Integration Patterns | `integration-patterns/SKILL.md` | **INTEGRATION_ONLY** | Callouts, APIs, Platform Events |
 | Test Factory | `test-factory/SKILL.md` | **APEX_ONLY** | Writing Apex test classes, test data factories |
+
+---
+
+## Workflow Skills
+
+| Skill | File | Scope | Use When |
+|-------|------|-------|----------|
+| SF CLI | `sf-cli/SKILL.md` | **UNIVERSAL** | Deploy, retrieve, test, org management via `sf` CLI |
+| Compound Docs | `compound-docs/SKILL.md` | **UNIVERSAL** | Writing solution documents with YAML schema |
+| File Todos | `file-todos/SKILL.md` | **UNIVERSAL** | File-based task tracking with status/priority naming |
+
+---
+
+## Tooling Skills
+
+| Skill | File | Scope | Use When |
+|-------|------|-------|----------|
+| Git Worktree | `git-worktree/SKILL.md` | **UNIVERSAL** | Isolated parallel development branches |
+| Create Agent Skills | `create-agent-skills/SKILL.md` | **UNIVERSAL** | Creating new agents and skills for the plugin |
 
 ---
 
@@ -57,6 +78,10 @@ Use this file as the canonical skill router.
 | External Callout | INTEGRATION | `integration-patterns`, `governor-limits` |
 | Platform Event | INTEGRATION | `integration-patterns`, `governor-limits` |
 | AppExchange Package | UNIVERSAL | `security-guide`, `governor-limits` |
+| Deployment | WORKFLOW | `sf-cli` |
+| Knowledge Capture | WORKFLOW | `compound-docs` |
+| Parallel Development | TOOLING | `git-worktree` |
+| Extend Plugin | TOOLING | `create-agent-skills` |
 
 ---
 
@@ -64,3 +89,4 @@ Use this file as the canonical skill router.
 
 - Prefer skill subsections relevant to the immediate task rather than reading the full file.
 - If skills are insufficient, follow command-level research guidance.
+- Use Context7 MCP for additional framework documentation.

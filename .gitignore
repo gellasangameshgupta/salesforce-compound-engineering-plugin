@@ -21,6 +21,13 @@ npm-debug.log*
 # Test coverage
 coverage/
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+
 # Temporary files
 *.tmp
 *.temp
@@ -29,3 +36,16 @@ coverage/
 # Environment files
 .env
 .env.local
+
+# Claude local config (user-specific)
+.claude/
+
+# Local workspace (not shared)
+todos/
+
+# Teardown reference (external doc, not part of plugin)
+Compound-Engineering-Plugin-Teardown.md
+
+# Salesforce local auth
+.sfdx/
+.sf/

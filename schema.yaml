@@ -1,0 +1,90 @@
+# Solution Document YAML Frontmatter Schema
+# Used by docs/solutions/ entries for institutional knowledge
+
+required_fields:
+  title:
+    type: string
+    description: Short descriptive title of the issue/pattern
+    example: "SOQL 101 error in Account trigger"
+
+  date:
+    type: date
+    format: YYYY-MM-DD
+    description: When the issue was discovered or pattern documented
+
+  category:
+    type: enum
+    values:
+      - governor-limits
+      - deployment
+      - test-failure
+      - security
+      - integration
+      - flow
+      - lwc
+      - data-model
+      - best-practice
+      - pattern
+    description: Primary classification for routing and search
+
+  severity:
+    type: enum
+    values:
+      - critical
+      - high
+      - medium
+      - low
+    description: Impact severity of the issue
+
+  tags:
+    type: list
+    items: string
+    description: Searchable tags for cross-referencing
+    example: ["soql", "trigger", "bulk", "account"]
+
+optional_fields:
+  symptoms:
+    type: string
+    description: What went wrong (error messages, unexpected behavior)
+
+  root_cause:
+    type: string
+    description: Why it happened (technical explanation)
+
+  resolution:
+    type: string
+    description: How it was fixed (code changes, config updates)
+
+  prevention:
+    type: string
+    description: How to avoid this in the future
+
+  related_files:
+    type: list
+    items: string
+    description: File paths affected by this issue
+
+  salesforce_version:
+    type: string
+    description: Salesforce API version where this was observed
+
+# Example solution document:
+# ---
+# title: "SOQL 101 error in Account trigger"
+# date: 2026-03-02
+# category: governor-limits
+# severity: critical
+# tags: ["soql", "trigger", "bulk", "account"]
+# ---
+#
+# ## Symptoms
+# System.LimitException: Too many SOQL queries: 101
+#
+# ## Root Cause
+# SOQL query inside a for loop in AccountTriggerHandler
+#
+# ## Resolution
+# Moved query outside loop, used Map<Id, Account> for lookups
+#
+# ## Prevention
+# Always query outside loops. Use the governor-limits skill checklist.

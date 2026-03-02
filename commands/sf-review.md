@@ -1,15 +1,18 @@
 ---
 name: sf-review
-description: Review Salesforce code for quality, security, and best practices
+description: Review Salesforce code for quality, security, and best practices using parallel agents
 arguments:
   - name: target
     description: File path, directory, or PR number to review (defaults to uncommitted changes)
+    required: false
+  - name: depth
+    description: "Review depth: fast, thorough, or comprehensive (default: thorough)"
     required: false
 ---
 
 # /sf-review
 
-You are reviewing Salesforce code. Your job is to identify issues and suggest improvements.
+You are reviewing Salesforce code using parallel agent dispatch for speed and thoroughness.
 
 ## Goal
 
@@ -19,98 +22,113 @@ If no target specified, review uncommitted changes (`git diff`).
 
 ---
 
-## Routing Guidance (Index-First)
+## Review Depth Levels
 
-Classify reviewed files first, then route via index files:
-- Use `agents/index.md` to map file types to agent categories
-- Load only agent categories that match files in scope
-- For mixed diffs, apply each checklist only to matching file types
-- Use skills only when a finding needs additional pattern/limit context
+Select depth based on `$ARGUMENTS.depth` (default: thorough):
 
----
-
-## Parallel Research (Optional Guidance)
-
-If review criteria are unclear or the feature uses newer platform capabilities, consider running web research in parallel.
-Validate review criteria against:
-- Official docs: `site:developer.salesforce.com`
-- Community Q&A: `site:salesforce.stackexchange.com`
-- External Salesforce authors (blogs)
-- Salesforce consulting companies (implementation writeups)
-Summarize research-backed criteria and common pitfalls briefly.
+| Level | Agents | Use Case |
+|---|---|---|
+| **fast** | Stack-specific agents only | Quick checks, small changes |
+| **thorough** | All applicable agents | Standard review (default) |
+| **comprehensive** | All + research + deployment verification | Pre-production, risky changes |
 
 ---
 
-## Available Resources
+## Step 1: Identify and Classify Files
 
-### Agents (Review Expertise)
-Read `agents/index.md` to route to relevant review agents.  
-If running from CLI bootstrap, the equivalent path is `.claude/agents/index.md`.
-
-### Skills (Domain Knowledge)
-Use `skills/index.md` only when review findings need extra pattern/limit context.  
-If running from CLI bootstrap, the equivalent path is `.claude/skills/index.md`.
-
----
-
-## Review Focus Areas
-
-### For Apex Code
-- **Governor Limits**: SOQL/DML in loops, CPU-intensive operations
-- **Security**: CRUD/FLS enforcement, SOQL injection, hardcoded credentials
-- **Bulkification**: Handles 200+ records, uses collections properly
-- **Error Handling**: Try-catch blocks, meaningful error messages
-- **Test Quality**: Assertions, bulk tests, negative scenarios
-
-### For Flows
-- **Governor Limits**: DML/SOQL in loops, bulkification
-- **Complexity**: Too many elements, deeply nested decisions
-- **Error Handling**: Fault paths, user-friendly errors
-- **Recursion**: Entry conditions, prevention mechanisms
-
-### For LWC
-- **Performance**: Wire vs imperative, unnecessary re-renders
-- **Security**: XSS prevention, secure data handling
-- **Accessibility**: ARIA attributes, keyboard navigation
-- **Architecture**: Component hierarchy, event communication
-
-### For Configuration
-- **Data Model**: Relationships, field naming, indexes
-- **Sharing**: OWD implications, sharing rules
-- **Naming**: Conventions, API versions
+1. Get files in scope (git diff, directory listing, or PR files).
+2. Classify each file by type:
+   - `.cls`, `.trigger` → APEX
+   - `.flow-meta.xml` → AUTOMATION
+   - `.js`, `.html` (in `lwc/`) → LWC
+   - `.xml` (metadata) → ARCHITECTURE
+   - Callout/API related → INTEGRATION
 
 ---
 
-## Your Process
+## Step 2: Dispatch Review Agents in Parallel
 
-1. Identify files in scope.
-2. Classify file types.
-3. Read relevant agent checklists.
-4. Review and categorize findings by severity.
-5. Report issue + fix suggestion.
+Based on file classification, dispatch applicable agents using the **Agent tool** (subagent_type matching the agent name).
+
+### For APEX files — dispatch in parallel:
+- Task apex-governor-guardian(files, code_context)
+- Task apex-security-sentinel(files, code_context)
+- Task apex-bulkification-reviewer(files, code_context)
+- Task apex-trigger-architect(files, code_context) — if triggers present
+- Task apex-exception-handler(files, code_context)
+- Task apex-test-coverage-analyst(files, code_context) — if test classes present
+
+### For AUTOMATION files — dispatch in parallel:
+- Task flow-governor-monitor(files, code_context)
+- Task flow-complexity-analyzer(files, code_context)
+- Task process-automation-strategist(files, code_context)
+- Task validation-rule-reviewer(files, code_context) — if validation rules
+
+### For LWC files — dispatch in parallel:
+- Task lwc-architecture-strategist(files, code_context)
+- Task lwc-performance-oracle(files, code_context)
+- Task lwc-security-reviewer(files, code_context)
+- Task lwc-accessibility-guardian(files, code_context)
+
+### For INTEGRATION files — dispatch in parallel:
+- Task rest-api-architect(files, code_context)
+- Task callout-pattern-reviewer(files, code_context)
+- Task integration-security-sentinel(files, code_context)
+
+### Always include (ARCHITECTURE — universal):
+- Task pattern-recognition-specialist(files, code_context)
+- Task metadata-consistency-checker(files, code_context)
+
+### Additional agents for "comprehensive" depth:
+- Task sf-code-simplicity-reviewer(files, code_context)
+- Task sf-deployment-verification-agent(files, code_context)
+- Task sf-git-history-analyzer(files, code_context)
 
 ---
 
-## Severity
+## Step 3: Parallel Research (comprehensive depth only)
 
-Use four levels: Critical, High, Medium, Low.
+For comprehensive reviews, also dispatch:
+- Task sf-best-practices-researcher(feature_context)
+- Task sf-framework-docs-researcher(feature_context)
+
+Validate findings against official docs:
+- `site:developer.salesforce.com`
+- `site:salesforce.stackexchange.com`
+
+---
+
+## Step 4: Consolidate Findings
+
+Collect results from all dispatched agents and:
+1. Deduplicate findings across agents.
+2. Categorize by severity: Critical, High, Medium, Low.
+3. Group by file for easy navigation.
+4. Include fix suggestions with code references.
 
 ---
 
 ## Output Format
 
-Report: target, files reviewed, findings grouped by severity, fix suggestions, and a short summary.
-
----
-
-## After Review
-
-When review is complete:
-
 ```
-Review complete.
+## Review: {target}
+**Depth:** {fast|thorough|comprehensive}
+**Agents dispatched:** {count}
 
-[Summary of findings]
+### Critical ({count})
+- [{file}:{line}] {issue} — {fix suggestion}
+
+### High ({count})
+- [{file}:{line}] {issue} — {fix suggestion}
+
+### Medium ({count})
+- [{file}:{line}] {issue} — {fix suggestion}
+
+### Low ({count})
+- [{file}:{line}] {issue} — {fix suggestion}
+
+### Summary
+{overall assessment}
 
 Next: Fix issues and run /sf-review again
 ```

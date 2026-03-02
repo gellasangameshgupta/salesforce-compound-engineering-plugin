@@ -2,13 +2,21 @@
   "name": "sf-compound-engineering",
   "version": "2.0.0",
   "description": "Salesforce-focused compound engineering workflow for Claude Code with parallel agent dispatch and institutional knowledge",
-  "author": "Gella Sangamesh Gupta",
-  "repository": "https://github.com/sangameshgupta/sf-compound-engineering-plugin",
-  "components": {
-    "commands": 7,
-    "agents": 33,
-    "skills": 12
+  "author": {
+    "name": "Gella Sangamesh Gupta",
+    "url": "https://github.com/sangameshgupta"
   },
+  "repository": "https://github.com/sangameshgupta/sf-compound-engineering-plugin",
+  "license": "MIT",
+  "keywords": [
+    "salesforce",
+    "compound-engineering",
+    "apex",
+    "lwc",
+    "governor-limits",
+    "security",
+    "workflow-automation"
+  ],
   "mcpServers": {
     "context7": {
       "command": "npx",

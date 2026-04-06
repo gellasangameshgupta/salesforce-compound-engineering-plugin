@@ -1,6 +1,6 @@
 {
   "name": "sf-compound-engineering",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Salesforce-focused compound engineering workflow for Claude Code with parallel agent dispatch and institutional knowledge",
   "author": {
     "name": "Gella Sangamesh Gupta",
@@ -19,8 +19,8 @@
   ],
   "mcpServers": {
     "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
     }
   }
 }

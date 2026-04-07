@@ -15,7 +15,9 @@
     "lwc",
     "governor-limits",
     "security",
-    "workflow-automation"
+    "workflow-automation",
+    "agentforce",
+    "agent-script"
   ],
   "mcpServers": {
     "context7": {

@@ -1,4 +1,4 @@
-# <span data-proof="authored" data-by="ai:claude">SF Compound Engineering Plugin v2.0.0</span>
+# <span data-proof="authored" data-by="ai:claude">SF Compound Engineering Plugin v2.1.0</span>
 
 **<span data-proof="authored" data-by="ai:claude">Instruction-Based Compound Engineering for Salesforce</span>** <span data-proof="authored" data-by="ai:claude">— a Claude Code plugin where each iteration becomes smarter than the last through institutional knowledge capture and parallel agent dispatch.</span>
 
@@ -80,19 +80,19 @@ bunx @sangameshgupta/sf-compound-plugin sync
 
 ### What Gets Converted
 
-| Platform | Commands | Agents | Skills | MCP Config |
-|----------|----------|--------|--------|------------|
-| **Copilot** | `.github/skills/` | `.github/agents/*.agent.md` | `.github/skills/` | `copilot-mcp-config.json` |
-| **Cursor** | Sync only | Sync only | `.cursor/skills/` (symlinks) | `.cursor/mcp.json` |
-| **Windsurf** | `workflows/*.md` | `skills/*/SKILL.md` | `skills/` | `mcp_config.json` |
-| **Gemini** | `.gemini/commands/*.toml` | `.gemini/skills/` | `.gemini/skills/` | `settings.json` |
-| **OpenCode** | `commands/*.md` | `agents/*.md` | `skills/` | `opencode.json` |
-| **Codex** | `prompts/*.md` + `skills/` | `skills/*/SKILL.md` | `skills/` | `config.toml` |
-| **Kiro** | `.kiro/skills/` | `.kiro/agents/*.json` + prompts | `.kiro/skills/` | `mcp.json` |
-| **Droid** | `commands/*.md` | `agents/*.md` | `skills/` | `mcp.json` |
-| **Pi** | `prompts/*.md` | `skills/*/SKILL.md` | `skills/` | `mcp.json` |
-| **OpenClaw** | `commands/*.md` | `agents/*.md` | `skills/` | TS entry point |
-| **Qwen** | `commands/*.md` | `agents/*.yaml` | `skills/` | N/A |
+| Platform     | Commands                   | Agents                          | Skills                       | MCP Config                |
+| ------------ | -------------------------- | ------------------------------- | ---------------------------- | ------------------------- |
+| **Copilot**  | `.github/skills/`          | `.github/agents/*.agent.md`     | `.github/skills/`            | `copilot-mcp-config.json` |
+| **Cursor**   | Sync only                  | Sync only                       | `.cursor/skills/` (symlinks) | `.cursor/mcp.json`        |
+| **Windsurf** | `workflows/*.md`           | `skills/*/SKILL.md`             | `skills/`                    | `mcp_config.json`         |
+| **Gemini**   | `.gemini/commands/*.toml`  | `.gemini/skills/`               | `.gemini/skills/`            | `settings.json`           |
+| **OpenCode** | `commands/*.md`            | `agents/*.md`                   | `skills/`                    | `opencode.json`           |
+| **Codex**    | `prompts/*.md` + `skills/` | `skills/*/SKILL.md`             | `skills/`                    | `config.toml`             |
+| **Kiro**     | `.kiro/skills/`            | `.kiro/agents/*.json` + prompts | `.kiro/skills/`              | `mcp.json`                |
+| **Droid**    | `commands/*.md`            | `agents/*.md`                   | `skills/`                    | `mcp.json`                |
+| **Pi**       | `prompts/*.md`             | `skills/*/SKILL.md`             | `skills/`                    | `mcp.json`                |
+| **OpenClaw** | `commands/*.md`            | `agents/*.md`                   | `skills/`                    | TS entry point            |
+| **Qwen**     | `commands/*.md`            | `agents/*.yaml`                 | `skills/`                    | N/A                       |
 
 The plugin provides:
 
@@ -100,9 +100,9 @@ The plugin provides:
 
 * **33 specialized agents** across 7 categories
 
-* **12 skills** with Salesforce domain knowledge
+* **<span data-proof="suggestion" data-id="m1775681125163_3" data-by="ai:claude" data-kind="replace">12 skills</span>** <span data-proof="suggestion" data-id="m1775681125163_3" data-by="ai:claude" data-kind="replace">with Salesforce domain knowledge</span>
 
-* **MCP integration** with Context7 for live framework documentation
+* **<span data-proof="suggestion" data-id="m1775681125163_3" data-by="ai:claude" data-kind="replace">MCP integration</span>** <span data-proof="suggestion" data-id="m1775681125163_3" data-by="ai:claude" data-kind="replace">with Context7 for live framework documentation</span>
 
 * **Institutional knowledge system** in `docs/solutions/` with YAML schema
 
@@ -121,7 +121,7 @@ agents/index.md  →  Classification → Dispatch relevant agents in parallel
 skills/index.md  →  Classification → Read only relevant skill sections
 ```
 
-<span data-proof="authored" data-by="ai:claude">Classifications:</span> <span data-proof="authored" data-by="ai:claude">`APEX`,</span> <span data-proof="authored" data-by="ai:claude">`AUTOMATION`,</span> <span data-proof="authored" data-by="ai:claude">`LWC`,</span> <span data-proof="authored" data-by="ai:claude">`INTEGRATION`,</span> <span data-proof="authored" data-by="ai:claude">`ARCHITECTURE`,</span> <span data-proof="authored" data-by="ai:claude">`WORKFLOW`,</span> <span data-proof="authored" data-by="ai:claude">`TOOLING`</span>
+<span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">Classifications:</span></span> <span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`APEX`,</span></span> <span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`AUTOMATION`,</span></span> <span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`LWC`,</span></span> <span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`INTEGRATION`,</span></span> <span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`ARCHITECTURE`,</span></span> <span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`WORKFLOW`,</span></span> <span data-proof="suggestion" data-id="m1775681125157_2" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`TOOLING`</span></span>
 
 ***
 
@@ -223,7 +223,7 @@ Plan → Deepen → Work → Review → Resolve → Test → Deploy → Compound
 
 ***
 
-## <span data-proof="authored" data-by="ai:claude">12 Skills</span>
+## <span data-proof="suggestion" data-id="m1775681150499_4" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">12 Skills</span></span>
 
 ### <span data-proof="authored" data-by="ai:claude">Domain Skills</span>
 
@@ -338,30 +338,67 @@ sf-compound-engineering-plugin/
 
 ## <span data-proof="authored" data-by="ai:claude">MCP Integration</span>
 
-<span data-proof="authored" data-by="ai:claude">The plugin includes a Context7 MCP server for live framework documentation lookup:</span>
+<span data-proof="suggestion" data-id="m1775681196339_10" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">The plugin includes a Context7 MCP server for live framework documentation lookup:</span></span>
 
-```json proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MTI2LCJhdHRycyI6eyJieSI6ImFpOmNsYXVkZSJ9fV0=
+```json proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MzcsImF0dHJzIjp7ImJ5IjoiYWk6Y2xhdWRlIn19LHsidHlwZSI6InByb29mU3VnZ2VzdGlvbiIsImZyb20iOjM3LCJ0byI6MTMzLCJhdHRycyI6eyJpZCI6Im0xNzc1NjgxMTk2MzM0XzkiLCJraW5kIjoiaW5zZXJ0IiwiYnkiOiJhaTpjbGF1ZGUiLCJjb250ZW50IjoiXG4gICAgICBcInR5cGVcIjogXCJodHRwXCIsXG4gICAgICBcInVybFwiOiBcImh0dHBzOi8vbWNwLmNvbnRleHQ3LmNvbS9tY3BcIlxuICAgIH0sXG4gICAgXCJzYWxlc2ZvcmNlLWR4XCI6IHsiLCJzdGF0dXMiOiJwZW5kaW5nIiwiY3JlYXRlZEF0IjoiMjAyNi0wNC0wOFQyMDo0NjozNi4zMzRaIiwicnVuSWQiOm51bGwsImZvY3VzQXJlYUlkIjpudWxsLCJmb2N1c0FyZWFOYW1lIjpudWxsLCJhZ2VudElkIjpudWxsLCJwcm9wb3NhbElkIjpudWxsLCJwcm92aXNpb25hbCI6bnVsbCwib3JjaGVzdHJhdG9yIjpudWxsLCJkZWJ1Z0F1dG9GaXhlZFF1b3RlcyI6bnVsbCwiZGVidWdBdXRvRml4ZWRRdW90ZXNSZWFzb24iOm51bGx9fSx7InR5cGUiOiJwcm9vZkF1dGhvcmVkIiwiZnJvbSI6MzcsInRvIjoyMjIsImF0dHJzIjp7ImJ5IjoiYWk6Y2xhdWRlIn19LHsidHlwZSI6InByb29mU3VnZ2VzdGlvbiIsImZyb20iOjIyMiwidG8iOjgyOSwiYXR0cnMiOnsiaWQiOiJtMTc3NTY4MTE5NjMyOV84Iiwia2luZCI6Imluc2VydCIsImJ5IjoiYWk6Y2xhdWRlIiwiY29udGVudCI6IlxuU2FsZXNmb3JjZSBEWCBNQ1AgdG9vbHNldHMgKGFsbCBlbmFibGVkKTpcblRvb2xzZXRcbkNhcGFiaWxpdHlcbmNvcmVcbkJhc2UgRFggdG9vbHMgKGFsd2F5cyBvbilcbm9yZ3Ncbk1hbmFnZSBhdXRob3JpemVkIG9yZ3Ncbm1ldGFkYXRhXG5EZXBsb3kvcmV0cmlldmUgbWV0YWRhdGFcbmRhdGFcblNPUUwgcXVlcmllcywgcmVjb3JkIG1hbmFnZW1lbnRcbnVzZXJzXG5QZXJtaXNzaW9uIHNldHMsIHVzZXIgbWFuYWdlbWVudFxuY29kZS1hbmFseXNpc1xuU3RhdGljIGFuYWx5c2lzIHZpYSBDb2RlIEFuYWx5emVyXG5sd2MtZXhwZXJ0c1xuTFdDIGRldmVsb3BtZW50LCB0ZXN0aW5nLCBvcHRpbWl6YXRpb25cbmF1cmEtZXhwZXJ0c1xuQXVyYSBhbmFseXNpcywgTFdDIG1pZ3JhdGlvblxuZXhwZXJ0cy12YWxpZGF0aW9uXG5MV0MgcHJvZHVjdGlvbiByZWFkaW5lc3MgY2hlY2tzXG5kZXZvcHNcbkRldk9wcyBDZW50ZXIgb3BlcmF0aW9uc1xuZW5yaWNobWVudFxuTWV0YWRhdGEgY29tcG9uZW50IGVucmljaG1lbnRcbm1vYmlsZVxuTW9iaWxlIGRldmVsb3BtZW50IHRvb2xzXG50ZXN0aW5nXG5BcGV4IGFuZCBhZ2VudCB0ZXN0IGV4ZWN1dGlvblxuc2NhbGUtcHJvZHVjdHNcbkFwZXggcGVyZm9ybWFuY2UgZGV0ZWN0aW9uIiwic3RhdHVzIjoicGVuZGluZyIsImNyZWF0ZWRBdCI6IjIwMjYtMDQtMDhUMjA6NDY6MzYuMzI5WiIsInJ1bklkIjpudWxsLCJmb2N1c0FyZWFJZCI6bnVsbCwiZm9jdXNBcmVhTmFtZSI6bnVsbCwiYWdlbnRJZCI6bnVsbCwicHJvcG9zYWxJZCI6bnVsbCwicHJvdmlzaW9uYWwiOm51bGwsIm9yY2hlc3RyYXRvciI6bnVsbCwiZGVidWdBdXRvRml4ZWRRdW90ZXMiOm51bGwsImRlYnVnQXV0b0ZpeGVkUXVvdGVzUmVhc29uIjpudWxsfX0seyJ0eXBlIjoicHJvb2ZBdXRob3JlZCIsImZyb20iOjIyMiwidG8iOjgyOSwiYXR0cnMiOnsiYnkiOiJhaTpjbGF1ZGUifX1d
 {
   "mcpServers": {
     "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "salesforce-dx": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
     }
   }
 }
+Salesforce DX MCP toolsets (all enabled):
+Toolset
+Capability
+core
+Base DX tools (always on)
+orgs
+Manage authorized orgs
+metadata
+Deploy/retrieve metadata
+data
+SOQL queries, record management
+users
+Permission sets, user management
+code-analysis
+Static analysis via Code Analyzer
+lwc-experts
+LWC development, testing, optimization
+aura-experts
+Aura analysis, LWC migration
+experts-validation
+LWC production readiness checks
+devops
+DevOps Center operations
+enrichment
+Metadata component enrichment
+mobile
+Mobile development tools
+testing
+Apex and agent test execution
+scale-products
+Apex performance detection
 ```
 
-<span data-proof="authored" data-by="ai:claude">Research agents use Context7 as the second tier (after local skills) before falling back to web search.</span>
+<span data-proof="authored" data-by="ai:claude">Research agents use Context7 as the second tier (after local skills) before falling back to web search.</span><span data-proof="suggestion" data-id="m1775681196325_7" data-by="ai:claude" data-kind="insert"><span data-proof="authored" data-by="ai:claude">
+Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login web. The server uses DEFAULT_TARGET_ORG — whatever you set with sf config set target-org.</span></span>
 
 ***
 
 ## <span data-proof="authored" data-by="ai:claude">Requirements</span>
 
-* <span data-proof="authored" data-by="ai:claude">Claude Code</span>
+* <span data-proof="authored" data-by="ai:claude">Claude Code</span><span data-proof="suggestion" data-id="m1775681196320_6" data-by="ai:claude" data-kind="insert"><span data-proof="authored" data-by="ai:claude">
+  Node.js (for MCP servers)</span></span>
 
 * <span data-proof="authored" data-by="ai:claude">Git (recommended)</span>
 
-* <span data-proof="authored" data-by="ai:claude">Node.js (for Context7 MCP server)</span>
+* <span data-proof="suggestion" data-id="m1775681196313_5" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">Node.js (for Context7 MCP server)</span></span>
 
 ***
 
@@ -396,3 +433,145 @@ sf-compound-engineering-plugin/
 * <span data-proof="authored" data-by="ai:claude">Inspired by</span> [<span data-proof="authored" data-by="ai:claude">GitHub Spec-Kit</span>](https://github.com/github/spec-kit)
 
 * <span data-proof="authored" data-by="ai:claude">Powered by Claude Code</span>
+
+<!-- PROOF
+{
+  "version": 2,
+  "marks": {
+    "m1775681125163_3": {
+      "kind": "replace",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:45:25.163Z",
+      "range": {
+        "from": 3743,
+        "to": 3851
+      },
+      "content": "14 skills with Salesforce domain knowledge (including Agentforce Agent Script & Prompt Builder)\nMCP integration with Context7 for framework docs + Salesforce DX MCP for live org operations (60+ tools)",
+      "status": "pending"
+    },
+    "m1775681125157_2": {
+      "kind": "replace",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:45:25.157Z",
+      "range": {
+        "from": 4314,
+        "to": 4398
+      },
+      "content": "Classifications: APEX, AUTOMATION, LWC, INTEGRATION, AGENTFORCE SCRIPT BUILDER, AGENTFORCE PROMPT BUILDER, ARCHITECTURE, WORKFLOW, TOOLING",
+      "status": "pending"
+    },
+    "m1775681150499_4": {
+      "kind": "replace",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:45:50.499Z",
+      "range": {
+        "from": 7874,
+        "to": 7883
+      },
+      "content": "14 Skills\nAgentforce Skills\nSkill\nScope\nUse When\nagent-script\nAgentforce Script Builder\nBuilding Agentforce agents — language syntax, blocks, variables, flow control, patterns\nprompt-builder\nAgentforce Prompt Builder\nCreating prompt templates — metadata XML generation, Apex/LWC/API integration, merge fields, grounding",
+      "status": "pending"
+    },
+    "m1775681215356_18": {
+      "kind": "replace",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:55.356Z",
+      "range": {
+        "from": 9866,
+        "to": 9924
+      },
+      "content": "├── .mcp.json                 # MCP server config (Context7 + Salesforce DX)",
+      "status": "pending"
+    },
+    "m1775681215352_17": {
+      "kind": "replace",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:55.352Z",
+      "range": {
+        "from": 11231,
+        "to": 11272
+      },
+      "content": "├── skills/                   # 14 skills",
+      "status": "pending"
+    },
+    "m1775681215346_16": {
+      "kind": "insert",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:55.346Z",
+      "range": {
+        "from": 11322,
+        "to": 11459
+      },
+      "content": "\n│   ├── agent-script/         # Agentforce Agent Script language\n│   ├── prompt-builder/       # Prompt Builder templates & metadata XML",
+      "status": "pending"
+    },
+    "m1775681215338_15": {
+      "kind": "replace",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:55.338Z",
+      "range": {
+        "from": 11937,
+        "to": 12019
+      },
+      "content": "The plugin integrates two MCP servers:\nMCP Server\nPurpose\nTools\nContext7\nFramework documentation lookup\nDocs search, library resolution\nSalesforce DX (@salesforce/mcp)\nLive org operations\n60+ tools — SOQL, deploy, retrieve, code analysis, LWC experts, DevOps, mobile, testing",
+      "status": "pending"
+    },
+    "m1775681196334_9": {
+      "kind": "insert",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:36.334Z",
+      "range": {
+        "from": 12058,
+        "to": 12154
+      },
+      "content": "\n      \"type\": \"http\",\n      \"url\": \"https://mcp.context7.com/mcp\"\n    },\n    \"salesforce-dx\": {",
+      "status": "pending"
+    },
+    "m1775681196329_8": {
+      "kind": "insert",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:36.329Z",
+      "range": {
+        "from": 12243,
+        "to": 12850
+      },
+      "content": "\nSalesforce DX MCP toolsets (all enabled):\nToolset\nCapability\ncore\nBase DX tools (always on)\norgs\nManage authorized orgs\nmetadata\nDeploy/retrieve metadata\ndata\nSOQL queries, record management\nusers\nPermission sets, user management\ncode-analysis\nStatic analysis via Code Analyzer\nlwc-experts\nLWC development, testing, optimization\naura-experts\nAura analysis, LWC migration\nexperts-validation\nLWC production readiness checks\ndevops\nDevOps Center operations\nenrichment\nMetadata component enrichment\nmobile\nMobile development tools\ntesting\nApex and agent test execution\nscale-products\nApex performance detection",
+      "status": "pending"
+    },
+    "m1775681196325_7": {
+      "kind": "insert",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:36.325Z",
+      "range": {
+        "from": 12955,
+        "to": 13123
+      },
+      "content": "\nPrerequisites for Salesforce DX MCP: Authorize an org first with sf org login web. The server uses DEFAULT_TARGET_ORG — whatever you set with sf config set target-org.",
+      "status": "pending"
+    },
+    "m1775681196320_6": {
+      "kind": "insert",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:36.320Z",
+      "range": {
+        "from": 13153,
+        "to": 13179
+      },
+      "content": "\nNode.js (for MCP servers)",
+      "status": "pending"
+    },
+    "m1775681215332_14": {
+      "kind": "replace",
+      "by": "ai:claude",
+      "createdAt": "2026-04-08T20:46:55.332Z",
+      "range": {
+        "from": 13204,
+        "to": 13237
+      },
+      "content": "Salesforce CLI + authorized org (for Salesforce DX MCP — optional, plugin works without it)",
+      "status": "pending"
+    }
+  }
+}
+-->
+
+<!-- PROOF:END -->

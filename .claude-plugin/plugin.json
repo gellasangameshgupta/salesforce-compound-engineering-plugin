@@ -1,6 +1,6 @@
 {
   "name": "sf-compound-engineering",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "Salesforce-focused compound engineering workflow for Claude Code with parallel agent dispatch and institutional knowledge",
   "author": {
     "name": "Gella Sangamesh Gupta",

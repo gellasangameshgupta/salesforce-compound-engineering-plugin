@@ -1,7 +1,8 @@
 {
   "name": "sf-compound-engineering",
+  "displayName": "Salesforce Compound Engineering",
   "version": "3.0.0-alpha.1",
-  "description": "Salesforce-focused compound engineering plugin for Claude Code, Cursor, and Codex. Skills-first V3 architecture with parallel agent dispatch, institutional knowledge compounding, and Apex/LWC/Flow/Integration coverage.",
+  "description": "Salesforce-focused compound engineering plugin for Cursor. Skills-first V3 architecture with parallel agent dispatch, institutional knowledge compounding, and Apex/LWC/Flow/Integration coverage.",
   "author": {
     "name": "Gella Sangamesh Gupta",
     "url": "https://github.com/sangameshgupta"
@@ -11,9 +12,10 @@
   "license": "MIT",
   "keywords": [
     "salesforce",
+    "cursor",
+    "plugin",
     "compound-engineering",
     "skills-first",
-    "multi-platform",
     "apex",
     "lwc",
     "flow",
@@ -21,16 +23,6 @@
     "security",
     "workflow-automation",
     "agentforce",
-    "agent-script",
-    "prompt-builder",
-    "hosted-mcp",
-    "external-client-apps",
-    "mcp-tools"
-  ],
-  "mcpServers": {
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp"
-    }
-  }
+    "knowledge-management"
+  ]
 }

@@ -1,8 +1,10 @@
-# <span data-proof="authored" data-by="ai:claude">SF Compound Engineering Plugin v2.2.0</span>
+# <span data-proof="authored" data-by="ai:claude">SF Compound Engineering Plugin v3.0.0-beta.1</span>
 
-**<span data-proof="authored" data-by="ai:claude">Instruction-Based Compound Engineering for Salesforce</span>** <span data-proof="authored" data-by="ai:claude">— a Claude Code plugin where each iteration becomes smarter than the last through institutional knowledge capture and parallel agent dispatch.</span>
+**<span data-proof="authored" data-by="ai:claude">Instruction-Based Compound Engineering for Salesforce</span>** <span data-proof="authored" data-by="ai:claude">— a multi-platform plugin (Claude Code, Cursor, Codex) where each iteration becomes smarter than the last through institutional knowledge capture and parallel agent dispatch.</span>
 
-<span data-proof="authored" data-by="ai:claude">Inspired by</span> [<span data-proof="authored" data-by="ai:claude">Every's Compound Engineering</span>](https://every.to/chain-of-thought/compound-engineering-how-every-codes-with-agents) <span data-proof="authored" data-by="ai:claude">and</span> [<span data-proof="authored" data-by="ai:claude">GitHub Spec-Kit</span>](https://github.com/github/spec-kit)<span data-proof="authored" data-by="ai:claude">.</span>
+> **v3.0.0 is a BREAKING release.** Skills replace commands, agents flatten under `agents/<name>.agent.md`, and multi-platform manifests ship for Cursor and Codex alongside Claude Code. See [`CHANGELOG.md`](./CHANGELOG.md) for the full migration guide for v2.x users.
+
+Multi-platform Salesforce-focused plugin for compound engineering workflows. See the **Credits** section at the bottom for inspiration sources.
 
 ***
 
@@ -12,22 +14,24 @@
 Brainstorm → Plan (40%) → Deepen → Work (20%) → Review (20%) → Compound (20%) → Repeat
      │            │           │          │              │               │
      │            │           │          │              │               └── Capture to docs/solutions/
-     │            │           │          │              └── Parallel agent dispatch (33 agents)
+     │            │           │          │              └── Parallel agent dispatch (59 agents)
      │            │           │          └── Implement with pre-research + test checks
      │            │           └── Enhance plan with section-level parallel research
-     │            └── Research & design using 12 skills + 5 research agents
+     │            └── Research & design using 45 skills + parallel research agents
      └── Explore requirements through collaborative dialogue
 ```
+
+> <span data-proof="authored" data-by="ai:claude">All seven entry points (`/sf-brainstorm`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-plan`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-deepen`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-work`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-review`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-compound`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-lfg`) are</span> **<span data-proof="authored" data-by="ai:claude">skills</span>** <span data-proof="authored" data-by="ai:claude">in V3 — they auto-route from natural-language phrases via their</span> <span data-proof="authored" data-by="ai:claude">`description`</span> <span data-proof="authored" data-by="ai:claude">frontmatter, and direct slash invocation continues to work.</span>
 
 **<span data-proof="authored" data-by="ai:claude">Each iteration starts smarter</span>** <span data-proof="authored" data-by="ai:claude">because learnings compound into</span> <span data-proof="authored" data-by="ai:claude">`docs/solutions/`, agents, skills, and CLAUDE.md.</span>
 
 ***
 
-## Quick Start
+## <span data-proof="authored" data-by="ai:claude">Quick Start</span>
 
-### Claude Code (Native)
+### <span data-proof="authored" data-by="ai:claude">Claude Code (Native)</span>
 
-```bash
+```bash proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MTY5LCJhdHRycyI6eyJieSI6ImFpOmNsYXVkZSJ9fV0=
 # Add as a Claude Code plugin
 /plugin marketplace add https://github.com/sangameshgupta/sf-compound-engineering-plugin
 
@@ -80,48 +84,23 @@ bunx @sangameshgupta/sf-compound-plugin sync
 
 ### What Gets Converted
 
-| Platform     | Commands                   | Agents                          | Skills                       | MCP Config                |
-| ------------ | -------------------------- | ------------------------------- | ---------------------------- | ------------------------- |
-| **Copilot**  | `.github/skills/`          | `.github/agents/*.agent.md`     | `.github/skills/`            | `copilot-mcp-config.json` |
-| **Cursor**   | Sync only                  | Sync only                       | `.cursor/skills/` (symlinks) | `.cursor/mcp.json`        |
-| **Windsurf** | `workflows/*.md`           | `skills/*/SKILL.md`             | `skills/`                    | `mcp_config.json`         |
-| **Gemini**   | `.gemini/commands/*.toml`  | `.gemini/skills/`               | `.gemini/skills/`            | `settings.json`           |
-| **OpenCode** | `commands/*.md`            | `agents/*.md`                   | `skills/`                    | `opencode.json`           |
-| **Codex**    | `prompts/*.md` + `skills/` | `skills/*/SKILL.md`             | `skills/`                    | `config.toml`             |
-| **Kiro**     | `.kiro/skills/`            | `.kiro/agents/*.json` + prompts | `.kiro/skills/`              | `mcp.json`                |
-| **Droid**    | `commands/*.md`            | `agents/*.md`                   | `skills/`                    | `mcp.json`                |
-| **Pi**       | `prompts/*.md`             | `skills/*/SKILL.md`             | `skills/`                    | `mcp.json`                |
-| **OpenClaw** | `commands/*.md`            | `agents/*.md`                   | `skills/`                    | TS entry point            |
-| **Qwen**     | `commands/*.md`            | `agents/*.yaml`                 | `skills/`                    | N/A                       |
+| Platform                                                           | Commands                   | <span data-proof="authored" data-by="ai:claude">Agents</span> | Skills                                                                   | MCP Config                                                                       |
+| ------------------------------------------------------------------ | -------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| **<span data-proof="authored" data-by="ai:claude">Copilot</span>** | `.github/skills/`          | `.github/agents/*.agent.md`                                   | <span data-proof="authored" data-by="ai:claude">`.github/skills/`</span> | <span data-proof="authored" data-by="ai:claude">`copilot-mcp-config.json`</span> |
+| **Cursor**                                                         | Sync only                  | Sync only                                                     | `.cursor/skills/` (symlinks)                                             | `.cursor/mcp.json`                                                               |
+| **Windsurf**                                                       | `workflows/*.md`           | `skills/*/SKILL.md`                                           | `skills/`                                                                | `mcp_config.json`                                                                |
+| **Gemini**                                                         | `.gemini/commands/*.toml`  | `.gemini/skills/`                                             | `.gemini/skills/`                                                        | `settings.json`                                                                  |
+| **OpenCode**                                                       | `commands/*.md`            | `agents/*.md`                                                 | `skills/`                                                                | `opencode.json`                                                                  |
+| **Codex**                                                          | `prompts/*.md` + `skills/` | `skills/*/SKILL.md`                                           | `skills/`                                                                | `config.toml`                                                                    |
+| **Kiro**                                                           | `.kiro/skills/`            | `.kiro/agents/*.json` + prompts                               | `.kiro/skills/`                                                          | `mcp.json`                                                                       |
+| **Droid**                                                          | `commands/*.md`            | `agents/*.md`                                                 | `skills/`                                                                | `mcp.json`                                                                       |
+| **Pi**                                                             | `prompts/*.md`             | `skills/*/SKILL.md`                                           | `skills/`                                                                | `mcp.json`                                                                       |
+| **OpenClaw**                                                       | `commands/*.md`            | `agents/*.md`                                                 | `skills/`                                                                | TS entry point                                                                   |
+| **Qwen**                                                           | `commands/*.md`            | `agents/*.yaml`                                               | `skills/`                                                                | N/A                                                                              |
 
 The plugin provides:
 
-* **7 slash commands** for the full compound engineering workflow
-
-* **<span data-proof="suggestion" data-id="m1776337295895_18" data-by="ai:claude" data-kind="replace">33 specialized agents</span>** <span data-proof="suggestion" data-id="m1776337295895_18" data-by="ai:claude" data-kind="replace">across 7 categories</span>
-
-* **<span data-proof="suggestion" data-id="m1776337295895_18" data-by="ai:claude" data-kind="replace">12 skills</span>** <span data-proof="suggestion" data-id="m1776337295895_18" data-by="ai:claude" data-kind="replace">with Salesforce domain knowledge</span>
-
-* **<span data-proof="suggestion" data-id="m1776337295895_18" data-by="ai:claude" data-kind="replace">MCP integration</span>** <span data-proof="suggestion" data-id="m1776337295895_18" data-by="ai:claude" data-kind="replace">with Context7 for live framework documentation</span>
-
-* **Institutional knowledge system** in `docs/solutions/` with YAML schema
-
-* **Index-based routing** for low-context, selective agent/skill dispatch
-
-***
-
-## <span data-proof="authored" data-by="ai:claude">How It Works</span>
-
-<span data-proof="authored" data-by="ai:claude">Commands tell Claude the</span> **<span data-proof="authored" data-by="ai:claude">goal</span>** <span data-proof="authored" data-by="ai:claude">and</span> **<span data-proof="authored" data-by="ai:claude">where to find knowledge</span>**<span data-proof="authored" data-by="ai:claude">. Claude decides</span> **<span data-proof="authored" data-by="ai:claude">which agents and skills are relevant</span>** <span data-proof="authored" data-by="ai:claude">for each specific task.</span>
-
-### <span data-proof="authored" data-by="ai:claude">Index-Based Routing</span>
-
-```
-agents/index.md  →  Classification → Dispatch relevant agents in parallel
-skills/index.md  →  Classification → Read only relevant skill sections
-```
-
-<span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">Classifications:</span></span> <span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`APEX`,</span></span> <span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`AUTOMATION`,</span></span> <span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`LWC`,</span></span> <span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`INTEGRATION`,</span></span> <span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`ARCHITECTURE`,</span></span> <span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`WORKFLOW`,</span></span> <span data-proof="suggestion" data-id="m1776337295868_17" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">`TOOLING`</span></span>
+* **       
 
 ***
 
@@ -151,7 +130,7 @@ Plan → Deepen → Work → Review → Resolve → Test → Deploy → Compound
 
 ***
 
-## <span data-proof="suggestion" data-id="m1776337295845_16" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">33 Agents by Category</span></span>
+## 
 
 ### <span data-proof="authored" data-by="ai:claude">Apex (6 agents)</span>
 
@@ -183,18 +162,18 @@ Plan → Deepen → Work → Review → Resolve → Test → Deploy → Compound
 | <span data-proof="authored" data-by="ai:claude">Process Automation Strategist</span> | <span data-proof="authored" data-by="ai:claude">Flow vs Apex decisions</span>          |
 | <span data-proof="authored" data-by="ai:claude">Validation Rule Reviewer</span>      | <span data-proof="authored" data-by="ai:claude">Rule complexity, error messages</span> |
 
-### <span data-proof="suggestion" data-id="m1776337295821_15" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">Integration (4 agents)</span></span>
+### 
 
-| <span data-proof="authored" data-by="ai:claude">Agent</span>                         | <span data-proof="authored" data-by="ai:claude">Checks For</span>                                                                                                                                                                                                                                                                                                                                                         |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <span data-proof="authored" data-by="ai:claude">REST API Architect</span>            | <span data-proof="authored" data-by="ai:claude">Endpoint design, versioning</span>                                                                                                                                                                                                                                                                                                                                        |
-| <span data-proof="authored" data-by="ai:claude">Callout Pattern Reviewer</span>      | <span data-proof="authored" data-by="ai:claude">Named Credentials, retry logic</span>                                                                                                                                                                                                                                                                                                                                     |
-| <span data-proof="authored" data-by="ai:claude">Platform Event Strategist</span>     | <span data-proof="authored" data-by="ai:claude">Event design, replay handling</span>                                                                                                                                                                                                                                                                                                                                      |
-| <span data-proof="authored" data-by="ai:claude">Integration Security Sentinel</span> | <span data-proof="authored" data-by="ai:claude">Auth, certificates, data transit</span><span data-proof="suggestion" data-id="m1776337276974_8" data-by="ai:claude" data-kind="insert"><span data-proof="authored" data-by="ai:claude">
-MCP Server Config Reviewer
-Hosted MCP setup, ECA configuration, OAuth scopes
-MCP Tool Builder
-Custom MCP tool code quality, @InvocableMethod patterns, descriptions</span></span> |
+| <span data-proof="authored" data-by="ai:claude">Agent</span>                         | <span data-proof="authored" data-by="ai:claude">Checks For</span>                       |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| <span data-proof="authored" data-by="ai:claude">REST API Architect</span>            | <span data-proof="authored" data-by="ai:claude">Endpoint design, versioning</span>      |
+| <span data-proof="authored" data-by="ai:claude">Callout Pattern Reviewer</span>      | <span data-proof="authored" data-by="ai:claude">Named Credentials, retry logic</span>   |
+| <span data-proof="authored" data-by="ai:claude">Platform Event Strategist</span>     | <span data-proof="authored" data-by="ai:claude">Event design, replay handling</span>    |
+| <span data-proof="authored" data-by="ai:claude">Integration Security Sentinel</span> | <span data-proof="authored" data-by="ai:claude">Auth, certificates, data transit</span> |
+| MCP Server Config Reviewer                                                           | <br />                                                                                  |
+| Hosted MCP setup, ECA configuration, OAuth scopes                                    | <br />                                                                                  |
+| MCP Tool Builder                                                                     | <br />                                                                                  |
+| Custom MCP tool code quality, @InvocableMethod patterns, descriptions</span></span>  | <br />                                                                                  |
 
 ### <span data-proof="authored" data-by="ai:claude">Architecture (4 agents)</span>
 
@@ -227,39 +206,39 @@ Custom MCP tool code quality, @InvocableMethod patterns, descriptions</span></sp
 
 ***
 
-## <span data-proof="suggestion" data-id="m1776337295795_14" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">12 Skills</span></span>
+## 
 
 ### <span data-proof="authored" data-by="ai:claude">Domain Skills</span>
 
-| <span data-proof="authored" data-by="ai:claude">Skill</span>                  | <span data-proof="authored" data-by="ai:claude">Scope</span>            | <span data-proof="authored" data-by="ai:claude">Use When</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <span data-proof="authored" data-by="ai:claude">`governor-limits`</span>      | <span data-proof="authored" data-by="ai:claude">Universal</span>        | <span data-proof="authored" data-by="ai:claude">Any Apex, Flow, or trigger work</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| <span data-proof="authored" data-by="ai:claude">`apex-patterns`</span>        | <span data-proof="authored" data-by="ai:claude">Apex only</span>        | <span data-proof="authored" data-by="ai:claude">Apex classes, triggers, services</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| <span data-proof="authored" data-by="ai:claude">`flow-patterns`</span>        | <span data-proof="authored" data-by="ai:claude">Automation only</span>  | <span data-proof="authored" data-by="ai:claude">Building any type of Flow</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| <span data-proof="authored" data-by="ai:claude">`lwc-patterns`</span>         | <span data-proof="authored" data-by="ai:claude">LWC only</span>         | <span data-proof="authored" data-by="ai:claude">Lightning Web Components</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| <span data-proof="authored" data-by="ai:claude">`security-guide`</span>       | <span data-proof="authored" data-by="ai:claude">Universal</span>        | <span data-proof="authored" data-by="ai:claude">CRUD/FLS, sharing, permissions</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| <span data-proof="authored" data-by="ai:claude">`integration-patterns`</span> | <span data-proof="authored" data-by="ai:claude">Integration only</span> | <span data-proof="authored" data-by="ai:claude">Callouts, APIs, Platform Events</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| <span data-proof="authored" data-by="ai:claude">`test-factory`</span>         | <span data-proof="authored" data-by="ai:claude">Apex only</span>        | <span data-proof="authored" data-by="ai:claude">Test classes, test data factories</span><span data-proof="suggestion" data-id="m1776337295765_13" data-by="ai:claude" data-kind="insert"><span data-proof="authored" data-by="ai:claude">
-Agentforce Skills
-Skill
-Scope
-Use When
-agent-script
-Agentforce Script Builder
-Building Agentforce agents — syntax, blocks, variables, patterns
-prompt-builder
-Agentforce Prompt Builder
-Prompt templates — metadata XML, merge fields, grounding, deployment
-Hosted MCP Skills
-Skill
-Scope
-Use When
-hosted-mcp-servers
-Hosted MCP
-Setup, ECA configuration, URL patterns, security model, troubleshooting
-mcp-tool-builder
-Hosted MCP
-Building custom MCP tools — Apex @InvocableMethod, Flows, Named Queries, prompt templates</span></span> |
+| <span data-proof="authored" data-by="ai:claude">Skill</span>                                            | <span data-proof="authored" data-by="ai:claude">Scope</span>            | <span data-proof="authored" data-by="ai:claude">Use When</span>                          |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| <span data-proof="authored" data-by="ai:claude">`governor-limits`</span>                                | <span data-proof="authored" data-by="ai:claude">Universal</span>        | <span data-proof="authored" data-by="ai:claude">Any Apex, Flow, or trigger work</span>   |
+| <span data-proof="authored" data-by="ai:claude">`apex-patterns`</span>                                  | <span data-proof="authored" data-by="ai:claude">Apex only</span>        | <span data-proof="authored" data-by="ai:claude">Apex classes, triggers, services</span>  |
+| <span data-proof="authored" data-by="ai:claude">`flow-patterns`</span>                                  | <span data-proof="authored" data-by="ai:claude">Automation only</span>  | <span data-proof="authored" data-by="ai:claude">Building any type of Flow</span>         |
+| <span data-proof="authored" data-by="ai:claude">`lwc-patterns`</span>                                   | <span data-proof="authored" data-by="ai:claude">LWC only</span>         | <span data-proof="authored" data-by="ai:claude">Lightning Web Components</span>          |
+| <span data-proof="authored" data-by="ai:claude">`security-guide`</span>                                 | <span data-proof="authored" data-by="ai:claude">Universal</span>        | <span data-proof="authored" data-by="ai:claude">CRUD/FLS, sharing, permissions</span>    |
+| <span data-proof="authored" data-by="ai:claude">`integration-patterns`</span>                           | <span data-proof="authored" data-by="ai:claude">Integration only</span> | <span data-proof="authored" data-by="ai:claude">Callouts, APIs, Platform Events</span>   |
+| <span data-proof="authored" data-by="ai:claude">`test-factory`</span>                                   | <span data-proof="authored" data-by="ai:claude">Apex only</span>        | <span data-proof="authored" data-by="ai:claude">Test classes, test data factories</span> |
+| Agentforce Skills                                                                                       | <br />                                                                  | <br />                                                                                   |
+| Skill                                                                                                   | <br />                                                                  | <br />                                                                                   |
+| Scope                                                                                                   | <br />                                                                  | <br />                                                                                   |
+| Use When                                                                                                | <br />                                                                  | <br />                                                                                   |
+| agent-script                                                                                            | <br />                                                                  | <br />                                                                                   |
+| Agentforce Script Builder                                                                               | <br />                                                                  | <br />                                                                                   |
+| Building Agentforce agents — syntax, blocks, variables, patterns                                        | <br />                                                                  | <br />                                                                                   |
+| prompt-builder                                                                                          | <br />                                                                  | <br />                                                                                   |
+| Agentforce Prompt Builder                                                                               | <br />                                                                  | <br />                                                                                   |
+| Prompt templates — metadata XML, merge fields, grounding, deployment                                    | <br />                                                                  | <br />                                                                                   |
+| Hosted MCP Skills                                                                                       | <br />                                                                  | <br />                                                                                   |
+| Skill                                                                                                   | <br />                                                                  | <br />                                                                                   |
+| Scope                                                                                                   | <br />                                                                  | <br />                                                                                   |
+| Use When                                                                                                | <br />                                                                  | <br />                                                                                   |
+| hosted-mcp-servers                                                                                      | <br />                                                                  | <br />                                                                                   |
+| Hosted MCP                                                                                              | <br />                                                                  | <br />                                                                                   |
+| Setup, ECA configuration, URL patterns, security model, troubleshooting                                 | <br />                                                                  | <br />                                                                                   |
+| mcp-tool-builder                                                                                        | <br />                                                                  | <br />                                                                                   |
+| Hosted MCP                                                                                              | <br />                                                                  | <br />                                                                                   |
+| Building custom MCP tools — Apex @InvocableMethod, Flows, Named Queries, prompt templates</span></span> | <br />                                                                  | <br />                                                                                   |
 
 ### <span data-proof="authored" data-by="ai:claude">Workflow Skills</span>
 
@@ -362,7 +341,7 @@ sf-compound-engineering-plugin/
 
 ## <span data-proof="authored" data-by="ai:claude">MCP Integration</span>
 
-<span data-proof="suggestion" data-id="m1775681196339_10" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">The plugin includes a Context7 MCP server for live framework documentation lookup:</span></span>
+
 
 ```json proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MzcsImF0dHJzIjp7ImJ5IjoiYWk6Y2xhdWRlIn19LHsidHlwZSI6InByb29mU3VnZ2VzdGlvbiIsImZyb20iOjM3LCJ0byI6MTMzLCJhdHRycyI6eyJpZCI6Im0xNzc1NjgxMTk2MzM0XzkiLCJraW5kIjoiaW5zZXJ0IiwiYnkiOiJhaTpjbGF1ZGUiLCJjb250ZW50IjoiXG4gICAgICBcInR5cGVcIjogXCJodHRwXCIsXG4gICAgICBcInVybFwiOiBcImh0dHBzOi8vbWNwLmNvbnRleHQ3LmNvbS9tY3BcIlxuICAgIH0sXG4gICAgXCJzYWxlc2ZvcmNlLWR4XCI6IHsiLCJzdGF0dXMiOiJwZW5kaW5nIiwiY3JlYXRlZEF0IjoiMjAyNi0wNC0wOFQyMDo0NjozNi4zMzRaIiwicnVuSWQiOm51bGwsImZvY3VzQXJlYUlkIjpudWxsLCJmb2N1c0FyZWFOYW1lIjpudWxsLCJhZ2VudElkIjpudWxsLCJwcm9wb3NhbElkIjpudWxsLCJwcm92aXNpb25hbCI6bnVsbCwib3JjaGVzdHJhdG9yIjpudWxsLCJkZWJ1Z0F1dG9GaXhlZFF1b3RlcyI6bnVsbCwiZGVidWdBdXRvRml4ZWRRdW90ZXNSZWFzb24iOm51bGx9fSx7InR5cGUiOiJwcm9vZlN1Z2dlc3Rpb24iLCJmcm9tIjoyMjIsInRvIjo4MjksImF0dHJzIjp7ImlkIjoibTE3NzU2ODExOTYzMjlfOCIsImtpbmQiOiJpbnNlcnQiLCJieSI6ImFpOmNsYXVkZSIsImNvbnRlbnQiOiJcblNhbGVzZm9yY2UgRFggTUNQIHRvb2xzZXRzIChhbGwgZW5hYmxlZCk6XG5Ub29sc2V0XG5DYXBhYmlsaXR5XG5jb3JlXG5CYXNlIERYIHRvb2xzIChhbHdheXMgb24pXG5vcmdzXG5NYW5hZ2UgYXV0aG9yaXplZCBvcmdzXG5tZXRhZGF0YVxuRGVwbG95L3JldHJpZXZlIG1ldGFkYXRhXG5kYXRhXG5TT1FMIHF1ZXJpZXMsIHJlY29yZCBtYW5hZ2VtZW50XG51c2Vyc1xuUGVybWlzc2lvbiBzZXRzLCB1c2VyIG1hbmFnZW1lbnRcbmNvZGUtYW5hbHlzaXNcblN0YXRpYyBhbmFseXNpcyB2aWEgQ29kZSBBbmFseXplclxubHdjLWV4cGVydHNcbkxXQyBkZXZlbG9wbWVudCwgdGVzdGluZywgb3B0aW1pemF0aW9uXG5hdXJhLWV4cGVydHNcbkF1cmEgYW5hbHlzaXMsIExXQyBtaWdyYXRpb25cbmV4cGVydHMtdmFsaWRhdGlvblxuTFdDIHByb2R1Y3Rpb24gcmVhZGluZXNzIGNoZWNrc1xuZGV2b3BzXG5EZXZPcHMgQ2VudGVyIG9wZXJhdGlvbnNcbmVucmljaG1lbnRcbk1ldGFkYXRhIGNvbXBvbmVudCBlbnJpY2htZW50XG5tb2JpbGVcbk1vYmlsZSBkZXZlbG9wbWVudCB0b29sc1xudGVzdGluZ1xuQXBleCBhbmQgYWdlbnQgdGVzdCBleGVjdXRpb25cbnNjYWxlLXByb2R1Y3RzXG5BcGV4IHBlcmZvcm1hbmNlIGRldGVjdGlvbiIsInN0YXR1cyI6InBlbmRpbmciLCJjcmVhdGVkQXQiOiIyMDI2LTA0LTA4VDIwOjQ2OjM2LjMyOVoiLCJydW5JZCI6bnVsbCwiZm9jdXNBcmVhSWQiOm51bGwsImZvY3VzQXJlYU5hbWUiOm51bGwsImFnZW50SWQiOm51bGwsInByb3Bvc2FsSWQiOm51bGwsInByb3Zpc2lvbmFsIjpudWxsLCJvcmNoZXN0cmF0b3IiOm51bGwsImRlYnVnQXV0b0ZpeGVkUXVvdGVzIjpudWxsLCJkZWJ1Z0F1dG9GaXhlZFF1b3Rlc1JlYXNvbiI6bnVsbH19XQ==
 {
@@ -422,7 +401,7 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
 
 * <span data-proof="authored" data-by="ai:claude">Git (recommended)</span>
 
-* <span data-proof="suggestion" data-id="m1775681196313_5" data-by="ai:claude" data-kind="replace"><span data-proof="authored" data-by="ai:claude">Node.js (for Context7 MCP server)</span></span>
+* 
 
 ***
 
@@ -462,125 +441,70 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
 {
   "version": 2,
   "marks": {
-    "m1776337325799_49": {
+    "m1777279526790_2": {
       "kind": "replace",
       "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.799Z",
+      "createdAt": "2026-04-27T08:45:26.790Z",
       "range": {
-        "from": 3698,
-        "to": 3851
+        "from": 520,
+        "to": 581
       },
-      "content": "35 specialized agents across 7 categories\n16 skills with Salesforce domain knowledge (including Agentforce, Hosted MCP, and tool building)\nMCP integration with Context7 for framework docs + Salesforce DX for live org operations (60+ tools)",
+      "content": "Multi-platform Salesforce-focused plugin for compound engineering workflows. See the Credits section at the bottom for inspiration sources.",
       "status": "pending"
     },
-    "m1776337325773_48": {
+    "m1777125750945_7": {
       "kind": "replace",
       "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.773Z",
+      "createdAt": "2026-04-25T14:02:30.945Z",
       "range": {
-        "from": 4314,
-        "to": 4398
+        "from": 4181,
+        "to": 4467
       },
-      "content": "Classifications: APEX, AUTOMATION, LWC, INTEGRATION, HOSTED MCP, AGENTFORCE SCRIPT BUILDER, AGENTFORCE PROMPT BUILDER, ARCHITECTURE, WORKFLOW, TOOLING",
+      "content": "7 core workflow skills (/sf-brainstorm, /sf-plan, /sf-deepen, /sf-work, /sf-review, /sf-compound, /sf-lfg) — formerly commands in v2.x; now skills with auto-routing trigger phrases\n45 skills total — 7 core + 11 Salesforce domain knowledge + 5 workflow support + 22 V3 capability ports (sf-debug, sf-doc-review, sf-pr-description, sf-resolve-pr-feedback, etc.)\n59 specialized agents in a flat agents/sf-*.agent.md layout — 35 Salesforce-specific (Apex / Flow / LWC / Integration / Architecture / Research / Workflow) + 24 V3-ported review/research personas\nMulti-platform manifests for Claude Code, Cursor, and Codex (.claude-plugin/, .cursor-plugin/, .codex-plugin/)\nMCP integration with Context7 and Salesforce DX (@salesforce/mcp — 60+ live-org tools)\nInstitutional knowledge system in docs/solutions/ with YAML frontmatter validated against schema.yaml",
       "status": "pending"
     },
-    "m1776337325760_47": {
+    "m1776337295868_17": {
       "kind": "replace",
       "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.760Z",
+      "createdAt": "2026-04-25T14:01:23.933Z",
       "range": {
-        "from": 5311,
-        "to": 5332
+        "from": 4860,
+        "to": 4944
       },
-      "content": "35 Agents by Category",
+      "content": "Classifications: APEX, AUTOMATION, LWC, INTEGRATION, ARCHITECTURE, WORKFLOW, TOOLING",
       "status": "pending"
     },
-    "m1776337325739_46": {
+    "m1777125750938_6": {
       "kind": "replace",
       "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.739Z",
+      "createdAt": "2026-04-25T14:02:30.938Z",
       "range": {
-        "from": 6378,
-        "to": 6400
+        "from": 5857,
+        "to": 5878
       },
-      "content": "Integration (6 agents)",
+      "content": "59 Agents (flat layout, V3-ported)\nAfter v3.0.0 all agents live in a flat agents/ directory and are named sf-<name>.agent.md. The topical groupings below are documentation aids, not filesystem paths. See agents/index.md for the complete index including the 24 V3-ported review/research personas (sf-correctness-reviewer, sf-maintainability-reviewer, sf-testing-reviewer, sf-project-standards-reviewer, sf-architecture-strategist, sf-feasibility-reviewer, sf-coherence-reviewer, etc.).",
       "status": "pending"
     },
-    "m1776337276974_8": {
-      "kind": "insert",
-      "by": "ai:claude",
-      "createdAt": "2026-04-16T11:01:16.974Z",
-      "range": {
-        "from": 6678,
-        "to": 6842
-      },
-      "content": "\nMCP Server Config Reviewer\nHosted MCP setup, ECA configuration, OAuth scopes\nMCP Tool Builder\nCustom MCP tool code quality, @InvocableMethod patterns, descriptions",
-      "status": "pending"
-    },
-    "m1776337325714_45": {
+    "m1776337295821_15": {
       "kind": "replace",
       "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.714Z",
+      "createdAt": "2026-04-25T14:01:23.933Z",
       "range": {
-        "from": 8038,
-        "to": 8047
+        "from": 6924,
+        "to": 6946
       },
-      "content": "16 Skills",
+      "content": "Integration (4 agents)",
       "status": "pending"
     },
-    "m1776337295765_13": {
-      "kind": "insert",
-      "by": "ai:claude",
-      "createdAt": "2026-04-16T11:01:35.765Z",
-      "range": {
-        "from": 8571,
-        "to": 9083
-      },
-      "content": "\nAgentforce Skills\nSkill\nScope\nUse When\nagent-script\nAgentforce Script Builder\nBuilding Agentforce agents — syntax, blocks, variables, patterns\nprompt-builder\nAgentforce Prompt Builder\nPrompt templates — metadata XML, merge fields, grounding, deployment\nHosted MCP Skills\nSkill\nScope\nUse When\nhosted-mcp-servers\nHosted MCP\nSetup, ECA configuration, URL patterns, security model, troubleshooting\nmcp-tool-builder\nHosted MCP\nBuilding custom MCP tools — Apex @InvocableMethod, Flows, Named Queries, prompt templates",
-      "status": "pending"
-    },
-    "m1776337325686_44": {
+    "m1777125750930_5": {
       "kind": "replace",
       "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.686Z",
+      "createdAt": "2026-04-25T14:02:30.930Z",
       "range": {
-        "from": 11460,
-        "to": 11501
+        "from": 8622,
+        "to": 8631
       },
-      "content": "├── agents/                   # 35 agents",
-      "status": "pending"
-    },
-    "m1776337325659_43": {
-      "kind": "replace",
-      "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.659Z",
-      "range": {
-        "from": 11700,
-        "to": 11752
-      },
-      "content": "│   ├── integration/          # 6 integration agents",
-      "status": "pending"
-    },
-    "m1776337325630_42": {
-      "kind": "replace",
-      "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.630Z",
-      "range": {
-        "from": 11907,
-        "to": 11948
-      },
-      "content": "├── skills/                   # 16 skills",
-      "status": "pending"
-    },
-    "m1776337307655_32": {
-      "kind": "insert",
-      "by": "ai:claude",
-      "createdAt": "2026-04-16T11:01:47.655Z",
-      "range": {
-        "from": 12167,
-        "to": 12449
-      },
-      "content": "\n│   ├── agent-script/         # Agentforce Agent Script language\n│   ├── prompt-builder/       # Prompt Builder templates & metadata XML\n│   ├── hosted-mcp-servers/   # Salesforce Hosted MCP Server setup & config\n│   ├── mcp-tool-builder/     # Custom MCP tool development patterns",
+      "content": "45 Skills\n7 core workflow skills + 11 Salesforce domain knowledge skills + 5 workflow support skills + 22 V3-ported skills (sf-debug, sf-doc-review, sf-pr-description, sf-resolve-pr-feedback, sf-update, sf-setup, sf-sessions family, sf-clean-gone-branches, sf-commit, sf-commit-push-pr, sf-ideate, sf-optimize, sf-agent-native-architecture, sf-agent-native-audit, sf-compound-refresh, sf-release-notes, sf-report-bug, sf-slack-research, sf-proof, sf-demo-reel). See skills/index.md for the complete index.",
       "status": "pending"
     },
     "m1775681196339_10": {
@@ -588,8 +512,8 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
       "by": "ai:claude",
       "createdAt": "2026-04-16T11:00:40.311Z",
       "range": {
-        "from": 12758,
-        "to": 12840
+        "from": 13322,
+        "to": 13404
       },
       "content": "The plugin includes a Context7 MCP server for live framework documentation lookup:",
       "status": "pending"
@@ -599,8 +523,8 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
       "by": "ai:claude",
       "createdAt": "2026-04-08T20:46:36.334Z",
       "range": {
-        "from": 12879,
-        "to": 12975
+        "from": 13443,
+        "to": 13539
       },
       "content": "\n      \"type\": \"http\",\n      \"url\": \"https://mcp.context7.com/mcp\"\n    },\n    \"salesforce-dx\": {",
       "status": "pending"
@@ -610,8 +534,8 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
       "by": "ai:claude",
       "createdAt": "2026-04-08T20:46:36.329Z",
       "range": {
-        "from": 13064,
-        "to": 13671
+        "from": 13628,
+        "to": 14235
       },
       "content": "\nSalesforce DX MCP toolsets (all enabled):\nToolset\nCapability\ncore\nBase DX tools (always on)\norgs\nManage authorized orgs\nmetadata\nDeploy/retrieve metadata\ndata\nSOQL queries, record management\nusers\nPermission sets, user management\ncode-analysis\nStatic analysis via Code Analyzer\nlwc-experts\nLWC development, testing, optimization\naura-experts\nAura analysis, LWC migration\nexperts-validation\nLWC production readiness checks\ndevops\nDevOps Center operations\nenrichment\nMetadata component enrichment\nmobile\nMobile development tools\ntesting\nApex and agent test execution\nscale-products\nApex performance detection",
       "status": "pending"
@@ -621,21 +545,10 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
       "by": "ai:claude",
       "createdAt": "2026-04-08T20:46:36.325Z",
       "range": {
-        "from": 13777,
-        "to": 13944
+        "from": 14341,
+        "to": 14508
       },
       "content": "\nPrerequisites for Salesforce DX MCP: Authorize an org first with sf org login web. The server uses DEFAULT_TARGET_ORG — whatever you set with sf config set target-org.",
-      "status": "pending"
-    },
-    "m1776337325595_41": {
-      "kind": "insert",
-      "by": "ai:claude",
-      "createdAt": "2026-04-16T11:02:05.595Z",
-      "range": {
-        "from": 13944,
-        "to": 14735
-      },
-      "content": "\nSalesforce Hosted MCP Servers (GA April 2026)\nThe plugin also provides comprehensive guidance for Salesforce's cloud-hosted MCP infrastructure — a separate capability from the DX MCP server above. Hosted MCP Servers let AI clients (Claude, ChatGPT, Cursor) access Salesforce data directly via OAuth.\nWhat\nSkill\nPurpose\nSetup & Config\nhosted-mcp-servers\nECA setup, URL patterns, OAuth scopes, security model, troubleshooting\nTool Development\nmcp-tool-builder\nBuilding custom MCP tools with Apex @InvocableMethod, Flows, Named Queries\nAvailable standard servers: platform/sobject-reads, platform/sobject-all, tableau-next, data-cloud-sql, plus custom servers.\nNote: Hosted MCP Servers are configured per-org in Setup (not in .mcp.json). See the skills for full setup and development guidance.",
       "status": "pending"
     },
     "m1775681196320_6": {
@@ -643,8 +556,8 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
       "by": "ai:claude",
       "createdAt": "2026-04-08T20:46:36.320Z",
       "range": {
-        "from": 14766,
-        "to": 14791
+        "from": 14539,
+        "to": 14564
       },
       "content": "\nNode.js (for MCP servers)",
       "status": "pending"
@@ -654,8 +567,8 @@ Prerequisites for Salesforce DX MCP: Authorize an org first with sf org login we
       "by": "ai:claude",
       "createdAt": "2026-04-16T11:00:40.311Z",
       "range": {
-        "from": 14816,
-        "to": 14849
+        "from": 14589,
+        "to": 14622
       },
       "content": "Node.js (for Context7 MCP server)",
       "status": "pending"

@@ -1,61 +1,63 @@
 ---
 name: mcp-tool-builder
-description: Building custom MCP server tools — Apex InvocableMethod actions, Flow tools, Named Query APIs, prompt templates, and testing patterns
+description: Building custom MCP server tools — Apex InvocableMethod, Flow tools, prompt templates (with real-world gotchas), dual architecture patterns, and testing
 scope: HOSTED_MCP
 ---
 
-# <span data-proof="authored" data-by="ai:claude">MCP Tool Builder</span>
+# MCP Tool Builder
 
-**<span data-proof="authored" data-by="ai:claude">SCOPE: HOSTED_MCP</span>** <span data-proof="authored" data-by="ai:claude">- This skill applies to building custom tools for Salesforce Hosted MCP Servers.
-**Use when:**</span> <span data-proof="authored" data-by="ai:claude">Creating Apex</span> <span data-proof="authored" data-by="ai:claude">`@InvocableMethod`</span> <span data-proof="authored" data-by="ai:claude">actions, Flow-based tools, Named Query APIs, or prompt templates that will be exposed as MCP tools to AI clients.</span>
+**SCOPE: HOSTED_MCP** - This skill applies to building custom tools for Salesforce Hosted MCP Servers.
+**Use when:** Creating Apex `@InvocableMethod` actions, Flow-based tools, Named Query APIs, or prompt templates for MCP exposure.
 
-***
+---
 
-<span data-proof="authored" data-by="ai:claude">Custom MCP servers expose backend logic as tools that AI clients (Claude, ChatGPT, Cursor) can invoke. Three types of backend logic can become MCP tools.</span>
+Custom MCP servers expose backend logic as tools that AI clients (Claude, ChatGPT, Cursor) can invoke.
 
-***
+**CRITICAL WARNING:** MCP and Agentforce use fundamentally different orchestration models. Code designed for Agentforce will break on MCP unless adapted. See "MCP vs Agentforce Architecture" section.
 
-## <span data-proof="authored" data-by="ai:claude">Tool Types</span>
+---
 
-| <span data-proof="authored" data-by="ai:claude">Tool Type</span>                 | <span data-proof="authored" data-by="ai:claude">Backend</span>                                                                                 | <span data-proof="authored" data-by="ai:claude">Best For</span>                                        | <span data-proof="authored" data-by="ai:claude">Complexity</span> |
-| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| **<span data-proof="authored" data-by="ai:claude">Apex Invocable Action</span>** | <span data-proof="authored" data-by="ai:claude">`@InvocableMethod`</span> <span data-proof="authored" data-by="ai:claude">global method</span> | <span data-proof="authored" data-by="ai:claude">Complex logic, orchestration, external callouts</span> | <span data-proof="authored" data-by="ai:claude">High</span>       |
-| **<span data-proof="authored" data-by="ai:claude">Flow Action</span>**           | <span data-proof="authored" data-by="ai:claude">Autolaunched Flow</span>                                                                       | <span data-proof="authored" data-by="ai:claude">Declarative logic, admin-maintainable</span>           | <span data-proof="authored" data-by="ai:claude">Medium</span>     |
-| **<span data-proof="authored" data-by="ai:claude">Named Query API</span>**       | <span data-proof="authored" data-by="ai:claude">SOQL query with bind variables</span>                                                          | <span data-proof="authored" data-by="ai:claude">Read-only data retrieval</span>                        | <span data-proof="authored" data-by="ai:claude">Low</span>        |
+## Tool Types
 
-### <span data-proof="authored" data-by="ai:claude">Decision Guide</span>
+| Tool Type | Backend | Best For |
+|-----------|---------|----------|
+| **Apex Invocable Action** | `global` `@InvocableMethod` | Complex logic, orchestration, external callouts |
+| **AuraEnabled Method** | `@AuraEnabled` methods | Reusing existing LWC controllers |
+| **Apex REST Endpoint** | `@RestResource` classes | Reusing existing custom REST APIs |
+| **Flow Action** | Autolaunched Flow | Declarative, admin-maintainable logic |
+| **Named Query API** | Admin-defined SOQL | Controlled read-only data access |
+| **API Catalog Endpoint** | Cataloged REST APIs | Connect APIs (Billing, CPQ, Field Service, Health Cloud) |
+
+### Decision Guide
 
 ```
 Is the logic read-only SOQL?
   → Yes → Named Query API
   → No → Does it need code (callouts, complex logic, multi-step)?
-    → Yes → Apex Invocable Action
-    → No → Flow Action
+    → Yes → Do you have an existing @AuraEnabled or @RestResource class?
+      → Yes → Reuse it as an MCP tool
+      → No → New Apex @InvocableMethod (global)
+    → No → Flow Action (autolaunched only)
 ```
 
-***
+---
 
-## <span data-proof="authored" data-by="ai:claude">Apex Invocable Action Tools</span>
+## Apex Invocable Action Tools
 
-<span data-proof="authored" data-by="ai:claude">Apex</span> <span data-proof="authored" data-by="ai:claude">`@InvocableMethod`</span> <span data-proof="authored" data-by="ai:claude">classes are the most powerful custom MCP tool type. The method's input/output classes define the MCP tool's parameter schema.</span>
+### Requirements — ALL of These Are Mandatory
 
-### <span data-proof="authored" data-by="ai:claude">Requirements</span>
+- **Class** must be `global` (not `public`) — `public` classes are invisible to MCP
+- **Method** must be `global` with `@InvocableMethod`
+- **All inner classes** (Request/Result) must be `global`
+- **All fields** in inner classes must be `global`
+- Use `with sharing` for user-context enforcement
+- Use `WITH SECURITY_ENFORCED` in all SOQL
 
-* <span data-proof="authored" data-by="ai:claude">Class must be</span> <span data-proof="authored" data-by="ai:claude">`global`</span> <span data-proof="authored" data-by="ai:claude">(not</span> <span data-proof="authored" data-by="ai:claude">`public`) for MCP exposure</span>
+> **Real-world issue:** `public` classes deploy fine but silently don't appear as MCP tools. There is no error — the tool just doesn't show up. Always use `global`.
 
-* <span data-proof="authored" data-by="ai:claude">Method must use</span> <span data-proof="authored" data-by="ai:claude">`@InvocableMethod`</span> <span data-proof="authored" data-by="ai:claude">annotation</span>
+### Basic Scaffold
 
-* <span data-proof="authored" data-by="ai:claude">Input/output variables use</span> <span data-proof="authored" data-by="ai:claude">`@InvocableVariable`</span> <span data-proof="authored" data-by="ai:claude">with</span> **<span data-proof="authored" data-by="ai:claude">descriptive descriptions</span>** <span data-proof="authored" data-by="ai:claude">— AI clients read these to understand parameters</span>
-
-* <span data-proof="authored" data-by="ai:claude">Accept</span> <span data-proof="authored" data-by="ai:claude">`List<>`</span> <span data-proof="authored" data-by="ai:claude">input and return</span> <span data-proof="authored" data-by="ai:claude">`List<>`</span> <span data-proof="authored" data-by="ai:claude">output (bulk-safe pattern)</span>
-
-* <span data-proof="authored" data-by="ai:claude">Use</span> <span data-proof="authored" data-by="ai:claude">`with sharing`</span> <span data-proof="authored" data-by="ai:claude">for user-context enforcement</span>
-
-* <span data-proof="authored" data-by="ai:claude">Use</span> <span data-proof="authored" data-by="ai:claude">`WITH SECURITY_ENFORCED`</span> <span data-proof="authored" data-by="ai:claude">in all SOQL</span>
-
-### <span data-proof="authored" data-by="ai:claude">Basic Scaffold</span>
-
-```apex proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MzA1MiwiYXR0cnMiOnsiYnkiOiJhaTpjbGF1ZGUifX1d
+```apex
 global with sharing class AccountReviewTool {
 
     @InvocableMethod(
@@ -71,7 +73,7 @@ global with sharing class AccountReviewTool {
         }
 
         Map<Id, Account> accounts = new Map<Id, Account>([
-            SELECT Id, Name, Industry, AnnualRevenue, NumberOfEmployees,
+            SELECT Id, Name, Industry, AnnualRevenue,
                 (SELECT Id, Name, Amount, StageName, CloseDate FROM Opportunities WHERE IsClosed = false),
                 (SELECT Id, Subject, Status, Priority FROM Cases WHERE IsClosed = false ORDER BY CreatedDate DESC LIMIT 5),
                 (SELECT Id, Name, Title, Email FROM Contacts ORDER BY CreatedDate DESC LIMIT 5)
@@ -136,460 +138,377 @@ global with sharing class AccountReviewTool {
 }
 ```
 
-### <span data-proof="authored" data-by="ai:claude">Common Tool Patterns</span>
+### Accept Both IDs and Human-Readable Identifiers
 
-#### <span data-proof="authored" data-by="ai:claude">Record Retrieval Tool</span>
+> **Real-world issue:** AI clients pass Case Numbers like `00001024`, not Salesforce IDs. Tools that only accept 18-char IDs break.
 
-```apex proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MjYwMCwiYXR0cnMiOnsiYnkiOiJhaTpjbGF1ZGUifX1d
-global with sharing class ContactLookupTool {
+```apex
+@InvocableVariable(required=true
+    description='Case ID (18-char Salesforce record ID) or Case Number (e.g. 00001024). Accepts either format.')
+global String caseId;
 
-    @InvocableMethod(
-        label='Lookup Contacts'
-        description='Searches for contacts by name, email, or account. Returns matching contact records with key fields.'
-    )
-    global static List<ContactResult> lookupContacts(List<ContactQuery> queries) {
-        List<ContactResult> results = new List<ContactResult>();
-
-        for (ContactQuery q : queries) {
-            ContactResult result = new ContactResult();
-            result.contacts = new List<ContactInfo>();
-
-            String searchClause = '';
-            List<Object> binds = new List<Object>();
-
-            if (String.isNotBlank(q.searchName)) {
-                String nameFilter = '%' + q.searchName + '%';
-                List<Contact> contacts = [
-                    SELECT Id, Name, Email, Phone, Title, Account.Name
-                    FROM Contact
-                    WHERE Name LIKE :nameFilter
-                    WITH SECURITY_ENFORCED
-                    LIMIT 20
-                ];
-                for (Contact c : contacts) {
-                    result.contacts.add(new ContactInfo(c));
-                }
-            }
-
-            result.matchCount = result.contacts.size();
-            results.add(result);
-        }
-
-        return results;
+// Helper to detect format
+private static Boolean isSalesforceId(String input) {
+    if (input == null || (input.length() != 15 && input.length() != 18)) {
+        return false;
     }
-
-    global class ContactQuery {
-        @InvocableVariable(required=true description='Name to search for (partial match supported)')
-        global String searchName;
+    try {
+        Id.valueOf(input);
+        return true;
+    } catch (StringException e) {
+        return false;
     }
+}
 
-    global class ContactResult {
-        @InvocableVariable(description='Number of matching contacts found')
-        global Integer matchCount;
-
-        @InvocableVariable(description='List of matching contact records')
-        global List<ContactInfo> contacts;
-    }
-
-    global class ContactInfo {
-        @InvocableVariable(description='Contact record ID')
-        global String contactId;
-
-        @InvocableVariable(description='Full name')
-        global String name;
-
-        @InvocableVariable(description='Email address')
-        global String email;
-
-        @InvocableVariable(description='Phone number')
-        global String phone;
-
-        @InvocableVariable(description='Job title')
-        global String title;
-
-        @InvocableVariable(description='Parent account name')
-        global String accountName;
-
-        global ContactInfo() {}
-
-        global ContactInfo(Contact c) {
-            this.contactId = c.Id;
-            this.name = c.Name;
-            this.email = c.Email;
-            this.phone = c.Phone;
-            this.title = c.Title;
-            this.accountName = c.Account?.Name;
-        }
-    }
+// Usage:
+if (isSalesforceId(req.caseId)) {
+    cases = [SELECT Id FROM Case WHERE Id = :req.caseId WITH SECURITY_ENFORCED];
+} else {
+    cases = [SELECT Id FROM Case WHERE CaseNumber = :req.caseId WITH SECURITY_ENFORCED];
 }
 ```
 
-#### <span data-proof="authored" data-by="ai:claude">Record Mutation Tool</span>
+### Return Formatted Text, Not Raw JSON
 
-```apex proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MjY4NCwiYXR0cnMiOnsiYnkiOiJhaTpjbGF1ZGUifX1d
-global with sharing class CaseEscalationTool {
+> **Real-world issue:** Claude does not auto-apply prompt template formatting. Pre-format output server-side.
 
-    @InvocableMethod(
-        label='Escalate Case'
-        description='Escalates a support case by updating priority, assigning to escalation queue, and adding an internal comment with the escalation reason'
-    )
-    global static List<EscalationResult> escalateCase(List<EscalationRequest> requests) {
-        List<EscalationResult> results = new List<EscalationResult>();
+```apex
+// BAD: Raw data — AI formats unpredictably
+result.data = JSON.serialize(caseList);
 
-        for (EscalationRequest req : requests) {
-            EscalationResult result = new EscalationResult();
-
-            try {
-                Case c = [
-                    SELECT Id, CaseNumber, Priority, Status, OwnerId
-                    FROM Case
-                    WHERE Id = :req.caseId
-                    WITH SECURITY_ENFORCED
-                ];
-
-                c.Priority = 'High';
-                c.Status = 'Escalated';
-
-                SObjectAccessDecision decision = Security.stripInaccessible(
-                    AccessType.UPDATABLE, new List<Case>{ c }
-                );
-                update decision.getRecords();
-
-                if (String.isNotBlank(req.reason)) {
-                    CaseComment comment = new CaseComment(
-                        ParentId = req.caseId,
-                        CommentBody = 'Escalated: ' + req.reason,
-                        IsPublished = false
-                    );
-                    insert comment;
-                }
-
-                result.success = true;
-                result.caseNumber = c.CaseNumber;
-                result.newPriority = 'High';
-                result.newStatus = 'Escalated';
-            } catch (Exception e) {
-                result.success = false;
-                result.errorMessage = e.getMessage();
-            }
-
-            results.add(result);
-        }
-
-        return results;
-    }
-
-    global class EscalationRequest {
-        @InvocableVariable(required=true description='Case record ID to escalate')
-        global String caseId;
-
-        @InvocableVariable(description='Reason for escalation — will be added as an internal comment')
-        global String reason;
-    }
-
-    global class EscalationResult {
-        @InvocableVariable(description='Whether the escalation succeeded')
-        global Boolean success;
-
-        @InvocableVariable(description='Case number of the escalated case')
-        global String caseNumber;
-
-        @InvocableVariable(description='Updated priority value')
-        global String newPriority;
-
-        @InvocableVariable(description='Updated status value')
-        global String newStatus;
-
-        @InvocableVariable(description='Error message if escalation failed')
-        global String errorMessage;
-    }
-}
+// GOOD: Pre-formatted — AI presents directly
+result.formattedOutput = '## Resolution Briefing\n\n' +
+    '**Root Cause:** ' + rootCause + '\n\n' +
+    '**Recommended Resolution:**\n' + resolution + '\n\n' +
+    '**Similar Cases:** ' + similarCasesFormatted;
 ```
 
-#### <span data-proof="authored" data-by="ai:claude">External Callout Tool</span>
+---
 
-```apex proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MjgxMywiYXR0cnMiOnsiYnkiOiJhaTpjbGF1ZGUifX1d
-global with sharing class CompanyEnrichmentTool {
+## MCP vs Agentforce Architecture
 
-    @InvocableMethod(
-        label='Enrich Company Data'
-        description='Enriches an account with external company data (employee count, funding, industry classification) via a third-party API using Named Credentials'
-    )
-    global static List<EnrichmentResult> enrichCompany(List<EnrichmentRequest> requests) {
-        List<EnrichmentResult> results = new List<EnrichmentResult>();
+**This is the most important section.** These use fundamentally different orchestration:
 
-        for (EnrichmentRequest req : requests) {
-            EnrichmentResult result = new EnrichmentResult();
-
-            try {
-                HttpRequest httpReq = new HttpRequest();
-                httpReq.setEndpoint('callout:Company_Data_API/v1/companies?domain=' + EncodingUtil.urlEncode(req.companyDomain, 'UTF-8'));
-                httpReq.setMethod('GET');
-                httpReq.setHeader('Accept', 'application/json');
-                httpReq.setTimeout(30000);
-
-                Http http = new Http();
-                HttpResponse res = http.send(httpReq);
-
-                if (res.getStatusCode() == 200) {
-                    Map<String, Object> data = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-                    result.companyName = (String) data.get('name');
-                    result.employeeCount = (Integer) data.get('employees');
-                    result.fundingStage = (String) data.get('funding_stage');
-                    result.industryClassification = (String) data.get('industry');
-                    result.success = true;
-                } else {
-                    result.success = false;
-                    result.errorMessage = 'API returned status ' + res.getStatusCode();
-                }
-            } catch (Exception e) {
-                result.success = false;
-                result.errorMessage = e.getMessage();
-            }
-
-            results.add(result);
-        }
-
-        return results;
-    }
-
-    global class EnrichmentRequest {
-        @InvocableVariable(required=true description='Company website domain (e.g., "acme.com") to look up')
-        global String companyDomain;
-    }
-
-    global class EnrichmentResult {
-        @InvocableVariable(description='Whether the enrichment succeeded')
-        global Boolean success;
-
-        @InvocableVariable(description='Company legal name')
-        global String companyName;
-
-        @InvocableVariable(description='Total employee count')
-        global Integer employeeCount;
-
-        @InvocableVariable(description='Funding stage (e.g., Series A, Series B, Public)')
-        global String fundingStage;
-
-        @InvocableVariable(description='Industry classification')
-        global String industryClassification;
-
-        @InvocableVariable(description='Error message if enrichment failed')
-        global String errorMessage;
-    }
-}
-```
-
-***
-
-## <span data-proof="authored" data-by="ai:claude">Flow-Based MCP Tools</span>
-
-<span data-proof="authored" data-by="ai:claude">Autolaunched Flows can be exposed as MCP tools. Flow input variables become tool parameters; output variables become the response.</span>
-
-### <span data-proof="authored" data-by="ai:claude">When to Use Flows vs Apex</span>
-
-| <span data-proof="authored" data-by="ai:claude">Use Flow</span>                      | <span data-proof="authored" data-by="ai:claude">Use Apex</span>                        |
-| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| <span data-proof="authored" data-by="ai:claude">Admin-maintainable logic</span>      | <span data-proof="authored" data-by="ai:claude">Complex conditional logic</span>       |
-| <span data-proof="authored" data-by="ai:claude">Simple record operations</span>      | <span data-proof="authored" data-by="ai:claude">External API callouts</span>           |
-| <span data-proof="authored" data-by="ai:claude">No external callouts needed</span>   | <span data-proof="authored" data-by="ai:claude">Multi-step orchestration</span>        |
-| <span data-proof="authored" data-by="ai:claude">Declarative-first org culture</span> | <span data-proof="authored" data-by="ai:claude">Performance-critical operations</span> |
-
-### <span data-proof="authored" data-by="ai:claude">Flow Design for MCP</span>
-
-1. **<span data-proof="authored" data-by="ai:claude">Flow Type</span>**<span data-proof="authored" data-by="ai:claude">: Autolaunched Flow (no screen elements)</span>
-2. **<span data-proof="authored" data-by="ai:claude">Input Variables</span>**<span data-proof="authored" data-by="ai:claude">: Mark as "Available for Input" — these become MCP tool parameters</span>
-3. **<span data-proof="authored" data-by="ai:claude">Output Variables</span>**<span data-proof="authored" data-by="ai:claude">: Mark as "Available for Output" — these become the MCP tool response</span>
-4. **<span data-proof="authored" data-by="ai:claude">Naming</span>**<span data-proof="authored" data-by="ai:claude">: Use descriptive variable API names — AI clients see these</span>
-
-### <span data-proof="authored" data-by="ai:claude">Flow Input/Output Best Practices</span>
+### Agentforce (Inside Salesforce)
 
 ```
-Input Variables (become tool parameters):
-  - recordId (Text) — "The record ID to process"
-  - actionType (Text) — "The action to perform: approve, reject, or defer"
-  - notes (Text) — "Optional notes to attach to the action"
-
-Output Variables (become tool response):
-  - success (Boolean) — "Whether the action completed successfully"
-  - resultMessage (Text) — "Human-readable result description"
-  - updatedRecordId (Text) — "ID of the updated record"
+User → Agentforce Agent → Topic/Action → @InvocableMethod
+                       → Prompt Template → Flow data provider → Apex → LLM
 ```
 
-> **<span data-proof="authored" data-by="ai:claude">Key Insight:</span>** <span data-proof="authored" data-by="ai:claude">Flow variable descriptions are visible to AI clients. Write them as if explaining the parameter to a person who has never seen your org.</span>
+- Platform orchestrates everything server-side
+- Flow data providers work (platform executes them)
+- Prompt templates control output format (platform applies them)
+- `public` access modifier is sufficient
+- SObject inputs are fine (platform constructs them)
 
-***
+### MCP (External AI Clients)
 
-## <span data-proof="authored" data-by="ai:claude">Named Query API Tools</span>
+```
+User → Claude/Cursor → MCP Server → @InvocableMethod (tool call)
+                     → Prompt Template (passive resource — may be ignored)
+```
 
-<span data-proof="authored" data-by="ai:claude">Named Query APIs expose parameterized SOQL queries as read-only MCP tools. They are the simplest tool type.</span>
+- AI client orchestrates — decides which tools to call and when
+- **Flow data providers DON'T work** (MCP can't execute Flows)
+- **Prompt templates are passive** — NOT enforced
+- `global` access modifier required
+- Human-readable inputs preferred (Names, Numbers, not just IDs)
 
-### <span data-proof="authored" data-by="ai:claude">When to Use</span>
+### Dual Architecture Pattern
 
-* <span data-proof="authored" data-by="ai:claude">Read-only data access (no DML)</span>
+Design for both paths from the start:
 
-* <span data-proof="authored" data-by="ai:claude">Standard SOQL queries with bind variables</span>
+```
+                    ┌── Agentforce Path ──┐
+                    │  Prompt Template     │
+                    │  → Flow             │
+                    │  → ContextProvider   │
+                    │  → SearchService     │
+                    └─────────────────────┘
+                              │
+Shared: SearchService ←───────┤
+(core SOSL + SOQL logic)      │
+                              │
+                    ┌── MCP Path ─────────┐
+                    │  SearchTool (global) │
+                    │  → SearchService     │
+                    │  → Returns formatted │
+                    │    text, not JSON    │
+                    └─────────────────────┘
+```
 
-* <span data-proof="authored" data-by="ai:claude">Reporting and dashboard-style queries</span>
+| Aspect | MCP Tool | Agentforce Tool |
+|--------|----------|-----------------|
+| Access modifier | `global` | `public` is fine |
+| Output format | Pre-formatted text | Raw data (template formats it) |
+| Input types | String IDs + human-readable | SObject records |
+| Flow dependencies | None | Flow data providers work |
+| Template role | Passive (best-effort) | Enforced by platform |
 
-* <span data-proof="authored" data-by="ai:claude">Low-complexity data retrieval</span>
+---
 
-### <span data-proof="authored" data-by="ai:claude">Configuration</span>
+## Flow-Based MCP Tools
 
-<span data-proof="authored" data-by="ai:claude">Named Query APIs are registered in Setup and exposed through the custom MCP server. The query parameters become tool input parameters.</span>
+Autolaunched Flows can be exposed as MCP tools. **Screen flows and scheduled flows are NOT supported.**
 
-### <span data-proof="authored" data-by="ai:claude">Query Design</span>
+### Design Rules
 
-```sql proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6Mzc3LCJhdHRycyI6eyJieSI6ImFpOmNsYXVkZSJ9fV0=
+- Flow type: **Autolaunched** (no screen elements)
+- Input variables: Mark "Available for Input" — become MCP tool parameters
+- Output variables: Mark "Available for Output" — become tool response
+- Variable API names should be descriptive — AI clients see them
+- Variable descriptions should be written for AI consumption
+
+> **Important distinction:** Flows exposed as their own MCP server tools (via the Flows server) work fine. What does NOT work is using `flow://` references in `templateDataProviders` within prompt templates.
+
+---
+
+## Named Query API Tools
+
+Admin-defined SOQL queries exposed as read-only MCP tools. Simplest tool type.
+
+```sql
 -- Good: Parameterized with clear purpose
 SELECT Id, Name, Amount, StageName, CloseDate
 FROM Opportunity
-WHERE AccountId = :accountId
-AND IsClosed = false
+WHERE AccountId = :accountId AND IsClosed = false
 ORDER BY CloseDate ASC
-
--- Good: Aggregate query for reporting
-SELECT StageName, COUNT(Id) totalCount, SUM(Amount) totalAmount
-FROM Opportunity
-WHERE OwnerId = :userId
-AND CloseDate = THIS_FISCAL_QUARTER
-GROUP BY StageName
 ```
 
-> **<span data-proof="authored" data-by="ai:claude">Security:</span>** <span data-proof="authored" data-by="ai:claude">Named Queries inherit the authenticated user's CRUD/FLS/sharing automatically.</span>
+Security: Named Queries inherit the authenticated user's CRUD/FLS/sharing automatically.
 
-***
+---
 
-## <span data-proof="authored" data-by="ai:claude">Custom Server Registration</span>
+## Prompt Templates for MCP
 
-### <span data-proof="authored" data-by="ai:claude">Step 1: Create Custom Server</span>
+### Critical Gotchas (From Real-World Testing)
 
-1. <span data-proof="authored" data-by="ai:claude">Navigate to</span> **<span data-proof="authored" data-by="ai:claude">Setup > API Catalog > MCP Servers</span>**
-2. <span data-proof="authored" data-by="ai:claude">Click</span> **<span data-proof="authored" data-by="ai:claude">New Custom MCP Server</span>**
-3. <span data-proof="authored" data-by="ai:claude">Enter server name and description</span>
+#### 1. Template Type Values — DO NOT Trust Documentation
 
-### <span data-proof="authored" data-by="ai:claude">Step 2: Add Tools</span>
+The `<type>` field must use exact API picklist values. **Documentation says `FlexTemplate` but the API rejects it.**
 
-<span data-proof="authored" data-by="ai:claude">For each tool:</span>
+| UI Label | Correct API Value | Custom Allowed? | MCP Compatible? |
+|----------|-------------------|-----------------|-----------------|
+| Global | `einstein_gpt__global` | Yes | **Yes — use this for MCP** |
+| Flex | `einstein_gpt__flex` | Yes | Yes (but `global` matches standard pattern) |
+| Record Summary | `einstein_gpt__recordSummary` | Yes | Copilot sidebar only |
+| Field Generation | `einstein_gpt__fieldCompletion` | Yes | No |
+| Sales Email | `einstein_gpt__salesEmail` | Yes | No |
+| Global Standard | `einstein_gpt__globalStandard` | **No — Salesforce-managed only** | N/A |
 
-1. <span data-proof="authored" data-by="ai:claude">Select backing type:</span> **<span data-proof="authored" data-by="ai:claude">Apex Action</span>**<span data-proof="authored" data-by="ai:claude">,</span> **<span data-proof="authored" data-by="ai:claude">Flow</span>**<span data-proof="authored" data-by="ai:claude">, or</span> **<span data-proof="authored" data-by="ai:claude">Named Query</span>**
-2. <span data-proof="authored" data-by="ai:claude">Choose the specific action/flow/query</span>
-3. **<span data-proof="authored" data-by="ai:claude">Name the tool</span>** <span data-proof="authored" data-by="ai:claude">— AI clients see this name</span>
-4. **<span data-proof="authored" data-by="ai:claude">Write a clear description</span>** <span data-proof="authored" data-by="ai:claude">— AI clients use this to decide when to invoke the tool</span>
+**For MCP: use `einstein_gpt__global`**
+**For Agentforce: use `einstein_gpt__flex`**
 
-### <span data-proof="authored" data-by="ai:claude">Step 3: Publish and Activate</span>
+#### 2. Metadata Fields — API 66.0 Changes
 
-1. <span data-proof="authored" data-by="ai:claude">Review all tools and descriptions</span>
-2. <span data-proof="authored" data-by="ai:claude">Activate the server</span>
-3. <span data-proof="authored" data-by="ai:claude">Wait up to 2 minutes for propagation</span>
+- **`activeVersion`** — **REMOVED in API 66.0.** Do not include.
+- **`versionIdentifier`** — **Omit.** Let the platform auto-generate.
+- **`FlexTemplate`** — **INVALID.** Use `einstein_gpt__flex` or `einstein_gpt__global`.
 
-> **<span data-proof="authored" data-by="ai:claude">Critical:</span>** <span data-proof="authored" data-by="ai:claude">Tool names and descriptions are what AI clients use to understand and select tools. Invest time in writing clear, action-oriented descriptions.</span>
+#### 3. Input Definitions — Undocumented Syntax
 
-***
+| Input Type | Definition Value | Example |
+|------------|-----------------|---------|
+| **Free text string** | `primitive://String` | Company name, case number, search query |
+| **SObject record** | `SOBJECT://Case` | Case record, Account record |
 
-## <span data-proof="authored" data-by="ai:claude">MCP Prompt Templates</span>
+> **`primitive://String`** is not documented. It was discovered by retrieving the standard `einstein_gpt__accountReviewBriefing` template via REST API.
 
-<span data-proof="authored" data-by="ai:claude">The</span> <span data-proof="authored" data-by="ai:claude">`platform/sobject-all`</span> <span data-proof="authored" data-by="ai:claude">server ships with built-in prompt templates (e.g., Account Review Briefing). You can create custom prompt templates for your custom servers.</span>
+**To discover valid values from standard templates:**
+```bash
+sf api request rest "/services/data/v66.0/einstein/prompt-templates/<template_developer_name>" --target-org <org> --method GET
+```
 
-### <span data-proof="authored" data-by="ai:claude">How Prompt Templates Work with MCP</span>
+#### 4. Flow Data Providers DO NOT Work in MCP
 
-<span data-proof="authored" data-by="ai:claude">Prompt templates provide pre-built natural language starting points that AI clients can invoke. They combine:</span>
+> **Real-world error:** "Failed to attach prompt" in Claude Desktop, or `{"code": -32602, "message": "Unknown tool: invalid_tool_name"}` when MCP tries to resolve `flow://` references.
 
-* <span data-proof="authored" data-by="ai:claude">A structured prompt with merge fields</span>
+**Never use `templateDataProviders` with `flow://` in MCP templates.** Instead, instruct the AI to call tools in the template content.
 
-* <span data-proof="authored" data-by="ai:claude">Input object bindings (which record to analyze)</span>
+If you need both MCP and Agentforce:
+- **Agentforce template:** `einstein_gpt__flex` with Flow data provider
+- **MCP template:** `einstein_gpt__global` without data providers — instructions tell AI which tools to call
 
-* <span data-proof="authored" data-by="ai:claude">Optional Flow/Apex grounding for additional data</span>
+#### 5. Claude Does NOT Enforce Prompt Template Format
 
-### <span data-proof="authored" data-by="ai:claude">Creating Prompt Templates for MCP</span>
+> **Real-world issue:** Template specifies a 5-section output format. Claude ignores it and formats its own way.
 
-<span data-proof="authored" data-by="ai:claude">Use the</span> <span data-proof="authored" data-by="ai:claude">`prompt-builder`</span> <span data-proof="authored" data-by="ai:claude">skill for full metadata XML reference. Key considerations for MCP:</span>
+**Solutions:**
+1. **Pre-format output server-side** (recommended) — Apex tool returns formatted text
+2. **Embed format in tool description** — less reliable but helps
+3. **Include EXAMPLE OUTPUT in template** — single most effective control
 
-* **<span data-proof="authored" data-by="ai:claude">Template Type</span>**<span data-proof="authored" data-by="ai:claude">: Use</span> <span data-proof="authored" data-by="ai:claude">`FlexTemplate`</span> <span data-proof="authored" data-by="ai:claude">for maximum flexibility with MCP clients</span>
+#### 6. ChatGPT Does NOT Support MCP Prompts
 
-* **<span data-proof="authored" data-by="ai:claude">Descriptions</span>**<span data-proof="authored" data-by="ai:claude">: Write descriptions that help AI clients understand when to use the template</span>
+Only Claude and Cursor support MCP prompt templates. ChatGPT does not.
 
-* **<span data-proof="authored" data-by="ai:claude">Inputs</span>**<span data-proof="authored" data-by="ai:claude">: Keep inputs simple — ideally a single record ID</span>
+### Working Template — String Input (API 66.0)
 
-* **<span data-proof="authored" data-by="ai:claude">Output</span>**<span data-proof="authored" data-by="ai:claude">: Structure output as actionable insights, not raw data</span>
-
-### <span data-proof="authored" data-by="ai:claude">Example: Deal Analysis Template</span>
-
-```xml proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MTQ4MSwiYXR0cnMiOnsiYnkiOiJhaTpjbGF1ZGUifX1d
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersion>v1</activeVersion>
-    <createdInVersion>63.0</createdInVersion>
-    <developerName>MCP_Deal_Analysis</developerName>
-    <masterLabel>Deal Analysis for MCP</masterLabel>
-    <relatedEntity>Opportunity</relatedEntity>
+    <!-- NO activeVersion -->
+    <developerName>Case_Resolution_MCP</developerName>
+    <masterLabel>Case Resolution Briefing</masterLabel>
+    <!-- NO relatedEntity for global templates with string inputs -->
     <templateVersions>
-        <content>Analyze this opportunity and provide a deal assessment:
+        <content>You are a senior support engineer creating a resolution briefing.
 
-Opportunity: {!$Input:Opportunity.Name}
-Amount: {!$Input:Opportunity.Amount}
-Stage: {!$Input:Opportunity.StageName}
-Close Date: {!$Input:Opportunity.CloseDate}
-Probability: {!$Input:Opportunity.Probability}
+STEP 1: Use the "Search Similar Resolved Cases" tool
+- Pass {!$Input:caseNumber} as the caseId parameter
+- Review the returned resolution data
 
-Account: {!$Input:Opportunity.Account.Name}
-Industry: {!$Input:Opportunity.Account.Industry}
+STEP 2: Create Resolution Briefing
 
-Related activities:
-{!$RelatedList:Opportunity.ActivityHistories.Records}
+**Root Cause Analysis**
+- Primary root cause identified from similar cases
+- Contributing factors
 
-Provide:
-1. Deal health assessment (Green/Yellow/Red)
-2. Key risks identified
-3. Recommended next actions
-4. Probability of closing by the target date</content>
+**Recommended Resolution**
+- Step-by-step resolution procedure
+- Expected resolution time
+
+**Similar Resolved Cases**
+- List matching cases with resolution summaries
+
+**Confidence Assessment**
+- High/Medium/Low based on match quality
+
+EXAMPLE OUTPUT:
+"## Root Cause Analysis
+The SSL certificate expired on the integration endpoint...
+
+## Recommended Resolution
+1. Renew the SSL certificate via...
+2. Update the Named Credential...
+
+## Similar Resolved Cases
+- Case #00001020 (95% match): Same SSL expiry pattern...
+
+## Confidence: High
+3 similar cases found with identical root cause."
+
+Keep the tone professional and actionable.</content>
         <inputs>
-            <apiName>opportunityInput</apiName>
-            <definition>SOBJECT://Opportunity</definition>
-            <referenceName>Input:Opportunity</referenceName>
+            <apiName>caseNumber</apiName>
+            <definition>primitive://String</definition>
+            <referenceName>Input:caseNumber</referenceName>
             <required>true</required>
         </inputs>
         <primaryModel>sfdc_ai__DefaultGPT4Omni</primaryModel>
         <status>Published</status>
-        <versionIdentifier>v1</versionIdentifier>
+        <!-- NO versionIdentifier -->
     </templateVersions>
-    <type>FlexTemplate</type>
+    <type>einstein_gpt__global</type>
     <visibility>Global</visibility>
 </GenAiPromptTemplate>
 ```
 
-***
+### Working Template — SObject Input
 
-## <span data-proof="authored" data-by="ai:claude">Testing MCP Tools</span>
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <developerName>Account_Review_Custom</developerName>
+    <masterLabel>Account Review</masterLabel>
+    <relatedEntity>Account</relatedEntity>
+    <templateVersions>
+        <content>Analyze this account:
+- Name: {!$Input:Account.Name}
+- Industry: {!$Input:Account.Industry}
+- Revenue: {!$Input:Account.AnnualRevenue}
 
-### <span data-proof="authored" data-by="ai:claude">Unit Testing Invocable Actions</span>
+Provide a health assessment with risks and next actions.</content>
+        <inputs>
+            <apiName>myAccount</apiName>
+            <definition>SOBJECT://Account</definition>
+            <referenceName>Input:Account</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT4Omni</primaryModel>
+        <status>Published</status>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
+```
 
-```apex proof:W3sidHlwZSI6InByb29mQXV0aG9yZWQiLCJmcm9tIjowLCJ0byI6MjE3MSwiYXR0cnMiOnsiYnkiOiJhaTpjbGF1ZGUifX1d
+### Template with Apex Data Provider
+
+```xml
+<templateDataProviders>
+    <definition>apex://CaseResolutionContextProvider</definition>
+    <description>Searches similar resolved cases</description>
+    <label>Case Resolution Context</label>
+    <parameters>
+        <definition>primitive://String</definition>
+        <isRequired>true</isRequired>
+        <parameterName>caseId</parameterName>
+        <valueExpression>{!$Input:caseNumber}</valueExpression>
+    </parameters>
+    <referenceName>Apex:CaseResolutionContextProvider</referenceName>
+</templateDataProviders>
+```
+
+> **Merge field placement rule:** NEVER put `{!$Apex:...}` merge fields inside instruction sentences. Always put data in a dedicated section BEFORE instructions.
+
+```
+## Retrieved Data (merge fields here)
+{!$Apex:CaseResolutionContextProvider.resolutionContext}
+
+## Your Task (instructions here — reference "data above")
+Using the data above, create a resolution briefing...
+```
+
+### MCP Prompt Template Design Pattern ("Executive Briefing")
+
+1. **Role assignment** — "You are a senior support engineer"
+2. **Step-by-step tool instructions** — STEP 1, STEP 2 with exact tool names and parameters
+3. **Detailed output sections** — Each section with bullet points
+4. **Example output** — Complete realistic example (single most effective format control)
+5. **Tone instruction** — "Write as if briefing a colleague"
+
+---
+
+## Custom Server Registration
+
+### Step 1: Create Custom Server
+
+Setup > Integration > Salesforce MCP Servers > New Custom MCP Server
+
+### Step 2: Add Tools
+
+Select backing type: Apex Action, Flow, AuraEnabled, Apex REST, Named Query, or API Catalog endpoint.
+
+**Tool names and descriptions are critical** — AI clients use them to decide which tool to invoke.
+
+### Step 3: Publish and Activate
+
+Wait up to 2 minutes for propagation.
+
+### ISV Note
+
+Managed packages cannot directly include MCP server configurations. ISVs expose capabilities through annotated Apex classes or Autolaunched Flows for subscribers to configure.
+
+---
+
+## Testing MCP Tools
+
+### Unit Testing
+
+```apex
 @IsTest
 private class AccountReviewToolTest {
 
     @TestSetup
     static void setupTestData() {
-        Account testAccount = new Account(
-            Name = 'Test Corp',
-            Industry = 'Technology',
-            AnnualRevenue = 5000000
-        );
+        Account testAccount = new Account(Name = 'Test Corp', Industry = 'Technology');
         insert testAccount;
 
         insert new Opportunity(
-            Name = 'Test Opp',
-            AccountId = testAccount.Id,
-            StageName = 'Prospecting',
-            CloseDate = Date.today().addDays(30),
-            Amount = 100000
-        );
-
-        insert new Contact(
-            FirstName = 'Test',
-            LastName = 'Contact',
-            AccountId = testAccount.Id,
-            Email = 'test@testcorp.com'
+            Name = 'Test Opp', AccountId = testAccount.Id,
+            StageName = 'Prospecting', CloseDate = Date.today().addDays(30), Amount = 100000
         );
     }
 
@@ -600,92 +519,66 @@ private class AccountReviewToolTest {
         AccountReviewTool.AccountReviewRequest req = new AccountReviewTool.AccountReviewRequest();
         req.accountId = acc.Id;
 
-        Test.startTest();
+        System.Test.startTest();
         List<AccountReviewTool.AccountReview> results = AccountReviewTool.reviewAccount(
             new List<AccountReviewTool.AccountReviewRequest>{ req }
         );
-        Test.stopTest();
-
-        System.assertEquals(1, results.size(), 'Should return one result');
-        System.assert(results[0].success, 'Review should succeed');
-        System.assertEquals('Test Corp', results[0].accountName);
-        System.assertEquals(1, results[0].openOpportunityCount);
-        System.assertEquals(1, results[0].contactCount);
-    }
-
-    @IsTest
-    static void testReviewAccount_notFound() {
-        AccountReviewTool.AccountReviewRequest req = new AccountReviewTool.AccountReviewRequest();
-        req.accountId = '001000000000000AAA'; // Non-existent
-
-        Test.startTest();
-        List<AccountReviewTool.AccountReview> results = AccountReviewTool.reviewAccount(
-            new List<AccountReviewTool.AccountReviewRequest>{ req }
-        );
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, results.size());
-        System.assert(!results[0].success, 'Review should fail for non-existent account');
-        System.assert(results[0].errorMessage.contains('not found'));
+        System.assert(results[0].success);
+        System.assertEquals('Test Corp', results[0].accountName);
     }
 }
 ```
 
-### <span data-proof="authored" data-by="ai:claude">Testing via Postman</span>
+> **Use `System.Test`** not `Test` — orgs with a custom `Test` class shadow the system class.
 
-<span data-proof="authored" data-by="ai:claude">Postman returns raw JSON without LLM interpretation — ideal for validating tool behavior:</span>
+### Postman Testing (Raw JSON)
 
-1. <span data-proof="authored" data-by="ai:claude">Connect Postman to your custom MCP server</span>
-2. <span data-proof="authored" data-by="ai:claude">Call each tool with known test inputs</span>
-3. <span data-proof="authored" data-by="ai:claude">Verify JSON response structure matches expectations</span>
-4. <span data-proof="authored" data-by="ai:claude">Test error cases (invalid IDs, missing required fields)</span>
-
-### <span data-proof="authored" data-by="ai:claude">Integration Testing with AI Clients</span>
-
-<span data-proof="authored" data-by="ai:claude">After Postman validation, test with actual AI clients:</span>
-
-1. <span data-proof="authored" data-by="ai:claude">Connect Claude/Cursor to the custom MCP server</span>
-2. <span data-proof="authored" data-by="ai:claude">Ask natural language questions that should trigger each tool</span>
-3. <span data-proof="authored" data-by="ai:claude">Verify the AI correctly selects and invokes tools</span>
-4. <span data-proof="authored" data-by="ai:claude">Check that responses are useful and well-structured</span>
-
-***
-
-## <span data-proof="authored" data-by="ai:claude">Tool Description Best Practices</span>
-
-<span data-proof="authored" data-by="ai:claude">Tool descriptions are the</span> **<span data-proof="authored" data-by="ai:claude">most important part</span>** <span data-proof="authored" data-by="ai:claude">of custom MCP tools. AI clients use descriptions to decide which tool to invoke and how to construct parameters.</span>
-
-### <span data-proof="authored" data-by="ai:claude">Good Descriptions</span>
-
-```
-# Tool-level description
-"Retrieves a comprehensive account summary including open opportunities,
-recent cases, and key contacts for AI-assisted account review"
-
-# Parameter-level descriptions
-@InvocableVariable(description='The Salesforce Account record ID to review')
-@InvocableVariable(description='Number of open (unclosed) support cases')
-@InvocableVariable(description='Reason for escalation — will be added as an internal comment')
+```json
+{"method": "tools/call", "params": {"name": "Review Account", "arguments": {"accountId": "001xx000003DGbYAAW"}}}
 ```
 
-### <span data-proof="authored" data-by="ai:claude">Bad Descriptions</span>
+### Integration Testing with AI Clients
 
+After Postman validation:
+1. Connect Claude/Cursor to the custom MCP server
+2. Ask natural language questions that should trigger each tool
+3. Verify AI correctly selects and invokes tools
+4. Check that responses are useful and well-structured
+
+---
+
+## Tool Description Best Practices
+
+### Good Descriptions
+
+```apex
+@InvocableMethod(
+    label='Search Similar Resolved Cases'
+    description='Searches for previously resolved cases similar to the given case using subject and description matching. Returns resolution steps, knowledge articles, and confidence scores.'
+)
+
+@InvocableVariable(required=true
+    description='Case ID (18-char Salesforce record ID) or Case Number (e.g. 00001024). Accepts either format.')
+global String caseId;
 ```
-# Too vague — AI doesn't know when to use it
-"Processes account data"
 
-# Too technical — AI can't translate user intent
-"Executes SOQL against Account with subqueries on Opportunity and Case"
+### Bad Descriptions
 
-# Missing context — AI doesn't know the parameter format
-@InvocableVariable(description='id')
-@InvocableVariable(description='the reason')
+```apex
+// Too vague — AI doesn't know when to use it
+description='Processes case data'
+
+// Missing format info — AI doesn't know what to pass
+description='The case identifier'
 ```
 
-### <span data-proof="authored" data-by="ai:claude">Rules</span>
+### Rules
 
-1. **<span data-proof="authored" data-by="ai:claude">Describe what, not how</span>** <span data-proof="authored" data-by="ai:claude">— "Retrieves account summary" not "Runs SOQL query"</span>
-2. **<span data-proof="authored" data-by="ai:claude">Be specific about scope</span>** <span data-proof="authored" data-by="ai:claude">— "open opportunities" not "opportunities"</span>
-3. **<span data-proof="authored" data-by="ai:claude">Document parameter format</span>** <span data-proof="authored" data-by="ai:claude">— "Account record ID" not just "id"</span>
-4. **<span data-proof="authored" data-by="ai:claude">Explain side effects</span>** <span data-proof="authored" data-by="ai:claude">— "will be added as an internal comment"</span>
-5. **<span data-proof="authored" data-by="ai:claude">Use action verbs</span>** <span data-proof="authored" data-by="ai:claude">— "Retrieves", "Creates", "Escalates", "Searches"</span>
+1. **Describe what, not how** — "Searches similar resolved cases" not "Runs SOSL query"
+2. **Document accepted input formats** — "Case ID or Case Number (e.g. 00001024)"
+3. **Explain side effects** — "will be added as an internal comment"
+4. **Use action verbs** — "Searches", "Retrieves", "Escalates", "Creates"
+5. **Describe output** — "Returns resolution steps, knowledge articles, and confidence scores"

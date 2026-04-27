@@ -5,16 +5,16 @@
     "url": "https://github.com/sangameshgupta"
   },
   "metadata": {
-    "description": "Salesforce-focused compound engineering plugin marketplace for Claude Code",
-    "version": "2.0.3",
+    "description": "Salesforce-focused compound engineering plugin marketplace for Claude Code, Cursor, and Codex",
+    "version": "3.0.0-beta.1",
     "homepage": "https://github.com/sangameshgupta/sf-compound-engineering-plugin"
   },
   "plugins": [
     {
       "name": "sf-compound-engineering",
       "source": "./",
-      "description": "Salesforce-focused compound engineering workflow for Claude Code with parallel agent dispatch and institutional knowledge",
-      "version": "2.0.3",
+      "description": "Salesforce-focused compound engineering plugin (V3 skills-first architecture) with parallel agent dispatch, institutional knowledge compounding, and Apex/LWC/Flow/Integration coverage.",
+      "version": "3.0.0-beta.1",
       "author": {
         "name": "Gella Sangamesh Gupta",
         "url": "https://github.com/sangameshgupta"
@@ -22,8 +22,23 @@
       "homepage": "https://github.com/sangameshgupta/sf-compound-engineering-plugin",
       "repository": "https://github.com/sangameshgupta/sf-compound-engineering-plugin",
       "license": "MIT",
-      "tags": ["salesforce", "compound-engineering", "apex", "lwc", "workflow-automation"],
-      "keywords": ["salesforce", "claude-code", "compound-engineering", "apex", "lwc", "governor-limits", "security", "testing"]
+      "tags": [
+        "salesforce",
+        "compound-engineering",
+        "apex",
+        "lwc",
+        "workflow-automation"
+      ],
+      "keywords": [
+        "salesforce",
+        "claude-code",
+        "compound-engineering",
+        "apex",
+        "lwc",
+        "governor-limits",
+        "security",
+        "testing"
+      ]
     }
   ]
 }

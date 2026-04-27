@@ -1,0 +1,45 @@
+{
+  "name": "sf-compound-engineering",
+  "version": "3.0.0-beta.1",
+  "description": "Salesforce-focused compound engineering plugin for Codex. Skills-first V3 architecture with parallel agent dispatch, institutional knowledge compounding, and Apex/LWC/Flow/Integration coverage.",
+  "author": {
+    "name": "Gella Sangamesh Gupta",
+    "url": "https://github.com/sangameshgupta"
+  },
+  "homepage": "https://github.com/sangameshgupta/sf-compound-engineering-plugin",
+  "repository": "https://github.com/sangameshgupta/sf-compound-engineering-plugin",
+  "license": "MIT",
+  "keywords": [
+    "salesforce",
+    "compound-engineering",
+    "skills-first",
+    "apex",
+    "lwc",
+    "flow",
+    "governor-limits",
+    "security",
+    "workflow-automation",
+    "agentforce",
+    "knowledge-management"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Salesforce Compound Engineering",
+    "shortDescription": "Salesforce-focused compound engineering plugin with parallel agent dispatch and institutional knowledge.",
+    "longDescription": "sf-compound-engineering is a Salesforce-flavored fork of Every's Compound Engineering plugin (V3). It provides skills for brainstorming, planning, deepening, working, reviewing, and compounding learnings on Salesforce projects (Apex, LWC, Flow, Integration, metadata deployments). Specialized review and research agents dispatch in parallel via the Task tool. Salesforce-specific institutional knowledge is captured in docs/solutions/ and surfaced by sf-learnings-researcher. Skills install natively in Codex; for the full experience with specialized review agents, use Claude Code or Cursor.",
+    "developerName": "Gella Sangamesh Gupta",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/sangameshgupta/sf-compound-engineering-plugin",
+    "defaultPrompt": [
+      "/sf-brainstorm a new Apex feature",
+      "/sf-plan the LWC implementation",
+      "/sf-review my changes"
+    ],
+    "screenshots": []
+  }
+}

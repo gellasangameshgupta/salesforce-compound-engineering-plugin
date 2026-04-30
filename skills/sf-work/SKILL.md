@@ -61,6 +61,8 @@ satisfy every field; do not relax it.
 
 * <span data-proof="authored" data-by="ai:claude">Include</span> <span data-proof="authored" data-by="ai:claude">`skills/governor-limits/SKILL.md`</span> <span data-proof="authored" data-by="ai:claude">for limit-sensitive backend work</span>
 
+* For metadata or code generation, dispatch the matching action-shaped skill: `/apex-generate` (Apex class + tests), `/flow-generate` (Flow XML via MCP pipeline), `/validation-rule-generate`, `/apex-trigger-refactor`, `/slds2-uplift` (LWC), `/metadata-generate` (object / field / app / tab / listview / lightning-type), `/lightning-page-generate` (FlexiPage or full LEX app), `/permission-set-generate`. Reference skills (`apex-patterns`, `flow-patterns`, `lwc-patterns`, etc.) describe the shape; generation skills produce the artifact.
+
 ***
 
 ## <span data-proof="authored" data-by="ai:claude">Step 2: Internal-First Implementation</span>

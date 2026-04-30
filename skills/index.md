@@ -42,6 +42,23 @@
 
 ***
 
+## Generating Skills (action-shaped, ported from forcedotcom/afv-library)
+
+Action-shaped skills that produce metadata, code, and refactors. Pair with the reference skills above (`apex-patterns`, `flow-patterns`, etc.) — generation skills are the action; reference skills describe the shape.
+
+| Skill | File | Scope | Use When |
+|---|---|---|---|
+| Apex Generate                | `apex-generate/SKILL.md`                | APEX_ONLY        | Generate an Apex class + matching test class as one unit. Bulkified, CRUD/FLS-enforced, sharing keyword declared, `Assert.*` tests with 251+ records |
+| Flow Generate                | `flow-generate/SKILL.md`                | AUTOMATION_ONLY  | Generate Flow XML via the strict 3-step MCP `execute_metadata_action` pipeline (fetchGroundedObjectMetadata → flowElementSelection → flowElementGeneration loop) |
+| Validation Rule Generate     | `validation-rule-generate/SKILL.md`     | AUTOMATION_ONLY  | Generate `.validationRule-meta.xml` with CDATA-wrapped formula when needed; correct picklist / Date / Datetime function usage |
+| Apex Trigger Refactor        | `apex-trigger-refactor/SKILL.md`        | APEX_ONLY        | Modernize a legacy trigger — hoist SOQL/DML out of loops, extract handler class, add recursion guard, generate matching tests |
+| SLDS 2 Uplift                | `slds2-uplift/SKILL.md`                 | LWC_ONLY         | Migrate LWC / Aura components from SLDS 1 to SLDS 2 by running `@salesforce-ux/slds-linter` and fixing every violation type with `var(--slds-g-hook, original)` fallback |
+| Metadata Generate            | `metadata-generate/SKILL.md`            | METADATA         | Single-skill generator for CustomObject, CustomField, CustomApplication, CustomTab, ListView, CustomLightningType (`--type` dispatched) |
+| Lightning Page Generate      | `lightning-page-generate/SKILL.md`      | METADATA         | Generate a FlexiPage (`--type page`) or orchestrate a complete LEX app across multiple metadata types in dependency order (`--type app`) |
+| Permission Set Generate      | `permission-set-generate/SKILL.md`      | METADATA         | Generate a PermissionSet with least-privilege defaults — object CRUD, FLS, tab visibility, app visibility, system perms, class / page access |
+
+***
+
 ## <span data-proof="authored" data-by="ai:claude">Workflow Support Skills</span>
 
 | <span data-proof="authored" data-by="ai:claude">Skill</span>               | <span data-proof="authored" data-by="ai:claude">File</span>                           | <span data-proof="authored" data-by="ai:claude">Use When</span>                                                                                                                                                              |

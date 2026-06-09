@@ -86,6 +86,7 @@ Salesforce-aware skills covering the full V3 capability surface — debugging, d
 | `sf-pr-description`            | Salesforce-aware PR descriptions (Apex / metadata / LWC scope)           |
 | `sf-resolve-pr-feedback`       | Parallel resolution with metadata-diff awareness                         |
 | `sf-simplify-code`             | Behavior-preserving simplification of Apex/LWC (YAGNI, native-first)      |
+| `sf-product-pulse`             | Role-aware org pulse: requirements traceability + adoption (BA) / org health (dev) |
 | `sf-optimize`                  | Metric-driven optimization loops (governor-limit thresholds, query plan) |
 | `sf-update`                    | Plugin self-update from the upstream GitHub releases endpoint            |
 | `sf-setup`                     | Salesforce CLI presence check, `sfdx-project.json`, MCP servers          |

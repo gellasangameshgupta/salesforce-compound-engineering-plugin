@@ -19,7 +19,7 @@ Multi-platform Salesforce-focused plugin for compound engineering workflows. See
   • Plan       — research & design using 45 skills + parallel research agents
   • Deepen     — enhance the plan with section-level parallel research
   • Work       — implement with pre-research + system-wide test checks
-  • Review     — parallel agent dispatch (59 agents)
+  • Review     — parallel agent dispatch (60 agents)
   • Polish     — taste pass via /sf-polish: SLDS2/UX, accessibility (WCAG), copy (UI surfaces only)
   • Compound   — capture learnings to docs/solutions/, agents, skills, CLAUDE.md
 ```

@@ -20,19 +20,19 @@ Multi-platform Salesforce-focused plugin for compound engineering workflows. See
   • Deepen     — enhance the plan with section-level parallel research
   • Work       — implement with pre-research + system-wide test checks
   • Review     — parallel agent dispatch (59 agents)
-  • Polish     — taste pass: SLDS2/UX, accessibility (WCAG), copy (UI surfaces only)
+  • Polish     — taste pass via /sf-polish: SLDS2/UX, accessibility (WCAG), copy (UI surfaces only)
   • Compound   — capture learnings to docs/solutions/, agents, skills, CLAUDE.md
 ```
 
 > **The sandwich.** Humans own the two ends — **Ideate** (what's worth building) and **Polish** (does it feel right) — the "bread". The AI runs the middle "filling" in the loop. As models got better at execution, human attention concentrates where machines are still weak: taste and judgment.
 
-> <span data-proof="authored" data-by="ai:claude">All eight entry points (`/sf-ideate`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-brainstorm`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-plan`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-deepen`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-work`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-review`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-compound`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-lfg`) are</span> **<span data-proof="authored" data-by="ai:claude">skills</span>** <span data-proof="authored" data-by="ai:claude">in V3 — they auto-route from natural-language phrases via their</span> <span data-proof="authored" data-by="ai:claude">`description`</span> <span data-proof="authored" data-by="ai:claude">frontmatter, and direct slash invocation continues to work.</span>
+> <span data-proof="authored" data-by="ai:claude">All nine entry points (`/sf-ideate`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-brainstorm`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-plan`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-deepen`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-work`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-review`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-polish`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-compound`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-lfg`) are</span> **<span data-proof="authored" data-by="ai:claude">skills</span>** <span data-proof="authored" data-by="ai:claude">in V3 — they auto-route from natural-language phrases via their</span> <span data-proof="authored" data-by="ai:claude">`description`</span> <span data-proof="authored" data-by="ai:claude">frontmatter, and direct slash invocation continues to work.</span>
 
 Above the loop, **`/sf-strategy`** maintains an optional repo-root `STRATEGY.md` (target problem, approach, users, key metrics, tracks) that `sf-ideate`, `sf-brainstorm`, and `sf-plan` read as grounding when it exists.
 
 **<span data-proof="authored" data-by="ai:claude">Each iteration starts smarter</span>** <span data-proof="authored" data-by="ai:claude">because learnings compound into</span> <span data-proof="authored" data-by="ai:claude">`docs/solutions/`, agents, skills, and CLAUDE.md.</span>
 
-> **Principles.** This plugin is opinionated. Seven principles — preserve the quality ceiling, verifiability, stay in the loop, the spec is the artifact, taste over typing, agent-native docs, outsource thinking not understanding — govern every skill and every review. See [`PRINCIPLES.md`](./PRINCIPLES.md). Each of the eight core workflow skills declares which principles it enforces.
+> **Principles.** This plugin is opinionated. Seven principles — preserve the quality ceiling, verifiability, stay in the loop, the spec is the artifact, taste over typing, agent-native docs, outsource thinking not understanding — govern every skill and every review. See [`PRINCIPLES.md`](./PRINCIPLES.md). Each of the nine core workflow skills declares which principles it enforces.
 
 ***
 

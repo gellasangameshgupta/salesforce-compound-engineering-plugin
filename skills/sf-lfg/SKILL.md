@@ -49,7 +49,7 @@ failures. Honors $ARGUMENTS.deploy = scratch | sandbox | none.
 
                         9. COMPOUND  →  capture learnings to docs/solutions/ (runs after, feeds the next loop)
 
- Skills:  /sf-ideate · /sf-brainstorm · /sf-plan · /sf-deepen · /sf-work · /sf-review · polish: /slds2-uplift + a11y · /sf-compound
+ Skills:  /sf-ideate · /sf-brainstorm · /sf-plan · /sf-deepen · /sf-work · /sf-review · /sf-polish · /sf-compound
  Stage 0 (ideate/brainstorm) and Stage 6 (polish) are human-led and conditional; the middle stages auto-run behind gates.
 ```
 
@@ -179,16 +179,9 @@ failures. Honors $ARGUMENTS.deploy = scratch | sandbox | none.
 
 **Skip entirely** for pure Apex / Flow / metadata backend changes. **Run** only when the changed files include a front-end surface (LWC, Aura, Experience Cloud, or a React / headless client on UI-API / GraphQL).
 
-1. Detect the front-end stack from the changed files and apply the matching lens:
-   * **LWC** → SLDS2 design tokens, Lightning UX, Locker/LWS compliance. Run `/slds2-uplift` and `Task sf-lwc-accessibility-guardian`.
-   * **Aura** → same UX / accessibility lens, plus flag migration debt via `Task sf-aura-migration-advisor`.
-   * **React / headless** → design-system-agnostic visual quality + WCAG; use `Task sf-lwc-accessibility-guardian` for accessibility heuristics.
-2. Review copy, empty states, and error messages for clarity and tone.
-3. Verify accessibility (WCAG A/AA): keyboard navigation, ARIA, color contrast.
+Run `/sf-polish` — it resolves the changed UI scope, detects the front-end stack (LWC / Aura / Experience Cloud LWR / React-headless) via its stack-profile registry, and applies the matching design + accessibility (WCAG A/AA) + copy lens, dispatching the right agents (`sf-lwc-accessibility-guardian`, `sf-aura-migration-advisor`, …) and `/slds2-uplift`. It verifies with accessibility Jest tests and before/after screenshots where a preview exists.
 
-**Gate (Principle 1):** No WCAG A/AA violations and no obvious UX or copy defects on the changed surface. Polish edits re-enter Stage 7 (TEST).
-
-> A dedicated `/sf-polish` skill (forthcoming) will unify these checks behind one stack-aware entry point.
+**Gate (Principle 1):** No WCAG A/AA violations and no obvious UX or copy defects on the changed surface. Polished UI re-enters Stage 7 (TEST).
 
 ***
 

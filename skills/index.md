@@ -1,6 +1,6 @@
 # <span data-proof="authored" data-by="ai:claude">Salesforce Skills Index</span>
 
-<span data-proof="authored" data-by="ai:claude">After the V3 migration, all skills live under</span> <span data-proof="authored" data-by="ai:claude">`skills/<name>/SKILL.md`. The eight core workflow loop skills, plus `/sf-strategy` for product grounding above the loop, are first-class skills (the loop skills were formerly</span> <span data-proof="authored" data-by="ai:claude">`commands/`) are now first-class skills with auto-routing trigger phrases.</span>
+<span data-proof="authored" data-by="ai:claude">After the V3 migration, all skills live under</span> <span data-proof="authored" data-by="ai:claude">`skills/<name>/SKILL.md`. The nine core workflow loop skills, plus `/sf-strategy` for product grounding above the loop, were formerly</span> <span data-proof="authored" data-by="ai:claude">`commands/`) are now first-class skills with auto-routing trigger phrases.</span>
 
 ***
 
@@ -17,6 +17,7 @@
 | <span data-proof="authored" data-by="ai:claude">`/sf-deepen`</span>     | <span data-proof="authored" data-by="ai:claude">`sf-deepen/SKILL.md`</span>     | <span data-proof="authored" data-by="ai:claude">Strengthen an existing plan with parallel research agents per section</span>                                                                                                        |
 | <span data-proof="authored" data-by="ai:claude">`/sf-work`</span>       | <span data-proof="authored" data-by="ai:claude">`sf-work/SKILL.md`</span>       | <span data-proof="authored" data-by="ai:claude">Execute a plan or feature description with system-wide test checks</span>                                                                                                           |
 | <span data-proof="authored" data-by="ai:claude">`/sf-review`</span>     | <span data-proof="authored" data-by="ai:claude">`sf-review/SKILL.md`</span>     | <span data-proof="authored" data-by="ai:claude">Multi-persona parallel review of code, PR, or local diff</span>                                                                                                                     |
+| <span data-proof="authored" data-by="ai:claude">`/sf-polish`</span>     | <span data-proof="authored" data-by="ai:claude">`sf-polish/SKILL.md`</span>     | <span data-proof="authored" data-by="ai:claude">Stack-aware UI polish — design, WCAG accessibility, copy (the back "bread")</span>                                                                                            |
 | <span data-proof="authored" data-by="ai:claude">`/sf-compound`</span>   | <span data-proof="authored" data-by="ai:claude">`sf-compound/SKILL.md`</span>   | <span data-proof="authored" data-by="ai:claude">Capture a learning into</span> <span data-proof="authored" data-by="ai:claude">`docs/solutions/`</span> <span data-proof="authored" data-by="ai:claude">for future retrieval</span> |
 | <span data-proof="authored" data-by="ai:claude">`/sf-lfg`</span>        | <span data-proof="authored" data-by="ai:claude">`sf-lfg/SKILL.md`</span>        | <span data-proof="authored" data-by="ai:claude">Full autonomous ideate → brainstorm → plan → deepen → work → review → polish → test → deploy pipeline</span>                                                                                |
 
@@ -115,4 +116,4 @@ Out of scope for this Salesforce plugin (intentionally not shipped): generic fro
 
 * <span data-proof="authored" data-by="ai:claude">For routing collisions (e.g., "review this" vs. "review this PR"), the more specific phrase wins.</span>
 
-* <span data-proof="authored" data-by="ai:claude">The eight core workflow skills are the primary entry points; domain skills are loaded by them as needed.</span>
+* <span data-proof="authored" data-by="ai:claude">The nine core workflow skills are the primary entry points; domain skills are loaded by them as needed.</span>

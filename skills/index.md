@@ -1,6 +1,6 @@
 # <span data-proof="authored" data-by="ai:claude">Salesforce Skills Index</span>
 
-<span data-proof="authored" data-by="ai:claude">After the V3 migration, all skills live under</span> <span data-proof="authored" data-by="ai:claude">`skills/<name>/SKILL.md`. The seven core workflow skills (formerly</span> <span data-proof="authored" data-by="ai:claude">`commands/`) are now first-class skills with auto-routing trigger phrases.</span>
+<span data-proof="authored" data-by="ai:claude">After the V3 migration, all skills live under</span> <span data-proof="authored" data-by="ai:claude">`skills/<name>/SKILL.md`. The eight core workflow skills (formerly</span> <span data-proof="authored" data-by="ai:claude">`commands/`) are now first-class skills with auto-routing trigger phrases.</span>
 
 ***
 
@@ -10,13 +10,14 @@
 
 | <span data-proof="authored" data-by="ai:claude">Skill</span>            | <span data-proof="authored" data-by="ai:claude">File</span>                     | <span data-proof="authored" data-by="ai:claude">Use When</span>                                                                                                                                                                     |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <span data-proof="authored" data-by="ai:claude">`/sf-ideate`</span>     | <span data-proof="authored" data-by="ai:claude">`sf-ideate/SKILL.md`</span>     | <span data-proof="authored" data-by="ai:claude">Decide what's worth building — the front "bread" of the loop</span>                                                                                                                 |
 | <span data-proof="authored" data-by="ai:claude">`/sf-brainstorm`</span> | <span data-proof="authored" data-by="ai:claude">`sf-brainstorm/SKILL.md`</span> | <span data-proof="authored" data-by="ai:claude">Pre-planning exploration of a Salesforce feature idea</span>                                                                                                                        |
 | <span data-proof="authored" data-by="ai:claude">`/sf-plan`</span>       | <span data-proof="authored" data-by="ai:claude">`sf-plan/SKILL.md`</span>       | <span data-proof="authored" data-by="ai:claude">Structured implementation plan for Apex/LWC/Flow/Integration/metadata work</span>                                                                                                   |
 | <span data-proof="authored" data-by="ai:claude">`/sf-deepen`</span>     | <span data-proof="authored" data-by="ai:claude">`sf-deepen/SKILL.md`</span>     | <span data-proof="authored" data-by="ai:claude">Strengthen an existing plan with parallel research agents per section</span>                                                                                                        |
 | <span data-proof="authored" data-by="ai:claude">`/sf-work`</span>       | <span data-proof="authored" data-by="ai:claude">`sf-work/SKILL.md`</span>       | <span data-proof="authored" data-by="ai:claude">Execute a plan or feature description with system-wide test checks</span>                                                                                                           |
 | <span data-proof="authored" data-by="ai:claude">`/sf-review`</span>     | <span data-proof="authored" data-by="ai:claude">`sf-review/SKILL.md`</span>     | <span data-proof="authored" data-by="ai:claude">Multi-persona parallel review of code, PR, or local diff</span>                                                                                                                     |
 | <span data-proof="authored" data-by="ai:claude">`/sf-compound`</span>   | <span data-proof="authored" data-by="ai:claude">`sf-compound/SKILL.md`</span>   | <span data-proof="authored" data-by="ai:claude">Capture a learning into</span> <span data-proof="authored" data-by="ai:claude">`docs/solutions/`</span> <span data-proof="authored" data-by="ai:claude">for future retrieval</span> |
-| <span data-proof="authored" data-by="ai:claude">`/sf-lfg`</span>        | <span data-proof="authored" data-by="ai:claude">`sf-lfg/SKILL.md`</span>        | <span data-proof="authored" data-by="ai:claude">Full autonomous brainstorm → plan → deepen → work → review → resolve → test → deploy pipeline</span>                                                                                |
+| <span data-proof="authored" data-by="ai:claude">`/sf-lfg`</span>        | <span data-proof="authored" data-by="ai:claude">`sf-lfg/SKILL.md`</span>        | <span data-proof="authored" data-by="ai:claude">Full autonomous ideate → brainstorm → plan → deepen → work → review → polish → test → deploy pipeline</span>                                                                                |
 
 ***
 
@@ -82,7 +83,6 @@ Salesforce-aware skills covering the full V3 capability surface — debugging, d
 | `sf-doc-review`                | Parallel persona review of Salesforce plans and specs                    |
 | `sf-pr-description`            | Salesforce-aware PR descriptions (Apex / metadata / LWC scope)           |
 | `sf-resolve-pr-feedback`       | Parallel resolution with metadata-diff awareness                         |
-| `sf-ideate`                    | Surprise-me / what-to-build with Salesforce examples                     |
 | `sf-optimize`                  | Metric-driven optimization loops (governor-limit thresholds, query plan) |
 | `sf-update`                    | Plugin self-update from the upstream GitHub releases endpoint            |
 | `sf-setup`                     | Salesforce CLI presence check, `sfdx-project.json`, MCP servers          |
@@ -113,4 +113,4 @@ Out of scope for this Salesforce plugin (intentionally not shipped): generic fro
 
 * <span data-proof="authored" data-by="ai:claude">For routing collisions (e.g., "review this" vs. "review this PR"), the more specific phrase wins.</span>
 
-* <span data-proof="authored" data-by="ai:claude">The seven core workflow skills are the primary entry points; domain skills are loaded by them as needed.</span>
+* <span data-proof="authored" data-by="ai:claude">The eight core workflow skills are the primary entry points; domain skills are loaded by them as needed.</span>

@@ -6,6 +6,8 @@ argument-hint: "[topic, focus area, or 'surprise me' for AI-driven ideation]"
 
 # sf-ideate
 
+> **Principles enforced:** especially 5 (taste over typing — deciding *what* to build is a human call) and 7 (outsource thinking, not understanding). See `PRINCIPLES.md`.
+
 Generate 3-5 grounded ideas about a Salesforce topic with explicit warrants, then critique each.
 
 <feature_description>

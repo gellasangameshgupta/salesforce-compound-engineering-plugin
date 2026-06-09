@@ -11,21 +11,26 @@ Multi-platform Salesforce-focused plugin for compound engineering workflows. See
 ## <span data-proof="authored" data-by="ai:claude">The Compound Engineering Loop</span>
 
 ```
-Brainstorm → Plan (40%) → Deepen → Work (20%) → Review (20%) → Compound (20%) → Repeat
-     │            │           │          │              │               │
-     │            │           │          │              │               └── Capture to docs/solutions/
-     │            │           │          │              └── Parallel agent dispatch (59 agents)
-     │            │           │          └── Implement with pre-research + test checks
-     │            │           └── Enhance plan with section-level parallel research
-     │            └── Research & design using 45 skills + parallel research agents
-     └── Explore requirements through collaborative dialogue
+  ┌─ HUMAN (taste) ─┐        ┌──────── AI (in the loop) ────────┐        ┌─ HUMAN (taste) ─┐
+   Ideate · Brainstorm  →  Plan(40%) · Deepen · Work(20%) · Review · Resolve  →  Polish  →  Compound  →  Repeat
+
+  • Ideate     — decide what's worth building (/sf-ideate)
+  • Brainstorm — explore requirements through collaborative dialogue
+  • Plan       — research & design using 45 skills + parallel research agents
+  • Deepen     — enhance the plan with section-level parallel research
+  • Work       — implement with pre-research + system-wide test checks
+  • Review     — parallel agent dispatch (59 agents)
+  • Polish     — taste pass: SLDS2/UX, accessibility (WCAG), copy (UI surfaces only)
+  • Compound   — capture learnings to docs/solutions/, agents, skills, CLAUDE.md
 ```
 
-> <span data-proof="authored" data-by="ai:claude">All seven entry points (`/sf-brainstorm`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-plan`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-deepen`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-work`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-review`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-compound`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-lfg`) are</span> **<span data-proof="authored" data-by="ai:claude">skills</span>** <span data-proof="authored" data-by="ai:claude">in V3 — they auto-route from natural-language phrases via their</span> <span data-proof="authored" data-by="ai:claude">`description`</span> <span data-proof="authored" data-by="ai:claude">frontmatter, and direct slash invocation continues to work.</span>
+> **The sandwich.** Humans own the two ends — **Ideate** (what's worth building) and **Polish** (does it feel right) — the "bread". The AI runs the middle "filling" in the loop. As models got better at execution, human attention concentrates where machines are still weak: taste and judgment.
+
+> <span data-proof="authored" data-by="ai:claude">All eight entry points (`/sf-ideate`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-brainstorm`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-plan`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-deepen`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-work`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-review`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-compound`,</span> <span data-proof="authored" data-by="ai:claude">`/sf-lfg`) are</span> **<span data-proof="authored" data-by="ai:claude">skills</span>** <span data-proof="authored" data-by="ai:claude">in V3 — they auto-route from natural-language phrases via their</span> <span data-proof="authored" data-by="ai:claude">`description`</span> <span data-proof="authored" data-by="ai:claude">frontmatter, and direct slash invocation continues to work.</span>
 
 **<span data-proof="authored" data-by="ai:claude">Each iteration starts smarter</span>** <span data-proof="authored" data-by="ai:claude">because learnings compound into</span> <span data-proof="authored" data-by="ai:claude">`docs/solutions/`, agents, skills, and CLAUDE.md.</span>
 
-> **Principles.** This plugin is opinionated. Seven principles — preserve the quality ceiling, verifiability, stay in the loop, the spec is the artifact, taste over typing, agent-native docs, outsource thinking not understanding — govern every skill and every review. See [`PRINCIPLES.md`](./PRINCIPLES.md). Each of the seven core workflow skills declares which principles it enforces in its frontmatter.
+> **Principles.** This plugin is opinionated. Seven principles — preserve the quality ceiling, verifiability, stay in the loop, the spec is the artifact, taste over typing, agent-native docs, outsource thinking not understanding — govern every skill and every review. See [`PRINCIPLES.md`](./PRINCIPLES.md). Each of the eight core workflow skills declares which principles it enforces.
 
 ***
 

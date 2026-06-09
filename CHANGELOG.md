@@ -4,6 +4,22 @@
 
 <span data-proof="authored" data-by="ai:claude">The format is based on</span> [<span data-proof="authored" data-by="ai:claude">Keep a Changelog</span>](https://keepachangelog.com/en/1.1.0/) <span data-proof="authored" data-by="ai:claude">and this project adheres to</span> [<span data-proof="authored" data-by="ai:claude">Semantic Versioning</span>](https://semver.org/spec/v2.0.0.html)<span data-proof="authored" data-by="ai:claude">.</span>
 
+## [Unreleased]
+
+Adopts the EveryInc compound-engineering 8-step "sandwich" upgrade, Salesforce-flavored: humans own the two ends (ideate + polish), the AI runs the middle in the loop. Selective port — browser-test, image-gen, and Rails-style skills were intentionally skipped as having no Salesforce audience.
+
+### Added
+
+* **`/sf-strategy`** — creates and maintains a durable repo-root `STRATEGY.md` (target problem, approach, users, key metrics, tracks). Org-context aware (internal org / consulting engagement / ISV product). Read as grounding by `sf-ideate`, `sf-brainstorm`, and `sf-plan`. Includes `references/interview.md` and `references/strategy-template.md` with Salesforce-specific anti-patterns (build-output metrics, metadata-inventory tracks, licence-as-persona).
+* **`/sf-polish`** — the back "bread" of the loop: a stack-aware UI polish pass. Detects the front-end surface (LWC / Aura / Experience Cloud LWR / React-headless) via a profile registry and applies the matching design, WCAG accessibility (gate), and copy lens. New stacks plug in as a registry row. Dispatches `sf-lwc-accessibility-guardian`, `sf-aura-migration-advisor`, and `/slds2-uplift`.
+* **`/sf-simplify-code`** — promotes the `sf-code-simplicity-reviewer` agent to a user-facing skill. Behavior-preserving simplification of Apex/LWC with Salesforce guardrails (bulk safety, governor profile, sharing/CRUD/FLS, trigger order of execution must not change).
+* **`/sf-product-pulse`** — role-aware, org-required pulse. Business lens (BA/consultant): requirements traceability against BRD/BFRD/FRD/SOW mapped to live org metadata, adoption vs target personas, business-process friction, scope/change. Technical lens (dev/admin): Apex exceptions, governor near-misses, coverage trend, deploy health, limits. Saves to `docs/pulse-reports/`, read-only, no PII.
+* **`sf-business-analyst-pulse`** agent — read-only `model: sonnet` business analyst backing the pulse's business lens.
+
+### Changed
+
+* **8-step reframe** — `/sf-ideate` is promoted to a core loop entry point (the front "bread") and `/sf-polish` becomes the back bookend. `/sf-lfg` gains **Stage 0: IDEATE & BRAINSTORM** and **Stage 6: POLISH** (conditional, UI surfaces only); TEST/DEPLOY/COMPOUND renumber to 7/8/9; abort conditions and output updated. README, `CLAUDE.md`, and `skills/index.md` re-narrated around the sandwich; core workflow entry-point count is now nine, plus `/sf-strategy` grounding.
+
 ## \[3.0.0-beta.2] - 2026-04-30
 
 Opinionated release: introduces a 7-principles framework, replaces the `agent-script` language reference with three Agentforce lifecycle skills, ports eight generating skills from `forcedotcom/afv-library`, and removes the stale CI workflow.

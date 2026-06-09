@@ -8,6 +8,8 @@ argument-hint: "[optional: idea, problem statement, or Salesforce feature descri
 
 > **Principles enforced:** 4 (spec is the artifact, in embryo). See `PRINCIPLES.md`.
 
+**Strategy grounding:** If a `STRATEGY.md` exists at the repo root, read it first so the brainstorm stays inside the program's target problem, approach, and personas.
+
 ## Copy-paste-to-agent
 
 ```

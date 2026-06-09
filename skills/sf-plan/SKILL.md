@@ -8,6 +8,8 @@ argument-hint: "[optional: feature description, requirements doc path, plan path
 
 > **Principles enforced:** 2 (verifiability), 4 (spec is the artifact), 7 (institutional knowledge). See `PRINCIPLES.md`.
 
+**Strategy grounding:** If a `STRATEGY.md` exists at the repo root, read it first so the plan's tracks and metrics align with the program's stated approach.
+
 ## Copy-paste-to-agent
 
 ```

@@ -8,6 +8,8 @@ argument-hint: "[topic, focus area, or 'surprise me' for AI-driven ideation]"
 
 > **Principles enforced:** especially 5 (taste over typing — deciding *what* to build is a human call) and 7 (outsource thinking, not understanding). See `PRINCIPLES.md`.
 
+**Strategy grounding:** If a `STRATEGY.md` exists at the repo root, read it first and ground ideas in its target problem, approach, and key metrics. If none exists and the topic is strategic, suggest `/sf-strategy`.
+
 Generate 3-5 grounded ideas about a Salesforce topic with explicit warrants, then critique each.
 
 <feature_description>

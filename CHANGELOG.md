@@ -6,6 +6,8 @@
 
 ## [Unreleased]
 
+## \[3.1.0-beta.1] - 2026-06-22
+
 Adopts the EveryInc compound-engineering 8-step "sandwich" upgrade, Salesforce-flavored: humans own the two ends (ideate + polish), the AI runs the middle in the loop. Selective port — browser-test, image-gen, and Rails-style skills were intentionally skipped as having no Salesforce audience.
 
 ### Added

@@ -1,4 +1,4 @@
-# SF Compound Engineering Plugin v3.0.0-beta.2
+# SF Compound Engineering Plugin v3.1.0-beta.1
 
 **Instruction-Based Compound Engineering for Salesforce** — a multi-platform plugin (Claude Code, Cursor, Codex, and 9 other AI coding tools) where each iteration becomes smarter than the last through institutional knowledge capture and parallel agent dispatch.
 
@@ -247,7 +247,7 @@ The `sf-learnings-researcher` agent searches these documents by frontmatter meta
 ```
 salesforce-compound-engineering-plugin/
 ├── .claude-plugin/
-│   ├── plugin.json           # Plugin manifest (v3.0.0-beta.2)
+│   ├── plugin.json           # Plugin manifest (v3.1.0-beta.1)
 │   └── marketplace.json      # Marketplace loader schema
 ├── .cursor-plugin/           # Cursor plugin manifest
 ├── .codex-plugin/            # Codex plugin manifest

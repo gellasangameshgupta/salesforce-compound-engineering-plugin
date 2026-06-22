@@ -6,6 +6,8 @@ argument-hint: "[blank to polish current branch UI changes, or name a component 
 
 # /sf-polish
 
+> **Persona dispatch (V3.1, agentless).** Where this skill dispatches reviewers (e.g. `sf-lwc-accessibility-guardian`, `sf-aura-migration-advisor`), they are *personas* — prompt assets under `../sf-review/references/personas/<name>.md`, not registered agents. Run each as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline-in-sequence on harnesses without subagents.
+
 > **Principles enforced:** especially 1 (preserve the quality ceiling — the finished thing must feel right, not merely compile) and 5 (taste over typing — UX and copy are human-judgment calls). See `PRINCIPLES.md`.
 
 This is the back "bread" of the compound loop. Correctness has passed `/sf-review`; now refine the experience: visual design, layout, accessibility, motion, and copy. It is **stack-aware** — it detects the front-end surface in scope and applies the right lens through a profile registry, so new Salesforce front-end stacks are added as profiles rather than rewrites.
@@ -27,7 +29,7 @@ Classify the changed files into front-end surfaces:
 
 ## Step 2: Select the stack profile
 
-Each profile names the lens, the design system, and which existing agents/skills to dispatch. The registry is intentionally a table so new stacks (e.g. a future Salesforce front-end framework) drop in as one more row.
+Each profile names the lens, the design system, and which existing personas/skills to dispatch. The registry is intentionally a table so new stacks (e.g. a future Salesforce front-end framework) drop in as one more row.
 
 | Profile | Design system & lens | Dispatch |
 | --- | --- | --- |
@@ -36,7 +38,7 @@ Each profile names the lens, the design system, and which existing agents/skills
 | **Experience Cloud (LWR)** | SLDS2 + branding sets / theme tokens, responsive + guest-user states | `/slds2-uplift` · `Task sf-lwc-accessibility-guardian` · `Task sf-lwc-performance-oracle` |
 | **React / headless** | Design-system-agnostic visual quality + WCAG; respect the app's own design system if one exists | `Task sf-lwc-accessibility-guardian` (WCAG heuristics) — apply the cross-cutting checks below directly |
 
-> **Adding a profile:** when Salesforce ships a new front-end stack, add a row here naming its design system, its accessibility baseline, and the agents/skills to dispatch. Do not branch the skill logic — the cross-cutting checks in Step 3 stay the same.
+> **Adding a profile:** when Salesforce ships a new front-end stack, add a row here naming its design system, its accessibility baseline, and the personas/skills to dispatch. Do not branch the skill logic — the cross-cutting checks in Step 3 stay the same.
 
 ## Step 3: Apply the polish lens
 
@@ -60,4 +62,4 @@ Apply safe refinements directly. Anything that would change data/business behavi
 
 **Gate (Principle 1):** no WCAG A/AA violations and no obvious UX/copy defects on the changed surface before declaring done.
 
-Output: the detected profile, agents/skills dispatched, refinements applied (with rationale), accessibility result, screenshots (or why none), and anything deferred to `/sf-review` because it crossed into behavior change. In the `sf-lfg` pipeline, polished UI re-enters the TEST stage.
+Output: the detected profile, personas/skills dispatched, refinements applied (with rationale), accessibility result, screenshots (or why none), and anything deferred to `/sf-review` because it crossed into behavior change. In the `sf-lfg` pipeline, polished UI re-enters the TEST stage.

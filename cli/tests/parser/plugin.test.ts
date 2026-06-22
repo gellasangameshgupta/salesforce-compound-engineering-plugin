@@ -8,26 +8,30 @@ describe("readPlugin", () => {
   test("reads plugin manifest from project root", () => {
     const plugin = readPlugin(PLUGIN_ROOT);
     expect(plugin.name).toBe("sf-compound-engineering");
-    expect(plugin.version).toBe("2.0.0");
+    expect(plugin.version).toMatch(/^3\./);
   });
 
-  test("parses commands from commands/ directory", () => {
+  test("has no standalone commands (V3 retired commands/ for skills)", () => {
     const plugin = readPlugin(PLUGIN_ROOT);
-    expect(plugin.commands.length).toBeGreaterThan(0);
-    for (const cmd of plugin.commands) {
-      expect(cmd.name).toBeTruthy();
-      expect(cmd.body).toBeTruthy();
-    }
+    expect(Array.isArray(plugin.commands)).toBe(true);
   });
 
-  test("parses agents from agents/ directory", () => {
+  test("is agentless — no registered agents (V3.1)", () => {
+    // V3.1 went agentless: former agents are now persona prompt assets
+    // shipped inside skills under references/personas/. See plugin.test
+    // below that personas travel with skills.
     const plugin = readPlugin(PLUGIN_ROOT);
-    expect(plugin.agents.length).toBeGreaterThan(0);
-    for (const agent of plugin.agents) {
-      expect(agent.name).toBeTruthy();
-      expect(agent.body).toBeTruthy();
-      expect(agent.category).toBeTruthy();
-    }
+    expect(plugin.agents.length).toBe(0);
+  });
+
+  test("review personas ship as skill files under references/personas/", () => {
+    const plugin = readPlugin(PLUGIN_ROOT);
+    const review = plugin.skills.find((s) => s.name === "sf-review");
+    expect(review).toBeTruthy();
+    const personaFiles = review!.files.filter((f) =>
+      f.relativePath.includes("references/personas/"),
+    );
+    expect(personaFiles.length).toBeGreaterThan(0);
   });
 
   test("parses skills from skills/ directory", () => {

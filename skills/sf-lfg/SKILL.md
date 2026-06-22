@@ -6,6 +6,8 @@ argument-hint: "[feature description or plan path; optionally pass 'deploy=scrat
 
 # /sf-lfg
 
+> **Persona dispatch (V3.1, agentless).** Where stages below say "dispatch research/review agents", they mean *personas* — prompt assets under `references/personas/<name>.md`, not registered agents. Run each as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline-in-sequence on harnesses without subagents. The PLAN stage delegates to `/sf-plan` and the REVIEW stage to `/sf-review`, which own their personas (research → `../sf-plan/references/personas/`, review → `../sf-review/references/personas/`).
+
 > **Principles enforced:** all seven, but especially 1 (preserve the quality ceiling) and 2 (verifiability). See `PRINCIPLES.md`.
 
 ## Copy-paste-to-agent
@@ -74,7 +76,7 @@ failures. Honors $ARGUMENTS.deploy = scratch | sandbox | none.
 <span data-proof="authored" data-by="ai:claude">If</span> <span data-proof="authored" data-by="ai:claude">`$ARGUMENTS.feature`</span> <span data-proof="authored" data-by="ai:claude">is a file path, read it as the plan. Otherwise, create one:</span>
 
 1. <span data-proof="authored" data-by="ai:claude">Check</span> <span data-proof="authored" data-by="ai:claude">`docs/brainstorms/`</span> <span data-proof="authored" data-by="ai:claude">for matching brainstorm.</span>
-2. <span data-proof="authored" data-by="ai:claude">Dispatch parallel research agents:</span>
+2. <span data-proof="authored" data-by="ai:claude">Dispatch parallel research personas:</span>
 
    * <span data-proof="authored" data-by="ai:claude">Task sf-learnings-researcher(feature)</span>
 
@@ -98,7 +100,7 @@ failures. Honors $ARGUMENTS.deploy = scratch | sandbox | none.
 <span data-proof="authored" data-by="ai:claude">Enhance the plan with parallel research per section:</span>
 
 1. <span data-proof="authored" data-by="ai:claude">Parse plan sections.</span>
-2. <span data-proof="authored" data-by="ai:claude">Dispatch research agents per section (governor limits, sharing, security, performance).</span>
+2. <span data-proof="authored" data-by="ai:claude">Dispatch research personas per section (governor limits, sharing, security, performance).</span>
 3. <span data-proof="authored" data-by="ai:claude">Merge findings into plan.</span>
 4. <span data-proof="authored" data-by="ai:claude">Add Salesforce-specific depth (order of execution, API versions, known issues).</span>
 
@@ -137,10 +139,10 @@ failures. Honors $ARGUMENTS.deploy = scratch | sandbox | none.
 
 ## <span data-proof="authored" data-by="ai:claude">Stage 4: REVIEW</span>
 
-<span data-proof="authored" data-by="ai:claude">Review with parallel agent dispatch:</span>
+<span data-proof="authored" data-by="ai:claude">Review with parallel persona dispatch:</span>
 
 1. <span data-proof="authored" data-by="ai:claude">Classify changed files.</span>
-2. <span data-proof="authored" data-by="ai:claude">Dispatch all applicable review agents in parallel (comprehensive depth):</span>
+2. <span data-proof="authored" data-by="ai:claude">Dispatch all applicable review personas in parallel (comprehensive depth):</span>
 
    * <span data-proof="authored" data-by="ai:claude">Stack-specific agents (Apex, LWC, Flow, Integration)</span>
 
@@ -148,7 +150,7 @@ failures. Honors $ARGUMENTS.deploy = scratch | sandbox | none.
 
    * <span data-proof="authored" data-by="ai:claude">Workflow agents (code simplicity, deployment verification)</span>
 
-   * <span data-proof="authored" data-by="ai:claude">Research agents (best practices validation)</span>
+   * <span data-proof="authored" data-by="ai:claude">Research personas (best practices validation)</span>
 3. <span data-proof="authored" data-by="ai:claude">Consolidate findings by severity.</span>
 
 **<span data-proof="authored" data-by="ai:claude">Gate:</span>** <span data-proof="authored" data-by="ai:claude">No Critical or High findings remaining before proceeding.</span>

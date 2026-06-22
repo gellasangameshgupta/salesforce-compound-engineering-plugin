@@ -1,6 +1,6 @@
-# SF Compound Engineering Plugin v3.1.0-beta.1
+# SF Compound Engineering Plugin v3.1.0-beta.3
 
-**Instruction-Based Compound Engineering for Salesforce** — a multi-platform plugin (Claude Code, Cursor, Codex, and 9 other AI coding tools) where each iteration becomes smarter than the last through institutional knowledge capture and parallel agent dispatch.
+**Instruction-Based Compound Engineering for Salesforce** — a multi-platform plugin (Claude Code, Cursor, Codex, and 9 other AI coding tools) where each iteration becomes smarter than the last through institutional knowledge capture and parallel persona dispatch.
 
 > **V3 is a skills-first architecture.** Commands were retired — every entry point is now a **skill** that auto-routes from natural-language phrases via its `description` frontmatter, with direct slash invocation (`/sf-<name>`) still supported. See [`CHANGELOG.md`](./CHANGELOG.md) for the migration guide from v2.x.
 
@@ -14,12 +14,12 @@
 
   • Ideate     — decide what's worth building (/sf-ideate)
   • Brainstorm — explore requirements through collaborative dialogue (/sf-brainstorm)
-  • Plan       — research & design using 60 skills + parallel research agents (/sf-plan)
+  • Plan       — research & design using 60 skills + parallel research personas (/sf-plan)
   • Deepen     — enhance the plan with section-level parallel research (/sf-deepen)
   • Work       — implement with pre-research + system-wide test checks (/sf-work)
-  • Review     — parallel agent dispatch across 60 specialist agents (/sf-review)
+  • Review     — parallel persona dispatch across 60 specialist personas (/sf-review)
   • Polish     — taste pass via /sf-polish: SLDS2/UX, accessibility (WCAG), copy (UI surfaces only)
-  • Compound   — capture learnings to docs/solutions/, agents, skills, CLAUDE.md (/sf-compound)
+  • Compound   — capture learnings to docs/solutions/, personas, skills, CLAUDE.md (/sf-compound)
 ```
 
 > **The sandwich.** Humans own the two ends — **Ideate** (what's worth building) and **Polish** (does it feel right) — the "bread". The AI runs the middle "filling" in the loop. As models get better at execution, human attention concentrates where machines are still weak: taste and judgment.
@@ -28,7 +28,7 @@
 
 Above the loop, **`/sf-strategy`** maintains an optional repo-root `STRATEGY.md` (target problem, approach, users, key metrics, tracks) that `sf-ideate`, `sf-brainstorm`, and `sf-plan` read as grounding when it exists.
 
-**Each iteration starts smarter** because learnings compound into `docs/solutions/`, agents, skills, and CLAUDE.md.
+**Each iteration starts smarter** because learnings compound into `docs/solutions/`, personas, skills, and CLAUDE.md.
 
 > **Principles.** This plugin is opinionated. Seven principles — preserve the quality ceiling, verifiability, stay in the loop, the spec is the artifact, taste over typing, agent-native docs, outsource thinking not understanding — govern every skill and every review. See [`PRINCIPLES.md`](./PRINCIPLES.md). Each core workflow skill declares which principles it enforces.
 
@@ -105,6 +105,8 @@ bunx @gellasangameshgupta/sf-compound-plugin sync
 | **OpenClaw** | `commands/*.md`            | `agents/*.md`                  | `skills/`                    | TS entry point             |
 | **Qwen**     | `commands/*.md`            | `agents/*.yaml`                | `skills/`                    | N/A                        |
 
+> **Agentless note (V3.1):** the plugin ships **no standalone agents**, so the *Agents* column is empty in practice — the converters still exist but iterate an empty set. Specialist **personas** travel inside `skills/` (under `references/personas/`) and are converted as part of each skill, reaching every platform.
+
 ***
 
 ## Workflow Entry Points
@@ -116,10 +118,10 @@ The nine-step compound loop, plus the full-pipeline runner and the strategy grou
 | `/sf-strategy`   | grounding  | Create/maintain repo-root `STRATEGY.md` read by ideate/brainstorm/plan |
 | `/sf-ideate`     | bread      | Decide what's worth building — grounded idea generation             |
 | `/sf-brainstorm` | loop       | Explore requirements through collaborative dialogue                 |
-| `/sf-plan`       | loop       | Research & design specs with parallel agent research (NO CODE)      |
+| `/sf-plan`       | loop       | Research & design specs with parallel persona research (NO CODE)      |
 | `/sf-deepen`     | loop       | Enhance plan sections with parallel deep research                   |
 | `/sf-work`       | loop       | Implement with pre-research, skills routing, and test checks        |
-| `/sf-review`     | loop       | Review with parallel agent dispatch (fast/thorough/comprehensive)   |
+| `/sf-review`     | loop       | Review with parallel persona dispatch (fast/thorough/comprehensive)   |
 | `/sf-polish`     | bread      | Stack-aware UI polish — SLDS2/UX, WCAG accessibility, copy          |
 | `/sf-compound`   | loop       | Capture learnings to `docs/solutions/` with YAML schema             |
 | `/sf-lfg`        | pipeline   | Full autonomous pipeline — ideate through deploy in one command     |
@@ -140,9 +142,9 @@ Each stage has gates that must pass before proceeding. The pipeline aborts and a
 
 ***
 
-## Specialist Agents (60)
+## Specialist Personas (60)
 
-Workflow skills dispatch agents in parallel via the Task tool. Agents are flat under `agents/<name>.agent.md`; `agents/index.md` is the routing map. Topical groupings:
+V3.1 is **agentless** — there are no standalone registered agents. The 60 specialist personas are prompt assets under `skills/<owner>/references/personas/<name>.md`, dispatched by the workflow skills as **isolated subagents**: parallel with isolated context on Claude Code, applied inline on harnesses without a subagent primitive. They ship to every platform as ordinary skill files. Primary owners: `sf-review` (code review), `sf-doc-review` (doc review), `sf-plan` (research). Topical groupings:
 
 | Group                      | Covers                                                                       |
 | -------------------------- | ---------------------------------------------------------------------------- |
@@ -238,7 +240,7 @@ docs/solutions/
 └── patterns/                # Reusable code patterns
 ```
 
-The `sf-learnings-researcher` agent searches these documents by frontmatter metadata before every plan and implementation phase to surface relevant institutional knowledge. `docs/solutions/`, `docs/plans/`, and `docs/brainstorms/` are **protected directories** — edit, never delete.
+The `sf-learnings-researcher` persona searches these documents by frontmatter metadata before every plan and implementation phase to surface relevant institutional knowledge. `docs/solutions/`, `docs/plans/`, and `docs/brainstorms/` are **protected directories** — edit, never delete.
 
 ***
 
@@ -247,7 +249,7 @@ The `sf-learnings-researcher` agent searches these documents by frontmatter meta
 ```
 salesforce-compound-engineering-plugin/
 ├── .claude-plugin/
-│   ├── plugin.json           # Plugin manifest (v3.1.0-beta.1)
+│   ├── plugin.json           # Plugin manifest (v3.1.0-beta.3)
 │   └── marketplace.json      # Marketplace loader schema
 ├── .cursor-plugin/           # Cursor plugin manifest
 ├── .codex-plugin/            # Codex plugin manifest
@@ -264,10 +266,12 @@ salesforce-compound-engineering-plugin/
 │   │   ├── transforms/       # Path, reference, frontmatter rewriting
 │   │   └── utils/            # Auto-detect, merge helpers
 │   └── tests/
-├── agents/                   # 60 agents (flat)
-│   └── index.md              # Agent routing map
-├── skills/                   # 60 skills
-│   └── index.md              # Skill routing map
+├── skills/                   # 60 skills — each owns the personas it dispatches
+│   ├── index.md              # Skill routing map
+│   ├── sf-review/references/personas/      # ~40 code-review personas
+│   ├── sf-doc-review/references/personas/  #  8 doc-review personas
+│   ├── sf-plan/references/personas/        #  9 research personas
+│   └── …                     # 60 personas total — agentless, no standalone agents/ dir
 └── docs/
     ├── brainstorms/          # Pre-planning exploration records (protected)
     ├── plans/                # Feature plans (protected)
@@ -295,7 +299,7 @@ Configured in `.mcp.json`:
 }
 ```
 
-**Context7** — framework documentation, used by research agents as the second tier after local skills, before falling back to web search.
+**Context7** — framework documentation, used by research personas as the second tier after local skills, before falling back to web search.
 
 **Salesforce DX MCP** — live org operations (SOQL, deploy, retrieve, code analysis, LWC experts, testing). Toolsets: `core`, `orgs`, `metadata`, `data`, `users`, `code-analysis`, `lwc-experts`, `aura-experts`, `experts-validation`, `devops`, `enrichment`, `mobile`, `testing`, `scale-products`.
 
@@ -317,7 +321,7 @@ Configured in `.mcp.json`:
 
 Contributions welcome! Key areas:
 
-* Add new agents for specialized reviews
+* Add new personas for specialized reviews
 * Expand skills with more patterns
 * Improve index files for better routing
 * Add solution documents to `docs/solutions/`

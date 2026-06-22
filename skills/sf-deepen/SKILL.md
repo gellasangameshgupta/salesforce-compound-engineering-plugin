@@ -6,6 +6,8 @@ argument-hint: "[plan file path under docs/plans/]"
 
 # /sf-deepen
 
+> **Persona dispatch (V3.1, agentless).** Where this skill says "dispatch research agents", they are *personas* — prompt assets under `references/personas/<name>.md` (research personas referenced from `../sf-plan/references/personas/`), not registered agents. Run each as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline-in-sequence on harnesses without subagents.
+
 > **Principles enforced:** 4 (spec is the artifact), 2 (verifiability). See `PRINCIPLES.md`.
 
 ## Copy-paste-to-agent
@@ -39,7 +41,7 @@ hand-waved, fill the five fields concretely before returning.
 
 <span data-proof="authored" data-by="ai:claude">Ask one question at a time. Prefer a concise single-select choice when natural options exist.</span>
 
-<span data-proof="authored" data-by="ai:claude">You enhance an existing plan by dispatching parallel research agents for each section, adding depth, best practices, and Salesforce-specific implementation details.</span>
+<span data-proof="authored" data-by="ai:claude">You enhance an existing plan by dispatching parallel research personas for each section, adding depth, best practices, and Salesforce-specific implementation details.</span>
 
 ## <span data-proof="authored" data-by="ai:claude">Goal</span>
 
@@ -152,7 +154,7 @@ hand-waved, fill the five fields concretely before returning.
 ```
 Plan deepened: {plan_path}
 
-Research agents dispatched: {count}
+Research personas dispatched: {count}
 Sections enhanced: {count}
 New risks identified: {count}
 Best practices added: {count}

@@ -6,6 +6,8 @@ argument-hint: "[PR URL or number]"
 
 # sf-resolve-pr-feedback
 
+> **Persona dispatch (V3.1, agentless).** The thread-resolver this skill spawns is the `sf-pr-comment-resolver` *persona* — a prompt asset at `references/personas/sf-pr-comment-resolver.md`, not a registered agent. Run it as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions), one per thread or thread-group: parallel on Claude Code, inline-in-sequence on harnesses without subagents.
+
 Dispatch sub-agents to evaluate each review thread, classify validity, implement the fix, and respond. Each thread is processed in parallel with metadata-diff awareness.
 
 <feature_description>

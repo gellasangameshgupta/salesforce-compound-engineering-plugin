@@ -86,7 +86,7 @@ scope: {APEX_ONLY|AUTOMATION_ONLY|LWC_ONLY|INTEGRATION_ONLY|UNIVERSAL}
 
 ## <span data-proof="authored" data-by="ai:claude">After Creating</span>
 
-1. **<span data-proof="authored" data-by="ai:claude">Update</span>** **<span data-proof="authored" data-by="ai:claude">`agents/index.md`</span>**<span data-proof="authored" data-by="ai:claude">: Add the new agent to the routing table</span>
+1. **<span data-proof="authored" data-by="ai:claude">Update</span>** **<span data-proof="authored" data-by="ai:claude">the owning skill's `references/personas/` directory</span>**<span data-proof="authored" data-by="ai:claude">: Add the new persona file there</span>
 2. **<span data-proof="authored" data-by="ai:claude">Update</span>** **<span data-proof="authored" data-by="ai:claude">`skills/index.md`</span>**<span data-proof="authored" data-by="ai:claude">: Add the new skill to the routing table</span>
 3. **<span data-proof="authored" data-by="ai:claude">Update</span>** **<span data-proof="authored" data-by="ai:claude">`plugin.json`</span>**<span data-proof="authored" data-by="ai:claude">: Increment the component counts</span>
 4. **<span data-proof="authored" data-by="ai:claude">Test</span>**<span data-proof="authored" data-by="ai:claude">: Verify the agent/skill is discovered and used correctly</span>

@@ -73,9 +73,11 @@ Review the code at: `$ARGUMENTS.target`
 
 ***
 
-## Step 2: Dispatch Review Agents in Parallel
+## Step 2: Dispatch Review Personas in Parallel
 
-Based on file classification, dispatch applicable agents using the **Agent tool** (subagent\_type matching the agent name).
+Review personas live in `skills/sf-review/references/personas/<name>.md` as **prompt assets — not registered agents**. Dispatch each applicable persona as an **isolated subagent**: use the Task tool with a general-purpose subagent and pass the persona file's contents as its instructions, along with the files and code context. On Claude Code these run in parallel with isolated context — that isolation is the whole point of splitting them. On harnesses without a subagent primitive, apply each persona's prompt **inline, one after another**, against the matching files.
+
+Based on file classification, dispatch applicable personas (each `Task <name>` below = the persona at `references/personas/<name>.md`):
 
 ### For APEX files — dispatch in parallel:
 

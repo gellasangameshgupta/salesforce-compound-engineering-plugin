@@ -6,6 +6,21 @@
 
 ## [Unreleased]
 
+## \[3.1.0-beta.3] - 2026-06-22
+
+**Agentless, skill-native reshape.** Following upstream `EveryInc/compound-engineering-plugin#967`, the plugin no longer ships standalone registered agents — formal agent definitions are not a reliable common denominator across Claude, Codex, Cursor, Gemini, Pi, OpenCode, etc. The 60 specialist behaviors are preserved as **persona prompt assets** dispatched as isolated subagents (parallel on Claude Code, inline where unsupported). No quality loss: review still runs many isolated specialist lenses; only the manifest-level agent registration goes away.
+
+### Changed
+
+* **60 agents → 60 personas.** Every `agents/<name>.agent.md` moved to its owning skill at `skills/<owner>/references/personas/<name>.md` (frontmatter trimmed to `name` + `description`; `model`/`tools`/`color`/`scope` dropped). Ownership: `sf-review` (≈40 code-review personas), `sf-doc-review` (8 doc-review personas), `sf-plan` (research + spec-flow personas), plus `sf-debug`, `sf-resolve-pr-feedback`, `sf-product-pulse`, `mcp-tool-builder` (one each). Cross-skill use is by relative path (stable — the whole `skills/` tree ships together).
+* **Dispatch convention.** Every workflow skill that dispatched agents (`sf-review`, `sf-doc-review`, `sf-lfg`, `sf-work`, `sf-plan`, `sf-deepen`, `sf-brainstorm`, `sf-polish`, `sf-resolve-pr-feedback`, `sf-debug`, `sf-product-pulse`, `sf-compound`) now loads the persona file and runs it via a general-purpose subagent — parallel with isolated context on Claude Code, applied inline in sequence on harnesses without a subagent primitive.
+* **CLI is agentless-safe.** The parser already guards missing `agents/` (returns an empty set), so converters emit no agent files; personas ship to all 11 platforms as ordinary skill files (the CLI copies a skill's whole `references/` subtree). Parser tests updated to assert the agentless invariant (`agents.length === 0`) and that personas travel with skills.
+* **Docs re-narrated.** `CLAUDE.md` (Architecture, Frontmatter conventions, "Adding new personas and skills") and `README.md` (Specialist Personas section, Project Structure, conversion-table note) updated to the agentless model.
+
+### Removed
+
+* **`agents/` directory** (60 `*.agent.md` files + `index.md`) — relocated into skill-local `references/personas/`. **Breaking** for any caller that dispatched a persona by registered `subagent_type` (e.g. `sf-apex-governor-guardian`); dispatch now goes through the owning workflow skill.
+
 ## \[3.1.0-beta.1] - 2026-06-22
 
 Adopts the EveryInc compound-engineering 8-step "sandwich" upgrade, Salesforce-flavored: humans own the two ends (ideate + polish), the AI runs the middle in the loop. Selective port — browser-test, image-gen, and Rails-style skills were intentionally skipped as having no Salesforce audience.

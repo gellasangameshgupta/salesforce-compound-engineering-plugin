@@ -6,6 +6,8 @@ argument-hint: "[optional: feature description, requirements doc path, plan path
 
 # /sf-plan
 
+> **Persona dispatch (V3.1, agentless).** The research personas below are prompt assets under `references/personas/<name>.md`, not registered agents. Run each as an **isolated subagent**: use the Task tool with a general-purpose subagent and pass the persona file's contents as its instructions. On Claude Code these run in parallel with isolated context; on harnesses without a subagent primitive, apply each persona's prompt **inline, in sequence**.
+
 > **Principles enforced:** 2 (verifiability), 4 (spec is the artifact), 7 (institutional knowledge). See `PRINCIPLES.md`.
 
 **Strategy grounding:** If a `STRATEGY.md` exists at the repo root, read it first so the plan's tracks and metrics align with the program's stated approach.
@@ -32,7 +34,7 @@ verification, no plan. Save under docs/plans/YYYY-MM-DD-<type>-<slug>-plan.md.
 
 <span data-proof="authored" data-by="ai:claude">Ask one question at a time. Prefer a concise single-select choice when natural options exist.</span>
 
-<span data-proof="authored" data-by="ai:claude">You are planning a Salesforce implementation using parallel research agents. Your job is to research and design —</span> **<span data-proof="authored" data-by="ai:claude">NOT write code</span>**<span data-proof="authored" data-by="ai:claude">.</span>
+<span data-proof="authored" data-by="ai:claude">You are planning a Salesforce implementation using parallel research personas. Your job is to research and design —</span> **<span data-proof="authored" data-by="ai:claude">NOT write code</span>**<span data-proof="authored" data-by="ai:claude">.</span>
 
 ## <span data-proof="authored" data-by="ai:claude">Goal</span>
 
@@ -60,7 +62,7 @@ ls -la docs/brainstorms/*.md 2>/dev/null | head -10
 
 ## <span data-proof="authored" data-by="ai:claude">Step 1: Parallel Research (dispatch simultaneously)</span>
 
-<span data-proof="authored" data-by="ai:claude">Launch these research agents</span> **<span data-proof="authored" data-by="ai:claude">in parallel</span>** <span data-proof="authored" data-by="ai:claude">using the Agent tool:</span>
+<span data-proof="authored" data-by="ai:claude">Launch these research personas</span> **<span data-proof="authored" data-by="ai:claude">in parallel</span>** <span data-proof="authored" data-by="ai:claude">as isolated subagents (see the convention above):</span>
 
 * <span data-proof="authored" data-by="ai:claude">Task sf-learnings-researcher(feature_description) — Check institutional knowledge</span>
 
@@ -146,7 +148,7 @@ Verification Strategy is the gate between /sf-plan and /sf-work. /sf-lfg will re
 
 ### <span data-proof="authored" data-by="ai:claude">Agents (Expertise)</span>
 
-<span data-proof="authored" data-by="ai:claude">Read</span> <span data-proof="authored" data-by="ai:claude">`agents/index.md`</span> <span data-proof="authored" data-by="ai:claude">to route to relevant review agents.</span>
+<span data-proof="authored" data-by="ai:claude">Read</span> <span data-proof="authored" data-by="ai:claude">`../sf-review/references/personas/`</span> <span data-proof="authored" data-by="ai:claude">to route to relevant review personas.</span>
 
 ### <span data-proof="authored" data-by="ai:claude">Skills (Domain Knowledge)</span>
 

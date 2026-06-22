@@ -13,6 +13,8 @@ allowed-tools:
 
 # /sf-product-pulse
 
+> **Persona dispatch (V3.1, agentless).** `sf-business-analyst-pulse` is a *persona* — a prompt asset at `references/personas/sf-business-analyst-pulse.md`, not a registered agent (`sf-issue-intelligence-analyst`, when used, lives at `../sf-plan/references/personas/`). Run each as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline on harnesses without subagents.
+
 > **Principles enforced:** especially 3 (stay in the loop — the pulse feeds human judgment, it doesn't act) and 7 (outsource thinking, not understanding — surface the numbers, the human decides). See `PRINCIPLES.md`.
 
 Produce a compact, single-page pulse report for a Salesforce org over a time window, then surface the key points in chat and save the full report to `docs/pulse-reports/`. The skill is **read-only**: it queries the org via SOQL / Tooling API / metadata / `/limits` (through the salesforce-dx MCP or `sf` CLI) and reads requirements docs. It never deploys, mutates data, or changes metadata. **No PII in saved reports** (no user emails, names, account IDs, or record content).

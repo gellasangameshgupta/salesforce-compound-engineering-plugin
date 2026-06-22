@@ -8,6 +8,8 @@ argument-hint: "[optional: scope of what to compound; defaults to recent work in
 
 > **Principles enforced:** 5 (taste and oversight), 7 (institutional memory). See `PRINCIPLES.md`.
 
+> **Persona dispatch (V3.1, agentless).** Any reviewer/researcher this skill invokes (e.g. `sf-learnings-researcher`) is a *persona* — a prompt asset under `references/personas/<name>.md` (research personas live at `../sf-plan/references/personas/`), not a registered agent. Run each as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline on harnesses without subagents.
+
 ## Copy-paste-to-agent
 
 ```
@@ -134,7 +136,7 @@ Validate frontmatter against `schema.yaml`.
 ## Step 5: Update Plugin Resources
 
 Route updates via index files:
-- Read `agents/index.md` to identify agent files for new checks
+- Read `../sf-review/references/personas/` to identify the owning skill's persona files for new checks
 - Read `skills/index.md` to identify skill files for new patterns
 - Update only files relevant to the work classification
 - Avoid cross-contamination across domains

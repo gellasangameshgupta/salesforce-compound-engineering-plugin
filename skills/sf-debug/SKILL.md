@@ -6,6 +6,8 @@ argument-hint: "[issue reference, error message, test path, log file, or descrip
 
 # sf-debug
 
+> **Persona dispatch (V3.1, agentless).** If this skill spawns the `sf-bug-reproduction-validator` (or any reviewer), it is a *persona* — a prompt asset under `references/personas/<name>.md`, not a registered agent. Run it as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline on harnesses without subagents.
+
 Investigate Salesforce-specific bugs systematically — tracing the full causal chain (UI → Flow → trigger → Apex → DML → callback) before proposing a fix — and optionally implement the fix with test-first discipline.
 
 <feature_description>

@@ -6,6 +6,8 @@ argument-hint: "[plan file path under docs/plans/, or feature description for ba
 
 # /sf-work
 
+> **Persona dispatch (V3.1, agentless).** Where this skill says "dispatch these agents", they are *personas* — prompt assets under `references/personas/<name>.md`, not registered agents. Run each as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline-in-sequence on harnesses without subagents. Review personas are referenced from `../sf-review/references/personas/`, research personas from `../sf-plan/references/personas/`.
+
 > **Principles enforced:** 1 (preserve the quality ceiling), 2 (verifiability), 3 (jagged intelligence). See `PRINCIPLES.md`.
 
 ## Copy-paste-to-agent
@@ -29,7 +31,7 @@ satisfy every field; do not relax it.
 
 <span data-proof="authored" data-by="ai:claude">Ask one question at a time. Prefer a concise single-select choice when natural options exist.</span>
 
-<span data-proof="authored" data-by="ai:claude">You are implementing a Salesforce feature with parallel agent support and built-in quality checks.</span>
+<span data-proof="authored" data-by="ai:claude">You are implementing a Salesforce feature with parallel persona support and built-in quality checks.</span>
 
 ## <span data-proof="authored" data-by="ai:claude">Goal</span>
 
@@ -41,7 +43,7 @@ satisfy every field; do not relax it.
 
 ## <span data-proof="authored" data-by="ai:claude">Step 0: Pre-Implementation Research (parallel)</span>
 
-<span data-proof="authored" data-by="ai:claude">Before writing code, dispatch these agents</span> **<span data-proof="authored" data-by="ai:claude">in parallel</span>**<span data-proof="authored" data-by="ai:claude">:</span>
+<span data-proof="authored" data-by="ai:claude">Before writing code, dispatch these personas</span> **<span data-proof="authored" data-by="ai:claude">in parallel</span>**<span data-proof="authored" data-by="ai:claude">:</span>
 
 * <span data-proof="authored" data-by="ai:claude">Task sf-learnings-researcher(feature_description) — Check for relevant past solutions</span>
 
@@ -55,7 +57,7 @@ satisfy every field; do not relax it.
 
 <span data-proof="authored" data-by="ai:claude">Classify the implementation, then route:</span>
 
-* <span data-proof="authored" data-by="ai:claude">Read</span> <span data-proof="authored" data-by="ai:claude">`agents/index.md`</span> <span data-proof="authored" data-by="ai:claude">to decide applicable agent categories</span>
+* <span data-proof="authored" data-by="ai:claude">Read</span> <span data-proof="authored" data-by="ai:claude">`../sf-review/references/personas/`</span> <span data-proof="authored" data-by="ai:claude">to decide applicable persona categories</span>
 
 * <span data-proof="authored" data-by="ai:claude">Read</span> <span data-proof="authored" data-by="ai:claude">`skills/index.md`</span> <span data-proof="authored" data-by="ai:claude">to decide applicable skills</span>
 

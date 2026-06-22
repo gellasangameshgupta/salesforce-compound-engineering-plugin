@@ -6,6 +6,8 @@ argument-hint: "[optional: idea, problem statement, or Salesforce feature descri
 
 # /sf-brainstorm
 
+> **Persona dispatch (V3.1, agentless).** Where this skill says "dispatch research agents", they are *personas* — prompt assets under `references/personas/<name>.md` (research personas referenced from `../sf-plan/references/personas/`), not registered agents. Run each as an **isolated subagent** (Task tool, general-purpose subagent, persona file contents as instructions): parallel on Claude Code, inline-in-sequence on harnesses without subagents.
+
 > **Principles enforced:** 4 (spec is the artifact, in embryo). See `PRINCIPLES.md`.
 
 **Strategy grounding:** If a `STRATEGY.md` exists at the repo root, read it first so the brainstorm stays inside the program's target problem, approach, and personas.
@@ -92,7 +94,7 @@ For each viable approach, evaluate Salesforce-specific trade-offs:
 
 ### Optional: Parallel Research
 
-If approaches are unclear, dispatch research agents:
+If approaches are unclear, dispatch research personas:
 
 * Task sf-best-practices-researcher(idea\_context)
 

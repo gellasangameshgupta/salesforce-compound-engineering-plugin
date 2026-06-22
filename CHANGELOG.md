@@ -19,6 +19,8 @@ Adopts the EveryInc compound-engineering 8-step "sandwich" upgrade, Salesforce-f
 ### Changed
 
 * **8-step reframe** — `/sf-ideate` is promoted to a core loop entry point (the front "bread") and `/sf-polish` becomes the back bookend. `/sf-lfg` gains **Stage 0: IDEATE & BRAINSTORM** and **Stage 6: POLISH** (conditional, UI surfaces only); TEST/DEPLOY/COMPOUND renumber to 7/8/9; abort conditions and output updated. README, `CLAUDE.md`, and `skills/index.md` re-narrated around the sandwich; core workflow entry-point count is now nine, plus `/sf-strategy` grounding.
+* **Repository & package migration** — canonical repo moved to [`gellasangameshgupta/salesforce-compound-engineering-plugin`](https://github.com/gellasangameshgupta/salesforce-compound-engineering-plugin); the prior `sangameshgupta/sf-compound-engineering-plugin` repo is archived (private). CLI/npm package renamed `@sangameshgupta/sf-compound-plugin` → `@gellasangameshgupta/sf-compound-plugin`. `homepage`/`repository`/author URLs updated across all four manifests.
+* **README full refresh** — corrected the install URL (was pointing at the now-private repo), updated counts to the current **60 skills / 60 agents**, replaced the stale "7 Commands" section with the nine workflow entry points, documented the new `sf-strategy` / `sf-polish` / `sf-simplify-code` / `sf-product-pulse` / `graphql-patterns` skills, fixed the Project Structure tree (flat agents, retired `commands/`), and repaired broken tables.
 
 ## \[3.0.0-beta.2] - 2026-04-30
 

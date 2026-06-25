@@ -242,6 +242,9 @@ docs/solutions/
 
 The `sf-learnings-researcher` persona searches these documents by frontmatter metadata before every plan and implementation phase to surface relevant institutional knowledge. `docs/solutions/`, `docs/plans/`, and `docs/brainstorms/` are **protected directories** — edit, never delete.
 
+## Architecture workflow
+<img width="2112" height="4080" alt="image" src="https://github.com/user-attachments/assets/afdaf91d-ef64-43e7-aa4d-c2cd711e5fbc" />
+
 ***
 
 ## Project Structure
